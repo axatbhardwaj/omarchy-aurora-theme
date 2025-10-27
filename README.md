@@ -1,0 +1,42 @@
+# Omarchy Elysian Theme
+
+A theme inspired by an ethereal forest bathed in golden-green light, where vibrant life intertwines with ancient ruins, creating a heavenly, mythical paradise.
+
+![Screenshot](screenshot.png)
+
+## Installation
+
+Install this theme by running:
+
+```bash
+omarchy-theme-install https://github.com/bjarneo/omarchy-elysian-theme
+```
+
+## Theme Locations
+
+After installation, certain theme files need to be manually moved to their respective locations:
+
+### Vencord Theme
+Move the Vencord theme file to:
+```
+~/.config/Vencord/themes/
+```
+
+Or if using Vesktop:
+```
+~/.config/vesktop/themes/
+```
+
+### GTK Theme
+Move the GTK theme file to:
+```
+~/.config/gtk-4.0/gtk.css
+```
+
+For GTK 3:
+```
+~/.config/gtk-3.0/gtk.css
+```
+
+### Who
+Made by [https://x.com/iamdothash](Bjarne Oeverli) using [https://github.com/bjarneo/Aether](Aether).
