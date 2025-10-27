@@ -39,4 +39,4 @@ For GTK 3:
 ```
 
 ### Who
-Made by [https://x.com/iamdothash](Bjarne Oeverli) using [https://github.com/bjarneo/Aether](Aether).
+Made by [Bjarne Oeverli](https://x.com/iamdothash) using [Aether](https://github.com/bjarneo/Aether).
