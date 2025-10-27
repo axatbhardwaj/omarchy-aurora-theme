@@ -1,6 +1,6 @@
 # Omarchy Elysian Theme
 
-A theme inspired by an ethereal forest bathed in golden-green light, where vibrant life intertwines with ancient ruins, creating a heavenly, mythical paradise.
+A desktop theme that translates the mythical serenity of an Elysian forest where ancient, vibrant life glows in golden-green light into a high-contrast, productive workspace.
 
 ![Screenshot](screenshot.png)
 
