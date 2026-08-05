@@ -6,10 +6,13 @@ set -euo pipefail
 # from outside this file remains undetectable. Policy detection covers a limited
 # set of rule keywords. Accepted limits: variable indirection, colon-qualified
 # block headers (`decoration:blur { }`), bare `tag <name>` without a +/- prefix,
-# `opacityrule`, and future Hyprland syntax forms.
+# `opacityrule`, and future Hyprland syntax forms. extract_layer_rules parses
+# only anonymous `layerrule =` forms, so a `layerrule { }` block could disable
+# layer blur unnoticed and is outside this script's scope.
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 config="${1:-$repo_root/hyprland.conf}"
+upstream_apps_dir="${OMARCHY_APPS_DIR:-${OMARCHY_PATH:-$HOME/.local/share/omarchy}/default/hypr/apps}"
 failures=0
 
 check() {
@@ -22,6 +25,13 @@ check() {
         printf 'Checking %s... FAIL\n' "$description"
         failures=$((failures + 1))
     fi
+}
+
+skip() {
+    local description="$1"
+    local reason="$2"
+
+    printf 'Checking %s... SKIP (%s)\n' "$description" "$reason"
 }
 
 matches() {
@@ -37,6 +47,186 @@ does_not_match() {
 
 equals() {
     [[ "$1" == "$2" ]]
+}
+
+mako_has_translucent_background() {
+    local file="$1"
+
+    [[ -f "$file" ]] && grep -Eq -- '^[[:space:]]*background-color[[:space:]]*=[[:space:]]*#[[:xdigit:]]{6}([0-9A-Ea-e][[:xdigit:]]|[Ff][0-9A-Ea-e])[[:space:]]*$' "$file"
+}
+
+waybar_has_blur_compatible_background() {
+    local file="$1"
+
+    [[ -f "$file" ]] && awk '
+        /^[[:space:]]*window#waybar[[:space:]]*\{[[:space:]]*$/ {
+            in_waybar = 1
+            next
+        }
+        in_waybar && /^[[:space:]]*\}[[:space:]]*$/ {
+            in_waybar = 0
+            next
+        }
+        in_waybar && /^[[:space:]]*background-color[[:space:]]*:[[:space:]]*rgba\([^)]*\)[[:space:]]*;?[[:space:]]*$/ {
+            alpha = $0
+            sub(/^.*,[[:space:]]*/, "", alpha)
+            sub(/\)[[:space:]]*;?[[:space:]]*$/, "", alpha)
+            if (alpha ~ /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/ && alpha + 0 > 0.5 && alpha + 0 < 1.0) {
+                found = 1
+            }
+        }
+        END { exit(found ? 0 : 1) }
+    ' "$file"
+}
+
+walker_has_blur_compatible_base() {
+    local file="$1"
+
+    [[ -f "$file" ]] && awk '
+        /^[[:space:]]*@define-color[[:space:]]+base[[:space:]]+rgba\([^)]*\)[[:space:]]*;?[[:space:]]*$/ {
+            alpha = $0
+            sub(/^.*,[[:space:]]*/, "", alpha)
+            sub(/\)[[:space:]]*;?[[:space:]]*$/, "", alpha)
+            if (alpha ~ /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/ && alpha + 0 > 0.5 && alpha + 0 < 1.0) {
+                found = 1
+            }
+        }
+        END { exit(found ? 0 : 1) }
+    ' "$file"
+}
+
+alacritty_window_opacity_below_one() {
+    local file="$1"
+
+    [[ -f "$file" ]] && awk '
+        /^[[:space:]]*\[window\][[:space:]]*$/ {
+            in_window = 1
+            next
+        }
+        /^[[:space:]]*\[[^]]+\][[:space:]]*$/ {
+            in_window = 0
+            next
+        }
+        in_window && /^[[:space:]]*opacity[[:space:]]*=/ {
+            opacity = $0
+            sub(/^[^=]*=[[:space:]]*/, "", opacity)
+            sub(/[[:space:]]*(#.*)?$/, "", opacity)
+            seen = 1
+            valid = opacity ~ /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/ && opacity + 0 < 1.0
+        }
+        END { exit(seen && valid ? 0 : 1) }
+    ' "$file"
+}
+
+toml_value() {
+    local file="$1"
+    local section="$2"
+    local key="$3"
+
+    awk -v section="$section" -v key="$key" '
+        BEGIN { in_section = section == "" }
+        /^[[:space:]]*\[[^]]+\][[:space:]]*$/ {
+            current = $0
+            sub(/^[[:space:]]*\[/, "", current)
+            sub(/\][[:space:]]*$/, "", current)
+            in_section = current == section
+            next
+        }
+        in_section {
+            line = $0
+            if (line ~ "^[[:space:]]*" key "[[:space:]]*=") {
+                sub("^[[:space:]]*" key "[[:space:]]*=[[:space:]]*", "", line)
+                sub(/[[:space:]]+$/, "", line)
+                if (line ~ /^"/) {
+                    sub(/^"/, "", line)
+                    sub(/".*$/, "", line)
+                } else {
+                    sub(/[[:space:]]+#.*$/, "", line)
+                }
+                value = line
+            }
+        }
+        END { print value }
+    ' "$file"
+}
+
+kitty_value() {
+    local file="$1"
+    local key="$2"
+
+    awk -v key="$key" '
+        $1 == key {
+            value = $2
+        }
+        END { print value }
+    ' "$file"
+}
+
+kitty_has_complete_palette() {
+    local kitty_file="$1"
+    local palette_file="$2"
+    local kitty_key
+    local palette_key
+    local expected
+    local actual
+
+    [[ -f "$kitty_file" && -f "$palette_file" ]] || return 1
+
+    while read -r kitty_key palette_key; do
+        expected="$(toml_value "$palette_file" "" "$palette_key")"
+        actual="$(kitty_value "$kitty_file" "$kitty_key")"
+        [[ -n "$expected" && "$actual" == "$expected" ]] || return 1
+    done <<'EOF'
+foreground foreground
+background background
+selection_foreground selection_foreground
+selection_background selection_background
+cursor cursor
+cursor_text_color background
+active_border_color accent
+active_tab_background accent
+color0 color0
+color1 color1
+color2 color2
+color3 color3
+color4 color4
+color5 color5
+color6 color6
+color7 color7
+color8 color8
+color9 color9
+color10 color10
+color11 color11
+color12 color12
+color13 color13
+color14 color14
+color15 color15
+EOF
+
+    ! grep -Eq -- '\{\{[^}]+\}\}' "$kitty_file"
+}
+
+kitty_background_opacity_is() {
+    local file="$1"
+    local expected="$2"
+
+    [[ -f "$file" ]] && [[ "$(kitty_value "$file" background_opacity)" == "$expected" ]]
+}
+
+alacritty_palette_slots_match_source() {
+    local alacritty_file="$1"
+    local palette_file="$2"
+
+    [[ -f "$alacritty_file" && -f "$palette_file" ]] &&
+        [[ "$(toml_value "$alacritty_file" colors.normal white)" == "$(toml_value "$palette_file" "" color7)" ]] &&
+        [[ "$(toml_value "$alacritty_file" colors.bright black)" == "$(toml_value "$palette_file" "" color8)" ]]
+}
+
+file_contents_equal() {
+    local file="$1"
+    local expected="$2"
+
+    [[ -f "$file" ]] && [[ "$(<"$file")" == "$expected" ]]
 }
 
 strip_comments() {
@@ -120,6 +310,18 @@ extract_policy_rules() {
     '
 }
 
+extract_layer_rules() {
+    awk '
+        {
+            line = $0
+            sub(/[[:space:]]*#.*/, "", line)
+            if (line ~ /^[[:space:]]*layerrule[[:space:]]*=/) {
+                print line
+            }
+        }
+    '
+}
+
 count_blocks() {
     local block_name="$1"
 
@@ -190,21 +392,127 @@ policy_rule_line_number() {
     ' <<<"$config_contents"
 }
 
-pins_follow_group_opacity_rules() {
-    [[ "$default_opacity_line" =~ ^[0-9]+$ &&
-       "$terminal_opacity_line" =~ ^[0-9]+$ &&
-       "$chromium_opacity_line" =~ ^[0-9]+$ &&
-       "$firefox_opacity_line" =~ ^[0-9]+$ &&
-       "$pip_opacity_line" =~ ^[0-9]+$ &&
-       "$webcam_opacity_line" =~ ^[0-9]+$ ]] &&
-        ((pip_opacity_line > default_opacity_line &&
-          pip_opacity_line > terminal_opacity_line &&
-          pip_opacity_line > chromium_opacity_line &&
-          pip_opacity_line > firefox_opacity_line &&
-          webcam_opacity_line > default_opacity_line &&
-          webcam_opacity_line > terminal_opacity_line &&
-          webcam_opacity_line > chromium_opacity_line &&
-          webcam_opacity_line > firefox_opacity_line))
+pins_follow_band_rules() {
+    local band_line
+    local pin_line
+
+    for band_line in "${band_opacity_lines[@]}"; do
+        [[ "$band_line" =~ ^[0-9]+$ ]] || return 1
+    done
+
+    for pin_line in "${pin_opacity_lines[@]}"; do
+        [[ "$pin_line" =~ ^[0-9]+$ ]] || return 1
+        for band_line in "${band_opacity_lines[@]}"; do
+            ((pin_line > band_line)) || return 1
+        done
+    done
+}
+
+pin_line_follows_band_rules() {
+    local pin_line="$1"
+    local band_line
+
+    [[ "$pin_line" =~ ^[0-9]+$ ]] || return 1
+    for band_line in "${band_opacity_lines[@]}"; do
+        [[ "$band_line" =~ ^[0-9]+$ ]] || return 1
+        ((pin_line > band_line)) || return 1
+    done
+}
+
+upstream_app_policies_available() {
+    [[ -d "$upstream_apps_dir" ]] && compgen -G "$upstream_apps_dir/*.conf" >/dev/null
+}
+
+upstream_strips_default_opacity_for_class() {
+    local protected_class="$1"
+    local windowrule_pattern='^[[:space:]]*windowrule[[:space:]]*='
+    local match_class_pattern='match:class[[:space:]]+([^,]+)'
+    local policy_file
+    local line
+    local matcher
+
+    for policy_file in "$upstream_apps_dir"/*.conf; do
+        while IFS= read -r line; do
+            line="${line%%#*}"
+            [[ "$line" =~ $windowrule_pattern ]] || continue
+            [[ "$line" == *"tag -default-opacity"* ]] || continue
+            [[ "$line" =~ $match_class_pattern ]] || continue
+            matcher="${BASH_REMATCH[1]}"
+            matcher="${matcher#"${matcher%%[![:space:]]*}"}"
+            matcher="${matcher%"${matcher##*[![:space:]]}"}"
+            if [[ "$protected_class" =~ $matcher ]] && [[ "${BASH_REMATCH[0]}" == "$protected_class" ]]; then
+                return 0
+            fi
+        done <"$policy_file"
+    done
+
+    return 1
+}
+
+exact_class_opacity_pin_line_number() {
+    local protected_class="$1"
+    local pin_pattern='^[[:space:]]*windowrule[[:space:]]*=[[:space:]]*opacity[[:space:]]+1([.]0)?[[:space:]]+1([.]0)?[[:space:]]*,[[:space:]]*match:class[[:space:]]+(.+)[[:space:]]*$'
+    local line
+    local line_number=0
+    local matcher
+    local candidate
+    local candidates=()
+
+    while IFS= read -r line; do
+        line_number=$((line_number + 1))
+        line="${line%%#*}"
+        [[ "$line" =~ $pin_pattern ]] || continue
+        matcher="${BASH_REMATCH[3]}"
+        matcher="${matcher#"${matcher%%[![:space:]]*}"}"
+        matcher="${matcher%"${matcher##*[![:space:]]}"}"
+        [[ "${matcher:0:1}" == "^" && "${matcher: -1}" == '$' ]] || continue
+        matcher="${matcher:1:${#matcher}-2}"
+        if [[ "${matcher:0:1}" == "(" && "${matcher: -1}" == ")" ]]; then
+            matcher="${matcher:1:${#matcher}-2}"
+        fi
+        IFS='|' read -r -a candidates <<<"$matcher"
+        for candidate in "${candidates[@]}"; do
+            candidate="${candidate//\\./.}"
+            if [[ "$candidate" == "$protected_class" ]]; then
+                printf '%s\n' "$line_number"
+                return 0
+            fi
+        done
+    done <<<"$config_contents"
+
+    return 1
+}
+
+protected_set_has_opacity_guards() {
+    local protected_class
+    local pin_line
+    local protected_classes=(
+        steam
+        zoom
+        vlc
+        mpv
+        org.kde.kdenlive
+        com.obsproject.Studio
+        com.github.PintaProject.Pinta
+        imv
+        org.gnome.NautilusPreviewer
+        com.libretro.RetroArch
+        qemu
+        GeForceNOW
+        com.moonlight_stream.Moonlight
+    )
+
+    for protected_class in "${protected_classes[@]}"; do
+        if upstream_strips_default_opacity_for_class "$protected_class"; then
+            continue
+        fi
+        pin_line="$(exact_class_opacity_pin_line_number "$protected_class" || true)"
+        if [[ -n "$pin_line" ]] && pin_line_follows_band_rules "$pin_line"; then
+            continue
+        fi
+        printf 'Protected class %s lacks upstream tag stripping or a post-band exact-class opacity pin.\n' "$protected_class"
+        return 1
+    done
 }
 
 has_blanket_opacity_selector() {
@@ -352,47 +660,91 @@ fi
 config_without_comments="$(strip_comments <<<"$config_contents")"
 
 expected_policy_rule_lines=(
-    'windowrule = opacity 0.96 0.90, match:tag default-opacity'
-    'windowrule = opacity 0.96 0.90, match:tag terminal'
-    'windowrule = opacity 0.98 0.94, match:tag chromium-based-browser'
-    'windowrule = opacity 0.98 0.94, match:tag firefox-based-browser'
+    'windowrule = opacity 0.90 0.90, match:tag default-opacity'
+    'windowrule = opacity 0.90 0.90, match:tag chromium-based-browser'
+    'windowrule = opacity 0.90 0.90, match:tag firefox-based-browser'
+    'windowrule = opacity 0.90 0.90, match:class (chromium-[a-z0-9-]+|chrome-.*__-Default)'
+    'windowrule = opacity 0.90 0.90, match:class ^(org.gnome.Nautilus|nautilus)$'
+    'windowrule = opacity 1 1, match:tag terminal'
+    'windowrule = opacity 1 1, match:class ^dev\.zed\.Zed$'
+    'windowrule = opacity 1 1, match:class (chrome-youtube.com__-Default|chrome-app.zoom.us__wc_home-Default)'
     'windowrule = opacity 1 1, match:tag pip'
     'windowrule = opacity 1 1, match:title WebcamOverlay'
-    'windowrule = no_dim on, match:tag pip'
-    'windowrule = no_dim on, match:class steam.*'
-    'windowrule = no_dim on, match:class ^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|com.github.PintaProject.Pinta|imv|org.gnome.NautilusPreviewer)$'
-    'windowrule = no_dim on, match:class (chrome-youtube.com__-Default|chrome-app.zoom.us__wc_home-Default)'
-    'windowrule = no_dim on, match:class (com.libretro.RetroArch|qemu)'
-    'windowrule = no_dim on, match:class (GeForceNOW|com.moonlight_stream.Moonlight)'
+    'windowrule = opacity 1 1, match:class ^(1[pP]assword|Bitwarden|org.keepassxc.KeePassXC|Proton Pass|chrome-nngceckbapebfimnlniiiahkandclblb-Default)$'
+    'windowrule = opacity 1 1, match:class ^(GeForceNOW|com.moonlight_stream.Moonlight)$'
+)
+
+expected_layer_rule_lines=(
+    'layerrule = blur on, match:namespace waybar'
+    'layerrule = blur on, match:namespace walker'
+    'layerrule = blur on, match:namespace notifications'
+    'layerrule = ignore_alpha 0.5, match:namespace waybar'
+    'layerrule = ignore_alpha 0.5, match:namespace walker'
 )
 
 expected_policy_rules="$(printf '%s\n' "${expected_policy_rule_lines[@]}" | normalize_rule_lines | LC_ALL=C sort)"
 actual_policy_rules="$(extract_policy_rules <<<"$config_contents" | normalize_rule_lines | LC_ALL=C sort)"
+expected_layer_rules="$(printf '%s\n' "${expected_layer_rule_lines[@]}" | normalize_rule_lines | LC_ALL=C sort)"
+actual_layer_rules="$(extract_layer_rules <<<"$config_contents" | normalize_rule_lines | LC_ALL=C sort)"
 
 default_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+default-opacity([[:space:]]|,|$)')"
-terminal_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+terminal([[:space:]]|,|$)')"
 chromium_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+chromium-based-browser([[:space:]]|,|$)')"
 firefox_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+firefox-based-browser([[:space:]]|,|$)')"
+chromium_family_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\(chromium-\\[a-z0-9-\\]\\+\\|chrome-[.][*]__-Default\\)([[:space:]]|,|$)')"
+nautilus_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(org[.]gnome[.]Nautilus\\|nautilus\\)[$]([[:space:]]|,|$)')"
+terminal_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+terminal([[:space:]]|,|$)')"
+zed_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^dev')"
+video_pwa_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\(chrome-youtube[.]com__-Default\\|chrome-app[.]zoom[.]us__wc_home-Default\\)([[:space:]]|,|$)')"
 pip_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+pip([[:space:]]|,|$)')"
 webcam_opacity_line="$(policy_rule_line_number 'match:title[[:space:]]+WebcamOverlay([[:space:]]|,|$)')"
+credential_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(1\\[pP\\]assword\\|Bitwarden\\|org[.]keepassxc[.]KeePassXC\\|Proton Pass\\|chrome-nngceckbapebfimnlniiiahkandclblb-Default\\)[$]([[:space:]]|,|$)')"
+game_streaming_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(GeForceNOW\\|com[.]moonlight_stream[.]Moonlight\\)[$]([[:space:]]|,|$)')"
+
+band_opacity_lines=(
+    "$default_opacity_line"
+    "$chromium_opacity_line"
+    "$firefox_opacity_line"
+    "$chromium_family_opacity_line"
+    "$nautilus_opacity_line"
+)
+pin_opacity_lines=(
+    "$terminal_opacity_line"
+    "$zed_opacity_line"
+    "$video_pwa_opacity_line"
+    "$pip_opacity_line"
+    "$webcam_opacity_line"
+    "$credential_opacity_line"
+    "$game_streaming_opacity_line"
+)
 
 check "hyprland.conf exists" test -f "$config"
+check "chromium.theme exists" test -f "$repo_root/chromium.theme"
+check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '20,26,23'
+check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_has_blur_compatible_background "$repo_root/waybar.css"
+check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_translucent_background "$repo_root/mako.ini"
+check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
+check "alacritty.toml window opacity is below 1.0" alacritty_window_opacity_below_one "$repo_root/alacritty.toml"
+check "alacritty color7/color8 slots match colors.toml" alacritty_palette_slots_match_source "$repo_root/alacritty.toml" "$repo_root/colors.toml"
+check "kitty.conf carries every template colour from colors.toml" kitty_has_complete_palette "$repo_root/kitty.conf" "$repo_root/colors.toml"
+check "kitty.conf background opacity is 0.75" kitty_background_opacity_is "$repo_root/kitty.conf" 0.75
 check "activeBorderColor definition" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgb\([[:space:]]*62e2a4[[:space:]]*\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
 check "group { col.border_active" equals "$(last_assignment_in_block group 'col[.]border_active')" '$activeBorderColor'
 check "exactly one decoration block" test "$(count_blocks decoration)" -eq 1
-check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_in_block decoration dim_inactive)" true
-check "decoration { dim_strength at last occurrence" equals "$(last_assignment_in_block decoration dim_strength)" 0.15
+check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_in_block decoration dim_inactive)" false
+check "dim_strength is absent" does_not_match "$config_without_comments" '^[[:space:]]*dim_strength[[:space:]]*='
 check "exactly one blur block" test "$(count_blocks blur)" -eq 1
 check "blur { enabled at last occurrence" equals "$(last_assignment_in_block blur enabled)" true
 check "blur { size at last occurrence" equals "$(last_assignment_in_block blur size)" 8
 check "blur { passes at last occurrence" equals "$(last_assignment_in_block blur passes)" 3
 check "blur { noise at last occurrence" equals "$(last_assignment_in_block blur noise)" 0.03
-check "blur { contrast at last occurrence" equals "$(last_assignment_in_block blur contrast)" 0.87
-check "blur { brightness at last occurrence" equals "$(last_assignment_in_block blur brightness)" 0.55
+check "blur { contrast at last occurrence" equals "$(last_assignment_in_block blur contrast)" 1.45
+check "blur { brightness at last occurrence" equals "$(last_assignment_in_block blur brightness)" 1.15
 check "blur { vibrancy at last occurrence" equals "$(last_assignment_in_block blur vibrancy)" 0.03
 check "blur { vibrancy_darkness at last occurrence" equals "$(last_assignment_in_block blur vibrancy_darkness)" 0.7
 check "blur { special at last occurrence" equals "$(last_assignment_in_block blur special)" true
+check "blur { xray at last occurrence" equals "$(last_assignment_in_block blur xray)" true
+check "blur { ignore_opacity at last occurrence" equals "$(last_assignment_in_block blur ignore_opacity)" false
 check "no active_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*active_opacity[[:space:]]*='
 check "no inactive_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*inactive_opacity[[:space:]]*='
 check "no fullscreen_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*fullscreen_opacity'
@@ -403,8 +755,14 @@ check "no bare animation setting" does_not_match "$config_without_comments" '^[[
 check "no source directive" does_not_match "$config_without_comments" '^[[:space:]]*source[[:space:]]*='
 check "no exec-family directive" does_not_match "$config_without_comments" '^[[:space:]]*(exec|execr|exec-once|execr-once|exec-shutdown)[[:space:]]*='
 check "no rounding windowrule" does_not_match "$config_without_comments" '^[[:space:]]*windowrule(v2)?[[:space:]]*=[[:space:]]*rounding([[:space:]]|$)'
-check "exact opacity/no_dim/dim windowrule allowlist" equals "$actual_policy_rules" "$expected_policy_rules"
-check "PiP and WebcamOverlay opacity pins follow all group opacity rules" pins_follow_group_opacity_rules
+check "exact opacity windowrule allowlist" equals "$actual_policy_rules" "$expected_policy_rules"
+check "exact layerrule allowlist" equals "$actual_layer_rules" "$expected_layer_rules"
+check "all seven opacity pins follow all five band rules" pins_follow_band_rules
+if upstream_app_policies_available; then
+    check "protected classes strip default-opacity upstream or have post-band exact-class pins" protected_set_has_opacity_guards
+else
+    skip "protected classes strip default-opacity upstream or have post-band exact-class pins" "upstream app policies unavailable at $upstream_apps_dir"
+fi
 check "no blanket opacity selector" no_blanket_opacity_selector
 check "no default-opacity tag re-addition" no_default_opacity_readdition
 
