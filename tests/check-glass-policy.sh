@@ -500,6 +500,7 @@ protected_set_has_opacity_guards() {
         qemu
         GeForceNOW
         com.moonlight_stream.Moonlight
+        chrome-www.crunchyroll.com__-Default
     )
 
     for protected_class in "${protected_classes[@]}"; do
@@ -667,7 +668,7 @@ expected_policy_rule_lines=(
     'windowrule = opacity 0.90 0.90, match:class ^(org.gnome.Nautilus|nautilus)$'
     'windowrule = opacity 1 1, match:tag terminal'
     'windowrule = opacity 1 1, match:class ^dev\.zed\.Zed$'
-    'windowrule = opacity 1 1, match:class (chrome-youtube.com__-Default|chrome-app.zoom.us__wc_home-Default)'
+    'windowrule = opacity 1 1, match:class ^(chrome-youtube\.com__-Default|chrome-app\.zoom\.us__wc_home-Default|chrome-www\.crunchyroll\.com__-Default)$'
     'windowrule = opacity 1 1, match:tag pip'
     'windowrule = opacity 1 1, match:title WebcamOverlay'
     'windowrule = opacity 1 1, match:class ^(1[pP]assword|Bitwarden|org.keepassxc.KeePassXC|Proton Pass|chrome-nngceckbapebfimnlniiiahkandclblb-Default)$'
@@ -694,7 +695,7 @@ chromium_family_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+
 nautilus_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(org[.]gnome[.]Nautilus\\|nautilus\\)[$]([[:space:]]|,|$)')"
 terminal_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+terminal([[:space:]]|,|$)')"
 zed_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^dev')"
-video_pwa_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\(chrome-youtube[.]com__-Default\\|chrome-app[.]zoom[.]us__wc_home-Default\\)([[:space:]]|,|$)')"
+video_pwa_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(chrome-youtube\\\\[.]com__-Default\\|chrome-app\\\\[.]zoom\\\\[.]us__wc_home-Default\\|chrome-www\\\\[.]crunchyroll\\\\[.]com__-Default\\)[$]([[:space:]]|,|$)')"
 pip_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+pip([[:space:]]|,|$)')"
 webcam_opacity_line="$(policy_rule_line_number 'match:title[[:space:]]+WebcamOverlay([[:space:]]|,|$)')"
 credential_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(1\\[pP\\]assword\\|Bitwarden\\|org[.]keepassxc[.]KeePassXC\\|Proton Pass\\|chrome-nngceckbapebfimnlniiiahkandclblb-Default\\)[$]([[:space:]]|,|$)')"
