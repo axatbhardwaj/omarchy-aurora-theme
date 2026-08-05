@@ -1,0 +1,16 @@
+@define-color foreground #fdfffd;
+@define-color background #010401;
+
+/* Translucent bar so the Hyprland layer blur has something to show through.
+   Higher specificity than the `*` rule in ~/.config/waybar/style.css, so the
+   @import order does not matter. The window carries the alpha; children stay
+   transparent so it does not stack into a darker double layer.
+   0.55 sits just above the `ignore_alpha 0.5` layerrule threshold — below that,
+   Hyprland skips blurring the surface entirely. */
+window#waybar {
+  background-color: rgba(1, 4, 1, 0.55);
+}
+
+window#waybar * {
+  background-color: transparent;
+}
