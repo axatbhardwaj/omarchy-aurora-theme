@@ -13,6 +13,7 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 config="${1:-$repo_root/hyprland.conf}"
 upstream_apps_dir="${OMARCHY_APPS_DIR:-${OMARCHY_PATH:-$HOME/.local/share/omarchy}/default/hypr/apps}"
+upstream_themed_dir="${OMARCHY_THEMED_DIR:-${OMARCHY_PATH:-$HOME/.local/share/omarchy}/default/themed}"
 failures=0
 
 check() {
@@ -162,48 +163,187 @@ kitty_value() {
     ' "$file"
 }
 
-kitty_has_complete_palette() {
-    local kitty_file="$1"
+toml_path_value() {
+    local file="$1"
+    local path="$2"
+
+    toml_value "$file" "${path%.*}" "${path##*.}"
+}
+
+theme_file_has_complete_palette() {
+    local theme_file="$1"
     local palette_file="$2"
-    local kitty_key
+    local value_reader="$3"
+    local theme_key
     local palette_key
     local expected
     local actual
 
-    [[ -f "$kitty_file" && -f "$palette_file" ]] || return 1
+    [[ -f "$theme_file" && -f "$palette_file" ]] || return 1
 
-    while read -r kitty_key palette_key; do
+    while read -r theme_key palette_key; do
         expected="$(toml_value "$palette_file" "" "$palette_key")"
-        actual="$(kitty_value "$kitty_file" "$kitty_key")"
-        [[ -n "$expected" && "$actual" == "$expected" ]] || return 1
-    done <<'EOF'
-foreground foreground
-background background
-selection_foreground selection_foreground
-selection_background selection_background
-cursor cursor
-cursor_text_color background
-active_border_color accent
-active_tab_background accent
-color0 color0
-color1 color1
-color2 color2
-color3 color3
-color4 color4
-color5 color5
-color6 color6
-color7 color7
-color8 color8
-color9 color9
-color10 color10
-color11 color11
-color12 color12
-color13 color13
-color14 color14
-color15 color15
-EOF
+        actual="$("$value_reader" "$theme_file" "$theme_key")"
+        if [[ -z "$expected" || "$actual" != "$expected" ]]; then
+            printf '%s key %s does not match %s key %s.\n' "$theme_file" "$theme_key" "$palette_file" "$palette_key"
+            return 1
+        fi
+    done
 
-    ! grep -Eq -- '\{\{[^}]+\}\}' "$kitty_file"
+    if grep -Eq -- '\{\{[^}]+\}\}' "$theme_file"; then
+        printf '%s contains an unresolved template placeholder.\n' "$theme_file"
+        return 1
+    fi
+}
+
+kitty_template_colour_pairs() {
+    printf '%s\n' \
+        'foreground foreground' \
+        'background background' \
+        'selection_foreground selection_foreground' \
+        'selection_background selection_background' \
+        'cursor cursor' \
+        'cursor_text_color background' \
+        'active_border_color accent' \
+        'active_tab_background accent' \
+        'color0 color0' \
+        'color1 color1' \
+        'color2 color2' \
+        'color3 color3' \
+        'color4 color4' \
+        'color5 color5' \
+        'color6 color6' \
+        'color7 color7' \
+        'color8 color8' \
+        'color9 color9' \
+        'color10 color10' \
+        'color11 color11' \
+        'color12 color12' \
+        'color13 color13' \
+        'color14 color14' \
+        'color15 color15'
+}
+
+alacritty_template_colour_pairs() {
+    printf '%s\n' \
+        'colors.primary.background background' \
+        'colors.primary.foreground foreground' \
+        'colors.cursor.text background' \
+        'colors.cursor.cursor cursor' \
+        'colors.vi_mode_cursor.text background' \
+        'colors.vi_mode_cursor.cursor cursor' \
+        'colors.search.matches.foreground background' \
+        'colors.search.matches.background color3' \
+        'colors.search.focused_match.foreground background' \
+        'colors.search.focused_match.background color1' \
+        'colors.footer_bar.foreground background' \
+        'colors.footer_bar.background foreground' \
+        'colors.selection.text selection_foreground' \
+        'colors.selection.background selection_background' \
+        'colors.normal.black color0' \
+        'colors.normal.red color1' \
+        'colors.normal.green color2' \
+        'colors.normal.yellow color3' \
+        'colors.normal.blue color4' \
+        'colors.normal.magenta color5' \
+        'colors.normal.cyan color6' \
+        'colors.normal.white color7' \
+        'colors.bright.black color8' \
+        'colors.bright.red color9' \
+        'colors.bright.green color10' \
+        'colors.bright.yellow color11' \
+        'colors.bright.blue color12' \
+        'colors.bright.magenta color13' \
+        'colors.bright.cyan color14' \
+        'colors.bright.white color15'
+}
+
+kitty_has_complete_palette() {
+    local kitty_file="$1"
+    local palette_file="$2"
+
+    theme_file_has_complete_palette "$kitty_file" "$palette_file" kitty_value < <(kitty_template_colour_pairs)
+}
+
+alacritty_has_complete_palette() {
+    local alacritty_file="$1"
+    local palette_file="$2"
+
+    theme_file_has_complete_palette "$alacritty_file" "$palette_file" toml_path_value < <(alacritty_template_colour_pairs)
+}
+
+kitty_template_colour_pairs_from_file() {
+    local template_file="$1"
+
+    awk '
+        /^[[:space:]]*#/ { next }
+        /^[[:space:]]*[^[:space:]#]+[[:space:]]+\{\{[[:space:]]*[^}]+[[:space:]]*\}\}/ {
+            key = $1
+            placeholder = $0
+            sub(/^.*\{\{[[:space:]]*/, "", placeholder)
+            sub(/[[:space:]]*\}\}.*$/, "", placeholder)
+            sub(/[[:space:]]+$/, "", placeholder)
+            print key " " placeholder
+        }
+    ' "$template_file"
+}
+
+alacritty_template_colour_pairs_from_file() {
+    local template_file="$1"
+
+    awk '
+        /^[[:space:]]*\[[^]]+\][[:space:]]*$/ {
+            section = $0
+            sub(/^[[:space:]]*\[/, "", section)
+            sub(/\][[:space:]]*$/, "", section)
+            next
+        }
+        /^[[:space:]]*[^[:space:]=]+[[:space:]]*=[[:space:]]*"?\{\{[[:space:]]*[^}]+[[:space:]]*\}\}"?/ {
+            key = $0
+            sub(/^[[:space:]]*/, "", key)
+            sub(/[[:space:]]*=.*$/, "", key)
+            placeholder = $0
+            sub(/^.*\{\{[[:space:]]*/, "", placeholder)
+            sub(/[[:space:]]*\}\}.*$/, "", placeholder)
+            sub(/[[:space:]]+$/, "", placeholder)
+            print section "." key " " placeholder
+        }
+    ' "$template_file"
+}
+
+template_colour_pairs_match_list() {
+    local template_name="$1"
+    local template_file="$2"
+    local pair_parser="$3"
+    local pair_list="$4"
+    local upstream_pairs
+    local listed_pairs
+    local missing_from_list
+    local missing_from_upstream
+    local theme_key
+    local placeholder
+    local mismatch=0
+
+    [[ -f "$template_file" ]] || return 1
+
+    upstream_pairs="$("$pair_parser" "$template_file" | LC_ALL=C sort -u)"
+    listed_pairs="$("$pair_list" | LC_ALL=C sort -u)"
+    missing_from_list="$(LC_ALL=C comm -23 <(printf '%s\n' "$upstream_pairs") <(printf '%s\n' "$listed_pairs"))"
+    missing_from_upstream="$(LC_ALL=C comm -13 <(printf '%s\n' "$upstream_pairs") <(printf '%s\n' "$listed_pairs"))"
+
+    while read -r theme_key placeholder; do
+        [[ -n "$theme_key" ]] || continue
+        printf 'Upstream %s template pair %s -> %s is missing from the hardcoded list.\n' "$template_name" "$theme_key" "$placeholder"
+        mismatch=1
+    done <<<"$missing_from_list"
+
+    while read -r theme_key placeholder; do
+        [[ -n "$theme_key" ]] || continue
+        printf 'Hardcoded %s pair %s -> %s is absent from the upstream template.\n' "$template_name" "$theme_key" "$placeholder"
+        mismatch=1
+    done <<<"$missing_from_upstream"
+
+    ((mismatch == 0))
 }
 
 kitty_background_opacity_is() {
@@ -483,9 +623,39 @@ exact_class_opacity_pin_line_number() {
     return 1
 }
 
+credential_classes_have_exact_opacity_pins() {
+    local credential_class
+    local pin_line
+    local band_line
+    local credential_classes=(
+        "1[pP]assword"
+        Bitwarden
+        org.keepassxc.KeePassXC
+        "Proton Pass"
+        chrome-nngceckbapebfimnlniiiahkandclblb-Default
+    )
+
+    for band_line in "${band_opacity_lines[@]}"; do
+        [[ "$band_line" =~ ^[0-9]+$ ]] || {
+            printf 'A band opacity rule is missing from %s; credential pin ordering cannot be evaluated.\n' "$config"
+            return 1
+        }
+    done
+
+    for credential_class in "${credential_classes[@]}"; do
+        pin_line="$(exact_class_opacity_pin_line_number "$credential_class" || true)"
+        if [[ -n "$pin_line" ]] && pin_line_follows_band_rules "$pin_line"; then
+            continue
+        fi
+        printf 'Credential class %s lacks a post-band exact-class opacity pin.\n' "$credential_class"
+        return 1
+    done
+}
+
 protected_set_has_opacity_guards() {
     local protected_class
     local pin_line
+    local band_line
     local protected_classes=(
         steam
         zoom
@@ -502,6 +672,13 @@ protected_set_has_opacity_guards() {
         com.moonlight_stream.Moonlight
         chrome-www.crunchyroll.com__-Default
     )
+
+    for band_line in "${band_opacity_lines[@]}"; do
+        [[ "$band_line" =~ ^[0-9]+$ ]] || {
+            printf 'A band opacity rule is missing from %s; protected-class pin ordering cannot be evaluated.\n' "$config"
+            return 1
+        }
+    done
 
     for protected_class in "${protected_classes[@]}"; do
         if upstream_strips_default_opacity_for_class "$protected_class"; then
@@ -726,7 +903,18 @@ check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_tran
 check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
 check "alacritty.toml window opacity is below 1.0" alacritty_window_opacity_below_one "$repo_root/alacritty.toml"
 check "alacritty color7/color8 slots match colors.toml" alacritty_palette_slots_match_source "$repo_root/alacritty.toml" "$repo_root/colors.toml"
+check "alacritty.toml carries every template colour from colors.toml" alacritty_has_complete_palette "$repo_root/alacritty.toml" "$repo_root/colors.toml"
 check "kitty.conf carries every template colour from colors.toml" kitty_has_complete_palette "$repo_root/kitty.conf" "$repo_root/colors.toml"
+if [[ -f "$upstream_themed_dir/alacritty.toml.tpl" ]]; then
+    check "alacritty upstream template colour pairs match the hardcoded list" template_colour_pairs_match_list alacritty "$upstream_themed_dir/alacritty.toml.tpl" alacritty_template_colour_pairs_from_file alacritty_template_colour_pairs
+else
+    skip "alacritty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/alacritty.toml.tpl"
+fi
+if [[ -f "$upstream_themed_dir/kitty.conf.tpl" ]]; then
+    check "kitty upstream template colour pairs match the hardcoded list" template_colour_pairs_match_list kitty "$upstream_themed_dir/kitty.conf.tpl" kitty_template_colour_pairs_from_file kitty_template_colour_pairs
+else
+    skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
+fi
 check "kitty.conf background opacity is 0.75" kitty_background_opacity_is "$repo_root/kitty.conf" 0.75
 check "activeBorderColor definition" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgb\([[:space:]]*62e2a4[[:space:]]*\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
@@ -759,6 +947,7 @@ check "no rounding windowrule" does_not_match "$config_without_comments" '^[[:sp
 check "exact opacity windowrule allowlist" equals "$actual_policy_rules" "$expected_policy_rules"
 check "exact layerrule allowlist" equals "$actual_layer_rules" "$expected_layer_rules"
 check "all seven opacity pins follow all five band rules" pins_follow_band_rules
+check "five credential classes have post-band exact-class opacity pins" credential_classes_have_exact_opacity_pins
 if upstream_app_policies_available; then
     check "protected classes strip default-opacity upstream or have post-band exact-class pins" protected_set_has_opacity_guards
 else
