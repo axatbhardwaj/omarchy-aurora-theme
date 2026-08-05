@@ -4,7 +4,7 @@ A desktop theme that translates the mythical serenity of an Elysian forest where
 
 ![Screenshot](screenshot.png)
 
-Wallpaper: "Verdant Mountain" by bisbiswas.
+Wallpaper: "Creature of Fantasyland" and "Verdant Mountain" by bisbiswas.
 
 ## Installation
 
