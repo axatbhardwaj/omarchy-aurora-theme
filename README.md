@@ -4,7 +4,7 @@ A desktop theme that translates the mythical serenity of an Elysian forest where
 
 ![Screenshot](screenshot.png)
 
-Wallpaper: "Creature of Fantasyland" and "Verdant Mountain" by bisbiswas.
+Wallpapers: "Creature of Fantasyland" and "Verdant Mountain" by bisbiswas; ["The Aurora Stones"](https://www.deviantart.com/hyokka/art/The-Aurora-Stones-783847442) by hyokka, © 2019 - 2026 hyokka.
 
 ## Installation
 
