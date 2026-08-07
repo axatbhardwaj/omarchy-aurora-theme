@@ -915,7 +915,7 @@ if [[ -f "$upstream_themed_dir/kitty.conf.tpl" ]]; then
 else
     skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
 fi
-check "kitty.conf background opacity is 0.75" kitty_background_opacity_is "$repo_root/kitty.conf" 0.75
+check "kitty.conf background opacity is 0.77" kitty_background_opacity_is "$repo_root/kitty.conf" 0.77
 check "activeBorderColor definition" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgb\([[:space:]]*62e2a4[[:space:]]*\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
 check "group { col.border_active" equals "$(last_assignment_in_block group 'col[.]border_active')" '$activeBorderColor'
