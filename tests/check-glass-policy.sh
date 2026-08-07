@@ -924,7 +924,7 @@ check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_i
 check "dim_strength is absent" does_not_match "$config_without_comments" '^[[:space:]]*dim_strength[[:space:]]*='
 check "exactly one blur block" test "$(count_blocks blur)" -eq 1
 check "blur { enabled at last occurrence" equals "$(last_assignment_in_block blur enabled)" true
-check "blur { size at last occurrence" equals "$(last_assignment_in_block blur size)" 8
+check "blur { size at last occurrence" equals "$(last_assignment_in_block blur size)" 10
 check "blur { passes at last occurrence" equals "$(last_assignment_in_block blur passes)" 3
 check "blur { noise at last occurrence" equals "$(last_assignment_in_block blur noise)" 0.03
 check "blur { contrast at last occurrence" equals "$(last_assignment_in_block blur contrast)" 1.45
