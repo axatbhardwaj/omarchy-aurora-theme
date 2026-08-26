@@ -20,8 +20,7 @@ stage_root="$(mktemp -d)"
 trap 'rm -rf "$stage_root"' EXIT
 stage_source="$stage_root/home/.config/omarchy/themes/elysian"
 mkdir -p "$stage_source" "$stage_root/runtime"
-cp -a "$repo_root/." "$stage_source/"
-rm -f "$stage_source/.git"
+cp -a "$repo_root/"* "$stage_source/"
 mkdir -p "$stage_source/.git"
 stage_output="$({
     HOME="$stage_root/home" \
