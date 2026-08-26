@@ -177,18 +177,154 @@ theme_stages_without_denied_file_warning() {
     ! grep -Fq 'A theme installed from a git repo cannot supply Lua, a terminal config, or vscode.json.' <<<"$stage_output"
 }
 
-generated_neovim_uses_elysian_semantics() {
-    local neovim_file="$staged_theme/neovim.lua"
+elysian_semantic_pairs() {
+    printf '%s\n' \
+        'accent #62e2a4' \
+        'selection #071c07' \
+        'selection_background #071c07' \
+        'selection_foreground #ffffff' \
+        'muted #595c59' \
+        'background #010401' \
+        'dark_background #000000' \
+        'darker_background #000000' \
+        'lighter_background #071c07' \
+        'foreground #fdfffd' \
+        'dark_foreground #97ff97' \
+        'light_foreground #ffffff' \
+        'bright_foreground #ffffff' \
+        'red #bf5a7c' \
+        'yellow #dfec63' \
+        'orange #cfa370' \
+        'green #70cf6c' \
+        'cyan #9ed8dd' \
+        'blue #62e2a4' \
+        'magenta #e0eb7a' \
+        'brown #6a3345' \
+        'bright_red #dcb0be' \
+        'bright_yellow #f6fdb7' \
+        'bright_green #b4e8b2' \
+        'bright_cyan #e3f5f6' \
+        'bright_blue #b0f3d2' \
+        'bright_magenta #f8fdce'
+}
 
-    [[ -f "$neovim_file" ]] &&
-        grep -Fq 'dark_bg = "#000000"' "$neovim_file" &&
-        grep -Fq 'darker_bg = "#000000"' "$neovim_file" &&
-        grep -Fq 'lighter_bg = "#071c07"' "$neovim_file" &&
-        grep -Fq 'dark_fg = "#97ff97"' "$neovim_file" &&
-        grep -Fq 'muted = "#595c59"' "$neovim_file" &&
-        grep -Fq 'orange = "#cfa370"' "$neovim_file" &&
-        grep -Fq 'brown = "#6a3345"' "$neovim_file" &&
-        grep -Fq 'selection = "#071c07"' "$neovim_file"
+elysian_semantic_value() {
+    local key="$1"
+
+    awk -v key="$key" '$1 == key { print $2 }' < <(elysian_semantic_pairs)
+}
+
+resolved_palette_matches_elysian_semantics() {
+    local resolved
+    local key
+    local expected
+    local actual
+
+    resolved="$(omarchy-theme-color --file "$repo_root/colors.toml" --all)"
+    while read -r key expected; do
+        actual="$(awk -F '\t' -v key="$key" '$1 == key { print $2 }' <<<"$resolved")"
+        [[ "$actual" == "$expected" ]] || {
+            printf 'Resolved semantic %s is %s, expected %s.\n' "$key" "$actual" "$expected"
+            return 1
+        }
+    done < <(elysian_semantic_pairs)
+}
+
+toml_path_value() {
+    local file="$1"
+    local path="$2"
+
+    awk -v wanted_section="${path%.*}" -v wanted_key="${path##*.}" '
+        /^[[:space:]]*\[[^]]+\][[:space:]]*$/ {
+            section = $0
+            sub(/^[[:space:]]*\[/, "", section)
+            sub(/\][[:space:]]*$/, "", section)
+            next
+        }
+        section == wanted_section && $1 == wanted_key {
+            value = $0
+            sub(/^[^=]*=[[:space:]]*"?/, "", value)
+            sub(/"?[[:space:]]*$/, "", value)
+            print value
+        }
+    ' "$file"
+}
+
+kitty_value() {
+    local file="$1"
+    local key="$2"
+
+    awk -v key="$key" '$1 == key { print $2 }' "$file"
+}
+
+neovim_value() {
+    local file="$1"
+    local key="$2"
+
+    awk -v key="$key" '
+        $1 == key && $2 == "=" {
+            value = $3
+            sub(/^"/, "", value)
+            sub(/",?$/, "", value)
+            print value
+        }
+    ' "$file"
+}
+
+neovim_template_colour_pairs() {
+    printf '%s\n' \
+        'bg background' \
+        'dark_bg dark_background' \
+        'darker_bg darker_background' \
+        'lighter_bg lighter_background' \
+        'fg foreground' \
+        'dark_fg dark_foreground' \
+        'light_fg light_foreground' \
+        'bright_fg bright_foreground' \
+        'muted muted' \
+        'red red' \
+        'yellow yellow' \
+        'orange orange' \
+        'green green' \
+        'cyan cyan' \
+        'blue blue' \
+        'magenta magenta' \
+        'brown brown' \
+        'bright_red bright_red' \
+        'bright_yellow bright_yellow' \
+        'bright_green bright_green' \
+        'bright_cyan bright_cyan' \
+        'bright_blue bright_blue' \
+        'bright_magenta bright_magenta' \
+        'accent accent' \
+        'cursor bright_foreground' \
+        'foreground foreground' \
+        'background background' \
+        'selection selection' \
+        'selection_foreground selection_foreground' \
+        'selection_background selection_background'
+}
+
+generated_file_matches_elysian_semantics() {
+    local file="$1"
+    local value_reader="$2"
+    local pair_source="$3"
+    local output_key
+    local semantic_key
+    local expected
+    local actual
+
+    [[ -f "$file" ]] || return 1
+    while read -r output_key semantic_key; do
+        expected="$(elysian_semantic_value "$semantic_key")"
+        actual="$("$value_reader" "$file" "$output_key")"
+        [[ -n "$expected" && "$actual" == "$expected" ]] || {
+            printf '%s key %s is %s, expected %s from %s.\n' "$file" "$output_key" "$actual" "$expected" "$semantic_key"
+            return 1
+        }
+    done < <("$pair_source")
+
+    ! grep -Eq -- '\{\{[^}]+\}\}' "$file"
 }
 
 kitty_template_colour_pairs_from_file() {
@@ -463,7 +599,74 @@ pin_line_follows_band_rules() {
 }
 
 upstream_app_policies_available() {
-    [[ -d "$upstream_apps_dir" ]] && compgen -G "$upstream_apps_dir/*.conf" >/dev/null
+    [[ -d "$upstream_apps_dir" ]] &&
+        { compgen -G "$upstream_apps_dir/*.conf" >/dev/null || compgen -G "$upstream_apps_dir/*.lua" >/dev/null; }
+}
+
+lua_window_calls_removing_default_opacity() {
+    local policy_file="$1"
+
+    awk '
+        function paren_delta(line, copy, opens, closes) {
+            copy = line
+            opens = gsub(/\(/, "(", copy)
+            copy = line
+            closes = gsub(/\)/, ")", copy)
+            return opens - closes
+        }
+
+        {
+            line = $0
+            sub(/--.*/, "", line)
+
+            if (!in_call && line ~ /o[.]window[[:space:]]*\(/) {
+                in_call = 1
+                depth = 0
+                call = ""
+            }
+
+            if (in_call) {
+                call = call " " line
+                depth += paren_delta(line)
+                if (depth == 0) {
+                    if (call ~ /tag[[:space:]]*=[[:space:]]*"-default-opacity"/) {
+                        gsub(/[[:space:]]+/, " ", call)
+                        print call
+                    }
+                    in_call = 0
+                }
+            }
+        }
+    ' "$policy_file"
+}
+
+upstream_lua_strips_default_opacity_for_class() {
+    local protected_class="$1"
+    local policy_file
+    local call
+    local matcher
+    local direct_match='o[.]window[[:space:]]*[(][[:space:]]*"([^"]+)"'
+    local table_match='class[[:space:]]*=[[:space:]]*"([^"]+)"'
+
+    shopt -s nullglob
+    for policy_file in "$upstream_apps_dir"/*.lua; do
+        while IFS= read -r call; do
+            matcher=""
+            if [[ "$call" =~ $direct_match ]]; then
+                matcher="${BASH_REMATCH[1]}"
+            elif [[ "$call" =~ $table_match ]]; then
+                matcher="${BASH_REMATCH[1]}"
+            fi
+            matcher="${matcher//\\\\/\\}"
+
+            if [[ -n "$matcher" && "$protected_class" =~ $matcher ]] &&
+                [[ "${BASH_REMATCH[0]}" == "$protected_class" ]]; then
+                return 0
+            fi
+        done < <(lua_window_calls_removing_default_opacity "$policy_file")
+    done
+
+    return 1
 }
 
 upstream_strips_default_opacity_for_class() {
@@ -474,6 +677,11 @@ upstream_strips_default_opacity_for_class() {
     local line
     local matcher
 
+    if upstream_lua_strips_default_opacity_for_class "$protected_class"; then
+        return 0
+    fi
+
+    shopt -s nullglob
     for policy_file in "$upstream_apps_dir"/*.conf; do
         while IFS= read -r line; do
             line="${line%%#*}"
@@ -805,7 +1013,10 @@ check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_
 check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_translucent_background "$repo_root/mako.ini"
 check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
 check "Git-installed theme stages without denied-file warnings" theme_stages_without_denied_file_warning
-check "generated Neovim theme retains Elysian semantic shades" generated_neovim_uses_elysian_semantics
+check "resolved palette matches every Elysian semantic value" resolved_palette_matches_elysian_semantics
+check "generated Alacritty palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/alacritty.toml" toml_path_value alacritty_template_colour_pairs
+check "generated kitty palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/kitty.conf" kitty_value kitty_template_colour_pairs
+check "generated Neovim palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/neovim.lua" neovim_value neovim_template_colour_pairs
 if [[ -f "$upstream_themed_dir/alacritty.toml.tpl" ]]; then
     check "alacritty upstream template colour pairs match the hardcoded list" template_colour_pairs_match_list alacritty "$upstream_themed_dir/alacritty.toml.tpl" alacritty_template_colour_pairs_from_file alacritty_template_colour_pairs
 else
