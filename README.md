@@ -26,7 +26,7 @@ The fully opaque protected surfaces are:
 - YouTube and Zoom web apps, picture-in-picture, and the webcam overlay.
 - Credential windows: 1Password, Bitwarden desktop and browser extension, KeePassXC, and Proton Pass.
 
-Alacritty and kitty are pinned opaque at the compositor and use background-only transparency—0.75 for Alacritty and 0.77 for kitty—so glyphs stay crisp. Zed is compositor-pinned opaque so that, if the user enables background transparency in Zed, it composes cleanly rather than stacking with compositor opacity; this theme ships no Zed configuration. Ghostty and Foot are compositor-pinned and intentionally remain opaque. The Alacritty and kitty palettes both follow `colors.toml`.
+Alacritty and kitty are pinned opaque at the compositor so terminal glyphs stay crisp. Omarchy 4 generates their palettes, along with Neovim's Aether palette, from `colors.toml`. Git-installed themes cannot ship terminal configuration or Lua, so background-only terminal transparency belongs in a user-owned template under `~/.config/omarchy/themed/`; this repository intentionally does not bypass that boundary. Zed is compositor-pinned opaque so that user-owned background transparency composes cleanly rather than stacking with compositor opacity. Ghostty and Foot are compositor-pinned and intentionally remain opaque.
 
 The shipped CSS/INI/CSS keeps Waybar, Mako, and Walker translucent: Waybar and Mako use 0.55 alpha; Walker’s main panel composes to about 0.55, while its search row and keybind strip use raw `@base` and composite nearer 0.81. `chromium.theme` intentionally stays at `20,26,23` (`#141a17`) instead of the palette’s near-black `#010401`: Chromium’s frame needs that lift for tab-strip legibility.
 

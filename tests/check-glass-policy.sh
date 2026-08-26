@@ -16,6 +16,22 @@ upstream_apps_dir="${OMARCHY_APPS_DIR:-${OMARCHY_PATH:-$HOME/.local/share/omarch
 upstream_themed_dir="${OMARCHY_THEMED_DIR:-${OMARCHY_PATH:-$HOME/.local/share/omarchy}/default/themed}"
 failures=0
 
+stage_root="$(mktemp -d)"
+trap 'rm -rf "$stage_root"' EXIT
+stage_source="$stage_root/home/.config/omarchy/themes/elysian"
+mkdir -p "$stage_source" "$stage_root/runtime"
+cp -a "$repo_root/." "$stage_source/"
+rm -f "$stage_source/.git"
+mkdir -p "$stage_source/.git"
+stage_output="$({
+    HOME="$stage_root/home" \
+        XDG_RUNTIME_DIR="$stage_root/runtime" \
+        OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}" \
+        OMARCHY_THEME_HEADLESS=1 \
+        omarchy-theme-set elysian
+} 2>&1)"
+staged_theme="$stage_root/home/.local/state/omarchy/current/theme"
+
 check() {
     local description="$1"
     shift
@@ -96,132 +112,32 @@ walker_has_blur_compatible_base() {
     ' "$file"
 }
 
-alacritty_window_opacity_below_one() {
-    local file="$1"
-
-    [[ -f "$file" ]] && awk '
-        /^[[:space:]]*\[window\][[:space:]]*$/ {
-            in_window = 1
-            next
-        }
-        /^[[:space:]]*\[[^]]+\][[:space:]]*$/ {
-            in_window = 0
-            next
-        }
-        in_window && /^[[:space:]]*opacity[[:space:]]*=/ {
-            opacity = $0
-            sub(/^[^=]*=[[:space:]]*/, "", opacity)
-            sub(/[[:space:]]*(#.*)?$/, "", opacity)
-            seen = 1
-            valid = opacity ~ /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/ && opacity + 0 < 1.0
-        }
-        END { exit(seen && valid ? 0 : 1) }
-    ' "$file"
-}
-
-toml_value() {
-    local file="$1"
-    local section="$2"
-    local key="$3"
-
-    awk -v section="$section" -v key="$key" '
-        BEGIN { in_section = section == "" }
-        /^[[:space:]]*\[[^]]+\][[:space:]]*$/ {
-            current = $0
-            sub(/^[[:space:]]*\[/, "", current)
-            sub(/\][[:space:]]*$/, "", current)
-            in_section = current == section
-            next
-        }
-        in_section {
-            line = $0
-            if (line ~ "^[[:space:]]*" key "[[:space:]]*=") {
-                sub("^[[:space:]]*" key "[[:space:]]*=[[:space:]]*", "", line)
-                sub(/[[:space:]]+$/, "", line)
-                if (line ~ /^"/) {
-                    sub(/^"/, "", line)
-                    sub(/".*$/, "", line)
-                } else {
-                    sub(/[[:space:]]+#.*$/, "", line)
-                }
-                value = line
-            }
-        }
-        END { print value }
-    ' "$file"
-}
-
-kitty_value() {
-    local file="$1"
-    local key="$2"
-
-    awk -v key="$key" '
-        $1 == key {
-            value = $2
-        }
-        END { print value }
-    ' "$file"
-}
-
-toml_path_value() {
-    local file="$1"
-    local path="$2"
-
-    toml_value "$file" "${path%.*}" "${path##*.}"
-}
-
-theme_file_has_complete_palette() {
-    local theme_file="$1"
-    local palette_file="$2"
-    local value_reader="$3"
-    local theme_key
-    local palette_key
-    local expected
-    local actual
-
-    [[ -f "$theme_file" && -f "$palette_file" ]] || return 1
-
-    while read -r theme_key palette_key; do
-        expected="$(toml_value "$palette_file" "" "$palette_key")"
-        actual="$("$value_reader" "$theme_file" "$theme_key")"
-        if [[ -z "$expected" || "$actual" != "$expected" ]]; then
-            printf '%s key %s does not match %s key %s.\n' "$theme_file" "$theme_key" "$palette_file" "$palette_key"
-            return 1
-        fi
-    done
-
-    if grep -Eq -- '\{\{[^}]+\}\}' "$theme_file"; then
-        printf '%s contains an unresolved template placeholder.\n' "$theme_file"
-        return 1
-    fi
-}
-
 kitty_template_colour_pairs() {
     printf '%s\n' \
         'foreground foreground' \
         'background background' \
         'selection_foreground selection_foreground' \
         'selection_background selection_background' \
-        'cursor cursor' \
+        'cursor bright_foreground' \
         'cursor_text_color background' \
         'active_border_color accent' \
         'active_tab_background accent' \
-        'color0 color0' \
-        'color1 color1' \
-        'color2 color2' \
-        'color3 color3' \
-        'color4 color4' \
-        'color5 color5' \
-        'color6 color6' \
-        'color7 color7' \
-        'color8 color8' \
-        'color9 color9' \
-        'color10 color10' \
-        'color11 color11' \
-        'color12 color12' \
-        'color13 color13' \
-        'color14 color14' \
-        'color15 color15'
+        'color0 background' \
+        'color1 red' \
+        'color2 green' \
+        'color3 yellow' \
+        'color4 blue' \
+        'color5 magenta' \
+        'color6 cyan' \
+        'color7 foreground' \
+        'color8 muted' \
+        'color9 bright_red' \
+        'color10 bright_green' \
+        'color11 bright_yellow' \
+        'color12 bright_blue' \
+        'color13 bright_magenta' \
+        'color14 bright_cyan' \
+        'color15 bright_foreground'
 }
 
 alacritty_template_colour_pairs() {
@@ -229,47 +145,51 @@ alacritty_template_colour_pairs() {
         'colors.primary.background background' \
         'colors.primary.foreground foreground' \
         'colors.cursor.text background' \
-        'colors.cursor.cursor cursor' \
+        'colors.cursor.cursor bright_foreground' \
         'colors.vi_mode_cursor.text background' \
-        'colors.vi_mode_cursor.cursor cursor' \
+        'colors.vi_mode_cursor.cursor bright_foreground' \
         'colors.search.matches.foreground background' \
-        'colors.search.matches.background color3' \
+        'colors.search.matches.background yellow' \
         'colors.search.focused_match.foreground background' \
-        'colors.search.focused_match.background color1' \
+        'colors.search.focused_match.background red' \
         'colors.footer_bar.foreground background' \
         'colors.footer_bar.background foreground' \
         'colors.selection.text selection_foreground' \
         'colors.selection.background selection_background' \
-        'colors.normal.black color0' \
-        'colors.normal.red color1' \
-        'colors.normal.green color2' \
-        'colors.normal.yellow color3' \
-        'colors.normal.blue color4' \
-        'colors.normal.magenta color5' \
-        'colors.normal.cyan color6' \
-        'colors.normal.white color7' \
-        'colors.bright.black color8' \
-        'colors.bright.red color9' \
-        'colors.bright.green color10' \
-        'colors.bright.yellow color11' \
-        'colors.bright.blue color12' \
-        'colors.bright.magenta color13' \
-        'colors.bright.cyan color14' \
-        'colors.bright.white color15'
+        'colors.normal.black background' \
+        'colors.normal.red red' \
+        'colors.normal.green green' \
+        'colors.normal.yellow yellow' \
+        'colors.normal.blue blue' \
+        'colors.normal.magenta magenta' \
+        'colors.normal.cyan cyan' \
+        'colors.normal.white foreground' \
+        'colors.bright.black muted' \
+        'colors.bright.red bright_red' \
+        'colors.bright.green bright_green' \
+        'colors.bright.yellow bright_yellow' \
+        'colors.bright.blue bright_blue' \
+        'colors.bright.magenta bright_magenta' \
+        'colors.bright.cyan bright_cyan' \
+        'colors.bright.white bright_foreground'
 }
 
-kitty_has_complete_palette() {
-    local kitty_file="$1"
-    local palette_file="$2"
-
-    theme_file_has_complete_palette "$kitty_file" "$palette_file" kitty_value < <(kitty_template_colour_pairs)
+theme_stages_without_denied_file_warning() {
+    ! grep -Fq 'A theme installed from a git repo cannot supply Lua, a terminal config, or vscode.json.' <<<"$stage_output"
 }
 
-alacritty_has_complete_palette() {
-    local alacritty_file="$1"
-    local palette_file="$2"
+generated_neovim_uses_elysian_semantics() {
+    local neovim_file="$staged_theme/neovim.lua"
 
-    theme_file_has_complete_palette "$alacritty_file" "$palette_file" toml_path_value < <(alacritty_template_colour_pairs)
+    [[ -f "$neovim_file" ]] &&
+        grep -Fq 'dark_bg = "#000000"' "$neovim_file" &&
+        grep -Fq 'darker_bg = "#000000"' "$neovim_file" &&
+        grep -Fq 'lighter_bg = "#071c07"' "$neovim_file" &&
+        grep -Fq 'dark_fg = "#97ff97"' "$neovim_file" &&
+        grep -Fq 'muted = "#595c59"' "$neovim_file" &&
+        grep -Fq 'orange = "#cfa370"' "$neovim_file" &&
+        grep -Fq 'brown = "#6a3345"' "$neovim_file" &&
+        grep -Fq 'selection = "#071c07"' "$neovim_file"
 }
 
 kitty_template_colour_pairs_from_file() {
@@ -344,22 +264,6 @@ template_colour_pairs_match_list() {
     done <<<"$missing_from_upstream"
 
     ((mismatch == 0))
-}
-
-kitty_background_opacity_is() {
-    local file="$1"
-    local expected="$2"
-
-    [[ -f "$file" ]] && [[ "$(kitty_value "$file" background_opacity)" == "$expected" ]]
-}
-
-alacritty_palette_slots_match_source() {
-    local alacritty_file="$1"
-    local palette_file="$2"
-
-    [[ -f "$alacritty_file" && -f "$palette_file" ]] &&
-        [[ "$(toml_value "$alacritty_file" colors.normal white)" == "$(toml_value "$palette_file" "" color7)" ]] &&
-        [[ "$(toml_value "$alacritty_file" colors.bright black)" == "$(toml_value "$palette_file" "" color8)" ]]
 }
 
 file_contents_equal() {
@@ -901,10 +805,8 @@ check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '2
 check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_has_blur_compatible_background "$repo_root/waybar.css"
 check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_translucent_background "$repo_root/mako.ini"
 check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
-check "alacritty.toml window opacity is below 1.0" alacritty_window_opacity_below_one "$repo_root/alacritty.toml"
-check "alacritty color7/color8 slots match colors.toml" alacritty_palette_slots_match_source "$repo_root/alacritty.toml" "$repo_root/colors.toml"
-check "alacritty.toml carries every template colour from colors.toml" alacritty_has_complete_palette "$repo_root/alacritty.toml" "$repo_root/colors.toml"
-check "kitty.conf carries every template colour from colors.toml" kitty_has_complete_palette "$repo_root/kitty.conf" "$repo_root/colors.toml"
+check "Git-installed theme stages without denied-file warnings" theme_stages_without_denied_file_warning
+check "generated Neovim theme retains Elysian semantic shades" generated_neovim_uses_elysian_semantics
 if [[ -f "$upstream_themed_dir/alacritty.toml.tpl" ]]; then
     check "alacritty upstream template colour pairs match the hardcoded list" template_colour_pairs_match_list alacritty "$upstream_themed_dir/alacritty.toml.tpl" alacritty_template_colour_pairs_from_file alacritty_template_colour_pairs
 else
@@ -915,7 +817,6 @@ if [[ -f "$upstream_themed_dir/kitty.conf.tpl" ]]; then
 else
     skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
 fi
-check "kitty.conf background opacity is 0.77" kitty_background_opacity_is "$repo_root/kitty.conf" 0.77
 check "activeBorderColor definition" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgb\([[:space:]]*62e2a4[[:space:]]*\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
 check "group { col.border_active" equals "$(last_assignment_in_block group 'col[.]border_active')" '$activeBorderColor'
