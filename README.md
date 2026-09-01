@@ -16,7 +16,7 @@ omarchy-theme-install https://github.com/axatbhardwaj/omarchy-elysian-theme
 
 ## Balanced Glass
 
-Balanced Glass uses xray to frost the wallpaper beneath windows. Blur is size 24 with 4 passes — Dual Kawase needs the extra radius, not extra passes; 8 passes flatten the wallpaper into a solid color. Normal windows, browsers, and Nautilus sit at 0.80. Dimming is off entirely, with no active/inactive opacity gap; the green active border is the focus cue.
+Balanced Glass uses xray to frost the wallpaper beneath windows. Blur is size 24 with 4 passes — Dual Kawase needs the extra radius, not extra passes; 8 passes flatten the wallpaper into a solid color. Normal windows and Nautilus sit at 0.80; browsers sit at 0.90 so pages stay readable. Dimming is off entirely, with no active/inactive opacity gap; the green active border is the focus cue.
 
 The fully opaque protected surfaces are:
 

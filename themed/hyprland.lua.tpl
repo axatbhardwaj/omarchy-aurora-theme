@@ -35,15 +35,16 @@ hl.config({
 })
 
 o.window({ tag = "default-opacity" }, { opacity = "0.80 override 0.80 override" })
-o.window({ tag = "chromium-based-browser" }, { opacity = "0.80 override 0.80 override" })
-o.window({ tag = "firefox-based-browser" }, { opacity = "0.80 override 0.80 override" })
-o.window("chromium-[a-z0-9-]+", { opacity = "0.80 override 0.80 override" })
-o.window("chrome-.*__-Default", { opacity = "0.80 override 0.80 override" })
+o.window({ tag = "chromium-based-browser" }, { opacity = "0.90 override 0.90 override" })
+o.window({ tag = "firefox-based-browser" }, { opacity = "0.90 override 0.90 override" })
+o.window("chromium-[a-z0-9-]+", { opacity = "0.90 override 0.90 override" })
+o.window("chrome-.*__-Default", { opacity = "0.90 override 0.90 override" })
+o.window("brave-.*", { opacity = "0.90 override 0.90 override" })
 o.window("^(org\\.gnome\\.Nautilus|nautilus)$", { opacity = "0.80 override 0.80 override" })
 o.window({ tag = "terminal" }, { opacity = "1 override 1 override" })
 o.window("dev\\.zed\\.Zed", { opacity = "1 override 1 override" })
 o.window(
-  "^(chrome-youtube\\.com__-Default|chrome-app\\.zoom\\.us__wc_home-Default|chrome-www\\.crunchyroll\\.com__-Default)$",
+  "^(chrome-youtube\\.com__-Default|chrome-app\\.zoom\\.us__wc_home-Default|chrome-www\\.crunchyroll\\.com__-Default|brave-youtube\\.com__-Default|brave-www\\.crunchyroll\\.com__-Default|brave-www\\.jiohotstar\\.com__-Default|brave-reanime\\.to__home-Default)$",
   { opacity = "1 override 1 override" }
 )
 o.window({ tag = "pip" }, { opacity = "1 override 1 override" })
