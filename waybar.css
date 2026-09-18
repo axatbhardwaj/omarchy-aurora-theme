@@ -1,5 +1,8 @@
 @define-color foreground #fdfffd;
-@define-color background #010401;
+@define-color background #0a100d;
+@define-color accent #62e2a4;
+@define-color support #6fd48c;
+@define-color border alpha(@accent, 0.35);
 
 /* Translucent bar so the Hyprland layer blur has something to show through.
    Higher specificity than the `*` rule in ~/.config/waybar/style.css, so the
@@ -8,9 +11,28 @@
    0.55 sits just above the `ignore_alpha 0.5` layerrule threshold — below that,
    Hyprland skips blurring the surface entirely. */
 window#waybar {
-  background-color: rgba(1, 4, 1, 0.55);
+  background-color: rgba(10, 16, 13, 0.55);
+  color: @foreground;
 }
 
 window#waybar * {
   background-color: transparent;
+}
+
+/* Grouped glass modules: green frame, faint violet interior lift. */
+.modules-left,
+.modules-center,
+.modules-right {
+  margin: 6px 8px 0;
+  padding: 2px 6px;
+  border: 1px solid @border;
+  border-radius: 12px;
+  background-image: linear-gradient(to bottom, alpha(@support, 0.06), transparent);
+}
+
+#workspaces button.active,
+#workspaces button.focused,
+#custom-launcher,
+#window {
+  color: @accent;
 }

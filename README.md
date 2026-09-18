@@ -1,22 +1,30 @@
-# Omarchy Elysian Theme
+# Omarchy Aurora Theme
 
-A desktop theme that translates the mythical serenity of an Elysian forest where ancient, vibrant life glows in golden-green light into a high-contrast, productive workspace.
+A dual-tone glass theme: aurora green leads (accent, focus, selection, borders; text stays white), twilight violet is confined to the closing stop of the active border and ANSI blue/magenta, on a green-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
+
+Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#fdfffd`, support `#9d8cff`, base `#0a100d`. The active border is a 35° sweep `green → pale green → violet`; the inactive border is dim green at 60%.
 
 ![Screenshot](screenshot.png)
 
-Wallpapers: "Creature of Fantasyland" and "Verdant Mountain" by bisbiswas; ["The Aurora Stones"](https://www.deviantart.com/hyokka/art/The-Aurora-Stones-783847442) by hyokka, © 2019 - 2026 hyokka.
+Wallpapers: "Aurora Lake" (default) is an AI-generated illustration commissioned for this theme, upscaled to 3840×2160 with Real-ESRGAN; "Creature of Fantasyland" and "Verdant Mountain" by bisbiswas; ["The Aurora Stones"](https://www.deviantart.com/hyokka/art/The-Aurora-Stones-783847442) by hyokka, © 2019 - 2026 hyokka.
 
 ## Installation
 
 Install this theme by running:
 
 ```bash
-omarchy-theme-install https://github.com/axatbhardwaj/omarchy-elysian-theme
+omarchy-theme-install https://github.com/axatbhardwaj/omarchy-aurora-theme
 ```
+
+## Shell surfaces
+
+`shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection, countdowns and text, violet for placeholders and quiet control chrome. Windows are rounded at 14 with 11/22 gaps, a soft shadow, and buoyant, non-elastic animations.
+
+On a Lua-configured Hyprland (Omarchy 4 default) the theme's `hyprland.conf` is never sourced and git-installed themes cannot ship Lua, so rounding, gaps, shadow, animations and the Balanced Glass policy reach the compositor through `themed/hyprland.lua.tpl`, which you copy to `~/.config/omarchy/themed/` once (Omarchy renders it for whichever theme is active); `hyprland.conf` records the same values for `.conf`-based setups.
 
 ## Balanced Glass
 
-Balanced Glass uses xray to frost the wallpaper beneath windows. Blur is size 24 with 4 passes — Dual Kawase needs the extra radius, not extra passes; 8 passes flatten the wallpaper into a solid color. Normal windows and Nautilus sit at 0.80; browsers sit at 0.90 so pages stay readable. Dimming is off entirely, with no active/inactive opacity gap; the green active border is the focus cue.
+Balanced Glass uses xray to frost the wallpaper beneath windows. Blur is size 24 with 4 passes — Dual Kawase needs the extra radius, not extra passes; 8 passes flatten the wallpaper into a solid color. Normal windows and Nautilus sit at 0.80; browsers sit at 0.90 so pages stay readable. Dimming is off entirely, with no active/inactive opacity gap; the green-led gradient border is the focus cue.
 
 The fully opaque protected surfaces are:
 
@@ -28,7 +36,7 @@ The fully opaque protected surfaces are:
 
 Alacritty and kitty are pinned opaque at the compositor so terminal glyphs stay crisp. Omarchy 4 generates their palettes, along with Neovim's Aether palette, from `colors.toml`. Git-installed themes cannot ship terminal configuration or Lua, so background-only terminal transparency belongs in a user-owned template under `~/.config/omarchy/themed/`; this repository intentionally does not bypass that boundary. Copy `themed/hyprland.lua.tpl` there so Omarchy 4 actually loads Balanced Glass — cloned themes drop `hyprland.lua` and ignore `hyprland.conf`. Zed is compositor-pinned opaque so that user-owned background transparency composes cleanly rather than stacking with compositor opacity. Ghostty and Foot are compositor-pinned and intentionally remain opaque.
 
-The shipped CSS/INI/CSS keeps Waybar, Mako, and Walker translucent: Waybar and Mako use 0.55 alpha; Walker’s main panel composes to about 0.55, while its search row and keybind strip use raw `@base` and composite nearer 0.81. `chromium.theme` intentionally stays at `20,26,23` (`#141a17`) instead of the palette’s near-black `#010401`: Chromium’s frame needs that lift for tab-strip legibility.
+The shipped CSS/INI/CSS keeps Waybar, Mako, and Walker translucent: Waybar and Mako use 0.55 alpha; Walker’s main panel composes to about 0.55, while its search row and keybind strip use raw `@base` and composite nearer 0.81. `chromium.theme` uses the base `10,16,13` (`#0a100d`), which is already lifted enough for tab-strip legibility.
 
 ## Theme Locations
 

@@ -3,7 +3,22 @@
 /* walker's style.css does `background: alpha(@base, 0.95)`, and GTK's alpha()
    MULTIPLIES. 0.58 * 0.95 = 0.55, matching waybar and mako, and staying above the
    `ignore_alpha 0.5` layerrule threshold so Hyprland actually blurs the surface. */
-@define-color base rgba(1, 4, 1, 0.58);
-@define-color border #fdfffd;
+@define-color base rgba(10, 16, 13, 0.58);
+@define-color border alpha(#62e2a4, 0.45);
 @define-color foreground #fdfffd;
-@define-color background rgba(1, 4, 1, 0.58);
+@define-color background rgba(10, 16, 13, 0.58);
+@define-color support #6fd48c;
+
+/* Green frames the surface and leads the selected row; icons take the leaf green. */
+window child:selected {
+  background-image: linear-gradient(to right, alpha(@selected-text, 0.18), alpha(@selected-text, 0.06) 60%, transparent);
+  border-radius: 14px;
+}
+
+window child:selected .item-box {
+  box-shadow: inset 3px 0 0 @selected-text;
+}
+
+image {
+  color: @support;
+}

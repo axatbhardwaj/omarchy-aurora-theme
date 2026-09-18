@@ -18,7 +18,7 @@ failures=0
 
 stage_root="$(mktemp -d)"
 trap 'rm -rf "$stage_root"' EXIT
-stage_source="$stage_root/home/.config/omarchy/themes/elysian"
+stage_source="$stage_root/home/.config/omarchy/themes/aurora"
 mkdir -p "$stage_source" "$stage_root/runtime"
 cp -a "$repo_root/"* "$stage_source/"
 mkdir -p "$stage_source/.git"
@@ -29,7 +29,7 @@ stage_output="$({
         XDG_RUNTIME_DIR="$stage_root/runtime" \
         OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}" \
         OMARCHY_THEME_HEADLESS=1 \
-        omarchy-theme-set elysian
+        omarchy-theme-set aurora
 } 2>&1)"
 staged_theme="$stage_root/home/.local/state/omarchy/current/theme"
 
@@ -179,44 +179,46 @@ theme_stages_without_denied_file_warning() {
     ! grep -Fq 'A theme installed from a git repo cannot supply Lua, a terminal config, or vscode.json.' <<<"$stage_output"
 }
 
-elysian_semantic_pairs() {
+aurora_semantic_pairs() {
     printf '%s\n' \
         'accent #62e2a4' \
-        'selection #071c07' \
-        'selection_background #071c07' \
-        'selection_foreground #ffffff' \
-        'muted #595c59' \
-        'background #010401' \
-        'dark_background #000000' \
-        'darker_background #000000' \
-        'lighter_background #071c07' \
+        'selection #62e2a4' \
+        'selection_background #62e2a4' \
+        'selection_foreground #0a100d' \
+        'muted #6f9a82' \
+        'background #0a100d' \
+        'dark_background #070c0a' \
+        'darker_background #050807' \
+        'lighter_background #12221a' \
         'foreground #fdfffd' \
-        'dark_foreground #97ff97' \
+        'dark_foreground #3f5a4c' \
         'light_foreground #ffffff' \
         'bright_foreground #ffffff' \
-        'red #bf5a7c' \
-        'yellow #dfec63' \
-        'orange #cfa370' \
-        'green #70cf6c' \
-        'cyan #9ed8dd' \
-        'blue #62e2a4' \
-        'magenta #e0eb7a' \
-        'brown #6a3345' \
-        'bright_red #dcb0be' \
-        'bright_yellow #f6fdb7' \
-        'bright_green #b4e8b2' \
-        'bright_cyan #e3f5f6' \
-        'bright_blue #b0f3d2' \
-        'bright_magenta #f8fdce'
+        'red #f0708e' \
+        'yellow #e6d59a' \
+        'orange #e0b283' \
+        'green #6fd48c' \
+        'cyan #7dd6c8' \
+        'blue #7d8cff' \
+        'magenta #b48cff' \
+        'brown #5c4a6e' \
+        'bright_red #ff9bb3' \
+        'bright_yellow #f3e8c2' \
+        'bright_green #a8f0b3' \
+        'bright_cyan #b0eadf' \
+        'bright_blue #a9b3ff' \
+        'bright_magenta #d2bcff' \
+        'hyprland_active_border rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg' \
+        'hyprland_inactive_border rgba(3f5a4c99)'
 }
 
-elysian_semantic_value() {
+aurora_semantic_value() {
     local key="$1"
 
-    awk -v key="$key" '$1 == key { print $2 }' < <(elysian_semantic_pairs)
+    awk -v key="$key" '$1 == key { sub(/^[^ ]+ /, ""); print }' < <(aurora_semantic_pairs)
 }
 
-resolved_palette_matches_elysian_semantics() {
+resolved_palette_matches_aurora_semantics() {
     local resolved
     local key
     local expected
@@ -229,7 +231,7 @@ resolved_palette_matches_elysian_semantics() {
             printf 'Resolved semantic %s is %s, expected %s.\n' "$key" "$actual" "$expected"
             return 1
         }
-    done < <(elysian_semantic_pairs)
+    done < <(aurora_semantic_pairs)
 }
 
 toml_path_value() {
@@ -307,7 +309,7 @@ neovim_template_colour_pairs() {
         'selection_background selection_background'
 }
 
-generated_file_matches_elysian_semantics() {
+generated_file_matches_aurora_semantics() {
     local file="$1"
     local value_reader="$2"
     local pair_source="$3"
@@ -318,7 +320,7 @@ generated_file_matches_elysian_semantics() {
 
     [[ -f "$file" ]] || return 1
     while read -r output_key semantic_key; do
-        expected="$(elysian_semantic_value "$semantic_key")"
+        expected="$(aurora_semantic_value "$semantic_key")"
         actual="$("$value_reader" "$file" "$output_key")"
         [[ -n "$expected" && "$actual" == "$expected" ]] || {
             printf '%s key %s is %s, expected %s from %s.\n' "$file" "$output_key" "$actual" "$expected" "$semantic_key"
@@ -1015,15 +1017,15 @@ check "generated hyprland.lua keeps Balanced Glass blur passes" matches "$(<"$st
 check "generated hyprland.lua keeps Balanced Glass window opacity" matches "$(<"$staged_theme/hyprland.lua")" '0.80 override 0.80 override'
 check "generated hyprland.lua keeps browser opacity above window glass" matches "$(<"$staged_theme/hyprland.lua")" '0.90 override 0.90 override'
 check "chromium.theme exists" test -f "$repo_root/chromium.theme"
-check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '20,26,23'
+check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '10,16,13'
 check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_has_blur_compatible_background "$repo_root/waybar.css"
 check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_translucent_background "$repo_root/mako.ini"
 check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
 check "Git-installed theme stages without denied-file warnings" theme_stages_without_denied_file_warning
-check "resolved palette matches every Elysian semantic value" resolved_palette_matches_elysian_semantics
-check "generated Alacritty palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/alacritty.toml" toml_path_value alacritty_template_colour_pairs
-check "generated kitty palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/kitty.conf" kitty_value kitty_template_colour_pairs
-check "generated Neovim palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/neovim.lua" neovim_value neovim_template_colour_pairs
+check "resolved palette matches every Aurora semantic value" resolved_palette_matches_aurora_semantics
+check "generated Alacritty palette matches Aurora semantics" generated_file_matches_aurora_semantics "$staged_theme/alacritty.toml" toml_path_value alacritty_template_colour_pairs
+check "generated kitty palette matches Aurora semantics" generated_file_matches_aurora_semantics "$staged_theme/kitty.conf" kitty_value kitty_template_colour_pairs
+check "generated Neovim palette matches Aurora semantics" generated_file_matches_aurora_semantics "$staged_theme/neovim.lua" neovim_value neovim_template_colour_pairs
 if [[ -f "$upstream_themed_dir/alacritty.toml.tpl" ]]; then
     check "alacritty upstream template colour pairs match the hardcoded list" template_colour_pairs_match_list alacritty "$upstream_themed_dir/alacritty.toml.tpl" alacritty_template_colour_pairs_from_file alacritty_template_colour_pairs
 else
@@ -1034,9 +1036,16 @@ if [[ -f "$upstream_themed_dir/kitty.conf.tpl" ]]; then
 else
     skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
 fi
-check "activeBorderColor definition" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgb\([[:space:]]*62e2a4[[:space:]]*\)[[:space:]]*$'
+check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(62e2a4ee\) rgba\(a8f0b3dd\) rgba\(9d8cff88\) 35deg[[:space:]]*$'
+check "inactiveBorderColor matches colors.toml" matches "$config_without_comments" '^[[:space:]]*\$inactiveBorderColor[[:space:]]*=[[:space:]]*rgba\(3f5a4c99\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
+check "general { col.inactive_border" equals "$(last_assignment_in_block general 'col[.]inactive_border')" '$inactiveBorderColor'
 check "group { col.border_active" equals "$(last_assignment_in_block group 'col[.]border_active')" '$activeBorderColor'
+check "group { col.border_inactive" equals "$(last_assignment_in_block group 'col[.]border_inactive')" '$inactiveBorderColor'
+check "general { gaps_in" equals "$(last_assignment_in_block general gaps_in)" 8
+check "general { gaps_out" equals "$(last_assignment_in_block general gaps_out)" 15
+check "shell.toml exists" test -f "$repo_root/shell.toml"
+check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg'
 check "exactly one decoration block" test "$(count_blocks decoration)" -eq 1
 check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_in_block decoration dim_inactive)" false
 check "dim_strength is absent" does_not_match "$config_without_comments" '^[[:space:]]*dim_strength[[:space:]]*='
@@ -1055,10 +1064,12 @@ check "blur { ignore_opacity at last occurrence" equals "$(last_assignment_in_bl
 check "no active_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*active_opacity[[:space:]]*='
 check "no inactive_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*inactive_opacity[[:space:]]*='
 check "no fullscreen_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*fullscreen_opacity'
-check "no rounding setting" does_not_match "$config_without_comments" '^[[:space:]]*rounding[[:space:]]*='
+check "decoration { rounding at last occurrence" equals "$(last_assignment_in_block decoration rounding)" 14
+check "exactly one shadow block" test "$(count_blocks shadow)" -eq 1
+check "shadow { enabled at last occurrence" equals "$(last_assignment_in_block shadow enabled)" true
 check "no flat decoration assignment" does_not_match "$config_without_comments" '^[[:space:]]*decoration:[A-Za-z_:]+[[:space:]]*='
-check "no animations block" test "$(count_blocks animations)" -eq 0
-check "no bare animation setting" does_not_match "$config_without_comments" '^[[:space:]]*animation[[:space:]]*='
+check "exactly one animations block" test "$(count_blocks animations)" -eq 1
+check "animations { enabled at last occurrence" equals "$(last_assignment_in_block animations enabled)" true
 check "no source directive" does_not_match "$config_without_comments" '^[[:space:]]*source[[:space:]]*='
 check "no exec-family directive" does_not_match "$config_without_comments" '^[[:space:]]*(exec|execr|exec-once|execr-once|exec-shutdown)[[:space:]]*='
 check "no rounding windowrule" does_not_match "$config_without_comments" '^[[:space:]]*windowrule(v2)?[[:space:]]*=[[:space:]]*rounding([[:space:]]|$)'

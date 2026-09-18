@@ -1,5 +1,6 @@
 local active_border_color = {{ hypr_gradient hyprland_active_border accent }}
 local inactive_border_color = {{ hypr_gradient hyprland_inactive_border rgba(595959aa) }}
+local shadow_color = "rgba({{ darker_background_strip }}8c)"
 
 hl.config({
   general = {
@@ -7,6 +8,9 @@ hl.config({
       active_border = active_border_color,
       inactive_border = inactive_border_color,
     },
+    border_size = 2,
+    gaps_in = 8,
+    gaps_out = 15,
   },
 
   group = {
@@ -18,6 +22,15 @@ hl.config({
 
   decoration = {
     dim_inactive = false,
+    rounding = 14,
+    shadow = {
+      enabled = true,
+      range = 16,
+      render_power = 3,
+      color = shadow_color,
+      color_inactive = shadow_color,
+      offset = "2 2",
+    },
     blur = {
       enabled = true,
       size = 24,
@@ -32,7 +45,27 @@ hl.config({
       special = true,
     },
   },
+  animations = {
+    enabled = true,
+  },
 })
+
+-- Soft drift through tinted glass: buoyant, never elastic.
+hl.curve("auroraFloat", { type = "bezier", points = { { 0.22, 0.9 }, { 0.2, 1.0 } } })
+hl.curve("auroraDrift", { type = "bezier", points = { { 0.3, 1.05 }, { 0.38, 1.0 } } })
+hl.curve("glassFade", { type = "bezier", points = { { 0.18, 0.0 }, { 0.12, 1.0 } } })
+hl.curve("workspaceGlide", { type = "bezier", points = { { 0.23, 0.84 }, { 0.34, 1.0 } } })
+
+hl.animation({ leaf = "windows", enabled = true, speed = 5, bezier = "auroraFloat" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 5, bezier = "auroraDrift", style = "popin 10%" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 4, bezier = "glassFade", style = "popin 82%" })
+hl.animation({ leaf = "windowsMove", enabled = true, speed = 5, bezier = "auroraFloat" })
+hl.animation({ leaf = "border", enabled = true, speed = 6, bezier = "glassFade" })
+hl.animation({ leaf = "fade", enabled = true, speed = 5, bezier = "glassFade" })
+hl.animation({ leaf = "layers", enabled = true, speed = 5, bezier = "auroraDrift", style = "slidefade" })
+hl.animation({ leaf = "layersIn", enabled = true, speed = 5, bezier = "auroraDrift", style = "slidefade" })
+hl.animation({ leaf = "layersOut", enabled = true, speed = 4, bezier = "glassFade", style = "fade" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 7, bezier = "workspaceGlide", style = "slide" })
 
 o.window({ tag = "default-opacity" }, { opacity = "0.80 override 0.80 override" })
 o.window({ tag = "chromium-based-browser" }, { opacity = "0.90 override 0.90 override" })
