@@ -18,7 +18,7 @@ failures=0
 
 stage_root="$(mktemp -d)"
 trap 'rm -rf "$stage_root"' EXIT
-stage_source="$stage_root/home/.config/omarchy/themes/elysian"
+stage_source="$stage_root/home/.config/omarchy/themes/aurora"
 mkdir -p "$stage_source" "$stage_root/runtime"
 cp -a "$repo_root/"* "$stage_source/"
 mkdir -p "$stage_source/.git"
@@ -27,7 +27,7 @@ stage_output="$({
         XDG_RUNTIME_DIR="$stage_root/runtime" \
         OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}" \
         OMARCHY_THEME_HEADLESS=1 \
-        omarchy-theme-set elysian
+        omarchy-theme-set aurora
 } 2>&1)"
 staged_theme="$stage_root/home/.local/state/omarchy/current/theme"
 
@@ -177,7 +177,7 @@ theme_stages_without_denied_file_warning() {
     ! grep -Fq 'A theme installed from a git repo cannot supply Lua, a terminal config, or vscode.json.' <<<"$stage_output"
 }
 
-elysian_semantic_pairs() {
+aurora_semantic_pairs() {
     printf '%s\n' \
         'accent #62e2a4' \
         'selection #62e2a4' \
@@ -210,13 +210,13 @@ elysian_semantic_pairs() {
         'hyprland_inactive_border rgba(3f5a4c99)'
 }
 
-elysian_semantic_value() {
+aurora_semantic_value() {
     local key="$1"
 
-    awk -v key="$key" '$1 == key { sub(/^[^ ]+ /, ""); print }' < <(elysian_semantic_pairs)
+    awk -v key="$key" '$1 == key { sub(/^[^ ]+ /, ""); print }' < <(aurora_semantic_pairs)
 }
 
-resolved_palette_matches_elysian_semantics() {
+resolved_palette_matches_aurora_semantics() {
     local resolved
     local key
     local expected
@@ -229,7 +229,7 @@ resolved_palette_matches_elysian_semantics() {
             printf 'Resolved semantic %s is %s, expected %s.\n' "$key" "$actual" "$expected"
             return 1
         }
-    done < <(elysian_semantic_pairs)
+    done < <(aurora_semantic_pairs)
 }
 
 toml_path_value() {
@@ -307,7 +307,7 @@ neovim_template_colour_pairs() {
         'selection_background selection_background'
 }
 
-generated_file_matches_elysian_semantics() {
+generated_file_matches_aurora_semantics() {
     local file="$1"
     local value_reader="$2"
     local pair_source="$3"
@@ -318,7 +318,7 @@ generated_file_matches_elysian_semantics() {
 
     [[ -f "$file" ]] || return 1
     while read -r output_key semantic_key; do
-        expected="$(elysian_semantic_value "$semantic_key")"
+        expected="$(aurora_semantic_value "$semantic_key")"
         actual="$("$value_reader" "$file" "$output_key")"
         [[ -n "$expected" && "$actual" == "$expected" ]] || {
             printf '%s key %s is %s, expected %s from %s.\n' "$file" "$output_key" "$actual" "$expected" "$semantic_key"
@@ -1015,10 +1015,10 @@ check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_
 check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_translucent_background "$repo_root/mako.ini"
 check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
 check "Git-installed theme stages without denied-file warnings" theme_stages_without_denied_file_warning
-check "resolved palette matches every Elysian semantic value" resolved_palette_matches_elysian_semantics
-check "generated Alacritty palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/alacritty.toml" toml_path_value alacritty_template_colour_pairs
-check "generated kitty palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/kitty.conf" kitty_value kitty_template_colour_pairs
-check "generated Neovim palette matches Elysian semantics" generated_file_matches_elysian_semantics "$staged_theme/neovim.lua" neovim_value neovim_template_colour_pairs
+check "resolved palette matches every Aurora semantic value" resolved_palette_matches_aurora_semantics
+check "generated Alacritty palette matches Aurora semantics" generated_file_matches_aurora_semantics "$staged_theme/alacritty.toml" toml_path_value alacritty_template_colour_pairs
+check "generated kitty palette matches Aurora semantics" generated_file_matches_aurora_semantics "$staged_theme/kitty.conf" kitty_value kitty_template_colour_pairs
+check "generated Neovim palette matches Aurora semantics" generated_file_matches_aurora_semantics "$staged_theme/neovim.lua" neovim_value neovim_template_colour_pairs
 if [[ -f "$upstream_themed_dir/alacritty.toml.tpl" ]]; then
     check "alacritty upstream template colour pairs match the hardcoded list" template_colour_pairs_match_list alacritty "$upstream_themed_dir/alacritty.toml.tpl" alacritty_template_colour_pairs_from_file alacritty_template_colour_pairs
 else

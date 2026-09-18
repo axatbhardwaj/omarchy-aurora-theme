@@ -1,4 +1,4 @@
-# Omarchy Elysian Theme
+# Omarchy Aurora Theme
 
 A dual-tone glass theme: aurora green leads (accent, focus, selection, borders; text stays white), twilight violet is confined to the closing stop of the active border and ANSI blue/magenta, on a green-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
 
@@ -13,7 +13,7 @@ Wallpapers: "Aurora Lake" (default) is an AI-generated illustration commissioned
 Install this theme by running:
 
 ```bash
-omarchy-theme-install https://github.com/axatbhardwaj/omarchy-elysian-theme
+omarchy-theme-install https://github.com/axatbhardwaj/omarchy-aurora-theme
 ```
 
 ## Shell surfaces

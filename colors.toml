@@ -1,6 +1,6 @@
 mode = "dark"
 
-# Elysian is a dual-tone glass theme: aurora green leads (accent, focus,
+# Aurora is a dual-tone glass theme: aurora green leads (accent, focus,
 # selection, frames; text stays white), twilight violet is confined to the closing stop
 # of the active border and the ANSI blue/magenta slots. Both must stay visible in every shell surface.
 
