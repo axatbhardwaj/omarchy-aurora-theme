@@ -6,7 +6,7 @@ Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`
 
 ![Screenshot](screenshot.png)
 
-Wallpapers: "Creature of Fantasyland" and "Verdant Mountain" by bisbiswas; ["The Aurora Stones"](https://www.deviantart.com/hyokka/art/The-Aurora-Stones-783847442) by hyokka, © 2019 - 2026 hyokka.
+Wallpapers: "Aurora Lake" (default) is an AI-generated illustration commissioned for this theme, upscaled to 3840×2160 with Real-ESRGAN; "Creature of Fantasyland" and "Verdant Mountain" by bisbiswas; ["The Aurora Stones"](https://www.deviantart.com/hyokka/art/The-Aurora-Stones-783847442) by hyokka, © 2019 - 2026 hyokka.
 
 ## Installation
 
