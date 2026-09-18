@@ -1,5 +1,5 @@
 @define-color foreground #dcefe3;
-@define-color background #0b0c14;
+@define-color background #0a100d;
 @define-color accent #62e2a4;
 @define-color support #9d8cff;
 @define-color border alpha(@accent, 0.35);
@@ -11,7 +11,7 @@
    0.55 sits just above the `ignore_alpha 0.5` layerrule threshold — below that,
    Hyprland skips blurring the surface entirely. */
 window#waybar {
-  background-color: rgba(11, 12, 20, 0.55);
+  background-color: rgba(10, 16, 13, 0.55);
   color: @foreground;
 }
 

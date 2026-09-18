@@ -6,13 +6,13 @@ mode = "dark"
 
 accent = "#62e2a4"
 selection = "#62e2a4"
-selection_foreground = "#0b0c14"
-muted = "#728a7e"
+selection_foreground = "#0a100d"
+muted = "#6f9a82"
 
-background = "#0b0c14"
-dark_background = "#080910"
-darker_background = "#05060b"
-lighter_background = "#13201a"
+background = "#0a100d"
+dark_background = "#070c0a"
+darker_background = "#050807"
+lighter_background = "#12221a"
 
 foreground = "#dcefe3"
 dark_foreground = "#3f5a4c"
@@ -37,5 +37,5 @@ bright_magenta = "#d2bcff"
 
 # Omarchy 4 renders these into hyprland.lua and shell.toml border tokens.
 # Green holds two of three stops; violet only closes the sweep.
-hyprland_active_border = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff99) 35deg"
+hyprland_active_border = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg"
 hyprland_inactive_border = "rgba(8b7cf699)"

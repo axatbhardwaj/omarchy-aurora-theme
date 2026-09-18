@@ -1,8 +1,8 @@
 # Omarchy Elysian Theme
 
-A dual-tone glass theme: aurora green leads (accent, focus, selection, borders, text tint), twilight violet supports (inactive frames, placeholders, quiet chrome), on an indigo-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
+A dual-tone glass theme: aurora green leads (accent, focus, selection, borders, text tint), twilight violet supports (inactive frames, placeholders, quiet chrome), on a green-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
 
-Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#dcefe3`, support `#9d8cff`, base `#0b0c14`. The active border is a 35° sweep `green → pale green → violet`; the inactive border is violet at 60%.
+Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#dcefe3`, support `#9d8cff`, base `#0a100d`. The active border is a 35° sweep `green → pale green → violet`; the inactive border is violet at 60%.
 
 ![Screenshot](screenshot.png)
 
@@ -36,7 +36,7 @@ The fully opaque protected surfaces are:
 
 Alacritty and kitty are pinned opaque at the compositor so terminal glyphs stay crisp. Omarchy 4 generates their palettes, along with Neovim's Aether palette, from `colors.toml`. Git-installed themes cannot ship terminal configuration or Lua, so background-only terminal transparency belongs in a user-owned template under `~/.config/omarchy/themed/`; this repository intentionally does not bypass that boundary. Zed is compositor-pinned opaque so that user-owned background transparency composes cleanly rather than stacking with compositor opacity. Ghostty and Foot are compositor-pinned and intentionally remain opaque.
 
-The shipped CSS/INI/CSS keeps Waybar, Mako, and Walker translucent: Waybar and Mako use 0.55 alpha; Walker’s main panel composes to about 0.55, while its search row and keybind strip use raw `@base` and composite nearer 0.81. `chromium.theme` uses the base `11,12,20` (`#0b0c14`), which is already lifted enough for tab-strip legibility.
+The shipped CSS/INI/CSS keeps Waybar, Mako, and Walker translucent: Waybar and Mako use 0.55 alpha; Walker’s main panel composes to about 0.55, while its search row and keybind strip use raw `@base` and composite nearer 0.81. `chromium.theme` uses the base `10,16,13` (`#0a100d`), which is already lifted enough for tab-strip legibility.
 
 ## Theme Locations
 

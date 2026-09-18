@@ -3,10 +3,10 @@
 /* walker's style.css does `background: alpha(@base, 0.95)`, and GTK's alpha()
    MULTIPLIES. 0.58 * 0.95 = 0.55, matching waybar and mako, and staying above the
    `ignore_alpha 0.5` layerrule threshold so Hyprland actually blurs the surface. */
-@define-color base rgba(11, 12, 20, 0.58);
+@define-color base rgba(10, 16, 13, 0.58);
 @define-color border alpha(#62e2a4, 0.45);
 @define-color foreground #dcefe3;
-@define-color background rgba(11, 12, 20, 0.58);
+@define-color background rgba(10, 16, 13, 0.58);
 @define-color support #9d8cff;
 
 /* Green frames the surface and leads the selected row; violet only tints icons. */
