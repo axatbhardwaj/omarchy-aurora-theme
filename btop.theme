@@ -1,70 +1,70 @@
 # Main background, empty for terminal default, need to be empty if you want transparent background
-theme[main_bg]="#010401"
+theme[main_bg]="#0b0c14"
 
 # Main text color
-theme[main_fg]="#fdfffd"
+theme[main_fg]="#d3ccf4"
 
 # Title color for boxes
-theme[title]="#e0eb7a"
+theme[title]="#a9b3ff"
 
 # Highlight color for keyboard shortcuts
-theme[hi_fg]="#9ed8dd"
+theme[hi_fg]="#7dd6c8"
 
 # Background color of selected item in processes box
-theme[selected_bg]="#518a51"
+theme[selected_bg]="#4a4670"
 
 # Foreground color of selected item in processes box
-theme[selected_fg]="#fdfffd"
+theme[selected_fg]="#62e2a4"
 
 # Color of inactive/disabled text
-theme[inactive_fg]="#518a51"
+theme[inactive_fg]="#4a4670"
 
 # Misc colors for processes box including mini cpu graphs, details memory graph and details status text
-theme[proc_misc]="#e0eb7a"
+theme[proc_misc]="#a9b3ff"
 
 # Box outline and divider line color
-theme[cpu_box]="#70cf6c"
-theme[mem_box]="#70cf6c"
-theme[net_box]="#70cf6c"
-theme[proc_box]="#70cf6c"
-theme[div_line]="#518a51"
+theme[cpu_box]="#8b7cf6"
+theme[mem_box]="#8b7cf6"
+theme[net_box]="#8b7cf6"
+theme[proc_box]="#8b7cf6"
+theme[div_line]="#4a4670"
 
 # Gradient for all meters and graphs
-theme[temp_start]="#9ed8dd"
+theme[temp_start]="#7dd6c8"
 theme[temp_mid]="#62e2a4"
-theme[temp_end]="#70cf6c"
+theme[temp_end]="#6fd48c"
 
 
-theme[cpu_start]="#9ed8dd"
+theme[cpu_start]="#7dd6c8"
 theme[cpu_mid]="#62e2a4"
-theme[cpu_end]="#70cf6c"
+theme[cpu_end]="#6fd48c"
 
 
 theme[free_start]="#62e2a4"
-theme[free_mid]="#DFEC63"
-theme[free_end]="#DFEC63"
+theme[free_mid]="#6fd48c"
+theme[free_end]="#a8f0b3"
 
 
-theme[cached_start]="#DFEC63"
-theme[cached_mid]="#DFEC63"
-theme[cached_end]="#DFEC63"
+theme[cached_start]="#b48cff"
+theme[cached_mid]="#b48cff"
+theme[cached_end]="#b48cff"
 
 
-theme[available_start]="#9ed8dd"
-theme[available_mid]="#9ed8dd"
-theme[available_end]="#9ed8dd"
+theme[available_start]="#7dd6c8"
+theme[available_mid]="#7dd6c8"
+theme[available_end]="#7dd6c8"
 
 
-theme[used_start]="#70cf6c"
-theme[used_mid]="#70cf6c"
-theme[used_end]="#70cf6c"
+theme[used_start]="#62e2a4"
+theme[used_mid]="#7d8cff"
+theme[used_end]="#b48cff"
 
 
-theme[download_start]="#DFEC63"
-theme[download_mid]="#9ed8dd"
+theme[download_start]="#b48cff"
+theme[download_mid]="#7dd6c8"
 theme[download_end]="#62e2a4"
 
 
-theme[upload_start]="#DFEC63"
-theme[upload_mid]="#9ed8dd"
+theme[upload_start]="#b48cff"
+theme[upload_mid]="#7dd6c8"
 theme[upload_end]="#62e2a4"
