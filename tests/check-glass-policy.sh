@@ -180,38 +180,40 @@ theme_stages_without_denied_file_warning() {
 elysian_semantic_pairs() {
     printf '%s\n' \
         'accent #62e2a4' \
-        'selection #071c07' \
-        'selection_background #071c07' \
-        'selection_foreground #ffffff' \
-        'muted #595c59' \
-        'background #010401' \
-        'dark_background #000000' \
-        'darker_background #000000' \
-        'lighter_background #071c07' \
-        'foreground #fdfffd' \
-        'dark_foreground #97ff97' \
-        'light_foreground #ffffff' \
-        'bright_foreground #ffffff' \
-        'red #bf5a7c' \
-        'yellow #dfec63' \
-        'orange #cfa370' \
-        'green #70cf6c' \
-        'cyan #9ed8dd' \
-        'blue #62e2a4' \
-        'magenta #e0eb7a' \
-        'brown #6a3345' \
-        'bright_red #dcb0be' \
-        'bright_yellow #f6fdb7' \
-        'bright_green #b4e8b2' \
-        'bright_cyan #e3f5f6' \
-        'bright_blue #b0f3d2' \
-        'bright_magenta #f8fdce'
+        'selection #62e2a4' \
+        'selection_background #62e2a4' \
+        'selection_foreground #0b0c14' \
+        'muted #7a74a8' \
+        'background #0b0c14' \
+        'dark_background #080910' \
+        'darker_background #05060b' \
+        'lighter_background #171626' \
+        'foreground #d3ccf4' \
+        'dark_foreground #4a4670' \
+        'light_foreground #e6e1fa' \
+        'bright_foreground #f2efff' \
+        'red #f0708e' \
+        'yellow #e6d59a' \
+        'orange #e0b283' \
+        'green #6fd48c' \
+        'cyan #7dd6c8' \
+        'blue #7d8cff' \
+        'magenta #b48cff' \
+        'brown #5c4a6e' \
+        'bright_red #ff9bb3' \
+        'bright_yellow #f3e8c2' \
+        'bright_green #a8f0b3' \
+        'bright_cyan #b0eadf' \
+        'bright_blue #a9b3ff' \
+        'bright_magenta #d2bcff' \
+        'hyprland_active_border rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg' \
+        'hyprland_inactive_border rgba(8b7cf699)'
 }
 
 elysian_semantic_value() {
     local key="$1"
 
-    awk -v key="$key" '$1 == key { print $2 }' < <(elysian_semantic_pairs)
+    awk -v key="$key" '$1 == key { sub(/^[^ ]+ /, ""); print }' < <(elysian_semantic_pairs)
 }
 
 resolved_palette_matches_elysian_semantics() {
@@ -1008,7 +1010,7 @@ pin_opacity_lines=(
 
 check "hyprland.conf exists" test -f "$config"
 check "chromium.theme exists" test -f "$repo_root/chromium.theme"
-check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '20,26,23'
+check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '11,12,20'
 check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_has_blur_compatible_background "$repo_root/waybar.css"
 check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_translucent_background "$repo_root/mako.ini"
 check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
@@ -1027,9 +1029,16 @@ if [[ -f "$upstream_themed_dir/kitty.conf.tpl" ]]; then
 else
     skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
 fi
-check "activeBorderColor definition" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgb\([[:space:]]*62e2a4[[:space:]]*\)[[:space:]]*$'
+check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(62e2a4ee\) rgba\(d3ccf4cc\) rgba\(9d8cffaa\) 35deg[[:space:]]*$'
+check "inactiveBorderColor matches colors.toml" matches "$config_without_comments" '^[[:space:]]*\$inactiveBorderColor[[:space:]]*=[[:space:]]*rgba\(8b7cf699\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
+check "general { col.inactive_border" equals "$(last_assignment_in_block general 'col[.]inactive_border')" '$inactiveBorderColor'
 check "group { col.border_active" equals "$(last_assignment_in_block group 'col[.]border_active')" '$activeBorderColor'
+check "group { col.border_inactive" equals "$(last_assignment_in_block group 'col[.]border_inactive')" '$inactiveBorderColor'
+check "general { gaps_in" equals "$(last_assignment_in_block general gaps_in)" 12
+check "general { gaps_out" equals "$(last_assignment_in_block general gaps_out)" 24
+check "shell.toml exists" test -f "$repo_root/shell.toml"
+check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg'
 check "exactly one decoration block" test "$(count_blocks decoration)" -eq 1
 check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_in_block decoration dim_inactive)" false
 check "dim_strength is absent" does_not_match "$config_without_comments" '^[[:space:]]*dim_strength[[:space:]]*='
@@ -1048,10 +1057,12 @@ check "blur { ignore_opacity at last occurrence" equals "$(last_assignment_in_bl
 check "no active_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*active_opacity[[:space:]]*='
 check "no inactive_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*inactive_opacity[[:space:]]*='
 check "no fullscreen_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*fullscreen_opacity'
-check "no rounding setting" does_not_match "$config_without_comments" '^[[:space:]]*rounding[[:space:]]*='
+check "decoration { rounding at last occurrence" equals "$(last_assignment_in_block decoration rounding)" 14
+check "exactly one shadow block" test "$(count_blocks shadow)" -eq 1
+check "shadow { enabled at last occurrence" equals "$(last_assignment_in_block shadow enabled)" true
 check "no flat decoration assignment" does_not_match "$config_without_comments" '^[[:space:]]*decoration:[A-Za-z_:]+[[:space:]]*='
-check "no animations block" test "$(count_blocks animations)" -eq 0
-check "no bare animation setting" does_not_match "$config_without_comments" '^[[:space:]]*animation[[:space:]]*='
+check "exactly one animations block" test "$(count_blocks animations)" -eq 1
+check "animations { enabled at last occurrence" equals "$(last_assignment_in_block animations enabled)" true
 check "no source directive" does_not_match "$config_without_comments" '^[[:space:]]*source[[:space:]]*='
 check "no exec-family directive" does_not_match "$config_without_comments" '^[[:space:]]*(exec|execr|exec-once|execr-once|exec-shutdown)[[:space:]]*='
 check "no rounding windowrule" does_not_match "$config_without_comments" '^[[:space:]]*windowrule(v2)?[[:space:]]*=[[:space:]]*rounding([[:space:]]|$)'
