@@ -183,15 +183,15 @@ elysian_semantic_pairs() {
         'selection #62e2a4' \
         'selection_background #62e2a4' \
         'selection_foreground #0b0c14' \
-        'muted #7a74a8' \
+        'muted #728a7e' \
         'background #0b0c14' \
         'dark_background #080910' \
         'darker_background #05060b' \
-        'lighter_background #171626' \
-        'foreground #d3ccf4' \
-        'dark_foreground #4a4670' \
-        'light_foreground #e6e1fa' \
-        'bright_foreground #f2efff' \
+        'lighter_background #13201a' \
+        'foreground #dcefe3' \
+        'dark_foreground #3f5a4c' \
+        'light_foreground #eaf7f0' \
+        'bright_foreground #f4fff9' \
         'red #f0708e' \
         'yellow #e6d59a' \
         'orange #e0b283' \
@@ -206,7 +206,7 @@ elysian_semantic_pairs() {
         'bright_cyan #b0eadf' \
         'bright_blue #a9b3ff' \
         'bright_magenta #d2bcff' \
-        'hyprland_active_border rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg' \
+        'hyprland_active_border rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff99) 35deg' \
         'hyprland_inactive_border rgba(8b7cf699)'
 }
 
@@ -1029,7 +1029,7 @@ if [[ -f "$upstream_themed_dir/kitty.conf.tpl" ]]; then
 else
     skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
 fi
-check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(62e2a4ee\) rgba\(d3ccf4cc\) rgba\(9d8cffaa\) 35deg[[:space:]]*$'
+check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(62e2a4ee\) rgba\(a8f0b3dd\) rgba\(9d8cff99\) 35deg[[:space:]]*$'
 check "inactiveBorderColor matches colors.toml" matches "$config_without_comments" '^[[:space:]]*\$inactiveBorderColor[[:space:]]*=[[:space:]]*rgba\(8b7cf699\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
 check "general { col.inactive_border" equals "$(last_assignment_in_block general 'col[.]inactive_border')" '$inactiveBorderColor'
@@ -1038,7 +1038,7 @@ check "group { col.border_inactive" equals "$(last_assignment_in_block group 'co
 check "general { gaps_in" equals "$(last_assignment_in_block general gaps_in)" 8
 check "general { gaps_out" equals "$(last_assignment_in_block general gaps_out)" 15
 check "shell.toml exists" test -f "$repo_root/shell.toml"
-check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg'
+check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff99) 35deg'
 check "exactly one decoration block" test "$(count_blocks decoration)" -eq 1
 check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_in_block decoration dim_inactive)" false
 check "dim_strength is absent" does_not_match "$config_without_comments" '^[[:space:]]*dim_strength[[:space:]]*='

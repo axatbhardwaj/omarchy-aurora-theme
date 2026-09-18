@@ -1,8 +1,8 @@
-@define-color foreground #d3ccf4;
+@define-color foreground #dcefe3;
 @define-color background #0b0c14;
 @define-color accent #62e2a4;
 @define-color support #9d8cff;
-@define-color border alpha(@support, 0.35);
+@define-color border alpha(@accent, 0.35);
 
 /* Translucent bar so the Hyprland layer blur has something to show through.
    Higher specificity than the `*` rule in ~/.config/waybar/style.css, so the
@@ -19,7 +19,7 @@ window#waybar * {
   background-color: transparent;
 }
 
-/* Grouped glass modules: violet frame, faint green interior lift. */
+/* Grouped glass modules: green frame, faint violet interior lift. */
 .modules-left,
 .modules-center,
 .modules-right {
@@ -27,7 +27,7 @@ window#waybar * {
   padding: 2px 6px;
   border: 1px solid @border;
   border-radius: 12px;
-  background-image: linear-gradient(to bottom, alpha(@accent, 0.05), transparent);
+  background-image: linear-gradient(to bottom, alpha(@support, 0.06), transparent);
 }
 
 #workspaces button.active,

@@ -1,43 +1,43 @@
 # Elysian — dark indigo glass with aurora-green lead and twilight-violet support.
-# Green carries focus, selection, and countdowns; violet carries quiet structure,
-# inactive frames, and placeholder text. Colours mirror colors.toml.
+# Green carries focus, selection, text tint and countdowns; violet is limited to
+# inactive frames, placeholders, tooltip borders and quiet control chrome. Colours mirror colors.toml.
 
 [bar]
 background       = "#0b0c14"
 background-alpha = 0.80
-text             = "#d3ccf4"
+text             = "#dcefe3"
 active           = "#62e2a4"
 scale-with-font  = true
 size-horizontal  = 30
 size-vertical    = 32
 
 [hyprland]
-active-border            = "rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg"
-active-border-foreground = "rgb(62e2a4) rgb(a9b3ff) 35deg"
+active-border            = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff99) 35deg"
+active-border-foreground = "rgb(62e2a4) rgb(a8f0b3) 35deg"
 
 [controls]
 # Quiet controls carry the violet tone without outlining every element.
-normal-color        = "#a9b3ff"
+normal-color        = "#dcefe3"
 normal-fill-alpha   = 0.05
 normal-border       = "#7a74a8"
 normal-border-width = 0
 normal-border-alpha = 0.0
 
-hover-cursor-color        = "#d3ccf4"
+hover-cursor-color        = "#dcefe3"
 hover-cursor-fill-alpha   = 0.10
 hover-cursor-border       = "#62e2a4"
 hover-cursor-border-width = 0
 hover-cursor-border-alpha = 0.0
 
 # Focus catches the green lead and the violet structural edge together.
-focus-color        = "#f2efff"
+focus-color        = "#f4fff9"
 focus-fill-alpha   = 0.13
 focus-border       = "hyprland.active-border-foreground"
 focus-border-width = 1
 focus-border-alpha = 0.72
 
 # Persistent selection uses a soft green fill with one disciplined underline.
-selected-color        = "#f2efff"
+selected-color        = "#f4fff9"
 selected-fill-alpha   = 0.18
 selected-border       = "#62e2a4"
 selected-border-width = "0 0 1 0"
@@ -79,7 +79,7 @@ icon-large    = 19
 [popups]
 background       = "#0b0c14"
 background-alpha = 0.90
-text             = "#d3ccf4"
+text             = "#dcefe3"
 border           = "hyprland.active-border"
 border-alpha     = 0.72
 border-width     = 2
@@ -87,14 +87,14 @@ border-width     = 2
 [tooltip]
 background       = "#0b0c14"
 background-alpha = 0.96
-text             = "#f2efff"
+text             = "#f4fff9"
 border           = "#7a74a8"
 border-alpha     = 0.68
 
 [notifications]
 background       = "#0b0c14"
 background-alpha = 0.92
-text             = "#d3ccf4"
+text             = "#dcefe3"
 border           = "hyprland.active-border"
 border-alpha     = 0.78
 border-width     = 2
@@ -103,7 +103,7 @@ countdown        = "#62e2a4"
 [launcher]
 background                = "#0b0c14"
 background-alpha          = 0.91
-text                      = "#a9b3ff"
+text                      = "#dcefe3"
 border                    = "hyprland.active-border"
 border-alpha              = 0.78
 border-width              = 2
@@ -111,7 +111,7 @@ scrim                     = "#05060b"
 scrim-alpha               = 0.60
 selected-background       = "#62e2a4"
 selected-background-alpha = 0.14
-selected-text             = "#f2efff"
+selected-text             = "#f4fff9"
 selected-border           = "hyprland.active-border-foreground"
 selected-border-alpha     = 0.78
 selected-border-width     = 1
@@ -119,7 +119,7 @@ selected-border-width     = 1
 [menu]
 background                = "#0b0c14"
 background-alpha          = 0.93
-text                      = "#a9b3ff"
+text                      = "#dcefe3"
 border                    = "hyprland.active-border"
 border-alpha              = 0.76
 border-width              = 2
@@ -127,7 +127,7 @@ scrim                     = "#05060b"
 scrim-alpha               = 0.56
 selected-background       = "#62e2a4"
 selected-background-alpha = 0.13
-selected-text             = "#f2efff"
+selected-text             = "#f4fff9"
 selected-border           = "hyprland.active-border-foreground"
 selected-border-alpha     = 0.74
 selected-border-width     = 1
@@ -135,7 +135,7 @@ selected-border-width     = 1
 [polkit]
 background       = "#0b0c14"
 background-alpha = 0.96
-text             = "#d3ccf4"
+text             = "#dcefe3"
 text-error       = "#ff9bb3"
 border           = "hyprland.active-border"
 border-error     = "#ff9bb3"
@@ -147,7 +147,7 @@ accent           = "#62e2a4"
 [lock]
 background       = "#0b0c14"
 background-alpha = 0.84
-text             = "#f2efff"
+text             = "#f4fff9"
 placeholder      = "#7a74a8"
 text-error       = "#ff9bb3"
 border           = "#7a74a8"
@@ -160,7 +160,7 @@ selection-alpha  = 0.40
 [image-picker]
 scrim                   = "#05060b"
 scrim-alpha             = 0.66
-text                    = "#f2efff"
+text                    = "#f4fff9"
 selected-border         = "hyprland.active-border"
 selected-border-alpha   = 1.0
 unselected-border       = "#7a74a8"

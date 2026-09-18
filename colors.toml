@@ -1,23 +1,23 @@
 mode = "dark"
 
 # Elysian is a dual-tone glass theme: aurora green leads (accent, focus,
-# selection), twilight violet supports (text tint, inactive frames, muted
-# structure). Both must stay visible in every shell surface.
+# selection, text tint), twilight violet supports (inactive frames, quiet
+# chrome, one gradient stop). Both must stay visible in every shell surface.
 
 accent = "#62e2a4"
 selection = "#62e2a4"
 selection_foreground = "#0b0c14"
-muted = "#7a74a8"
+muted = "#728a7e"
 
 background = "#0b0c14"
 dark_background = "#080910"
 darker_background = "#05060b"
-lighter_background = "#171626"
+lighter_background = "#13201a"
 
-foreground = "#d3ccf4"
-dark_foreground = "#4a4670"
-light_foreground = "#e6e1fa"
-bright_foreground = "#f2efff"
+foreground = "#dcefe3"
+dark_foreground = "#3f5a4c"
+light_foreground = "#eaf7f0"
+bright_foreground = "#f4fff9"
 
 red = "#f0708e"
 yellow = "#e6d59a"
@@ -36,6 +36,6 @@ bright_blue = "#a9b3ff"
 bright_magenta = "#d2bcff"
 
 # Omarchy 4 renders these into hyprland.lua and shell.toml border tokens.
-# Green leads the sweep, lavender text tone bridges, violet closes it.
-hyprland_active_border = "rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg"
+# Green holds two of three stops; violet only closes the sweep.
+hyprland_active_border = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff99) 35deg"
 hyprland_inactive_border = "rgba(8b7cf699)"

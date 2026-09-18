@@ -1,8 +1,8 @@
 # Omarchy Elysian Theme
 
-A dual-tone glass theme: aurora green leads (accent, focus, selection, active border), twilight violet supports (text tint, inactive frames, muted structure), on an indigo-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
+A dual-tone glass theme: aurora green leads (accent, focus, selection, borders, text tint), twilight violet supports (inactive frames, placeholders, quiet chrome), on an indigo-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
 
-Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#d3ccf4`, support `#9d8cff`, base `#0b0c14`. The active border is a 35° sweep `green → lavender → violet`; the inactive border is violet at 60%.
+Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#dcefe3`, support `#9d8cff`, base `#0b0c14`. The active border is a 35° sweep `green → pale green → violet`; the inactive border is violet at 60%.
 
 ![Screenshot](screenshot.png)
 
@@ -18,7 +18,7 @@ omarchy-theme-install https://github.com/axatbhardwaj/omarchy-elysian-theme
 
 ## Shell surfaces
 
-`shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection and countdowns, violet for placeholders and quiet control chrome. Windows are rounded at 14 with 11/22 gaps, a soft shadow, and buoyant, non-elastic animations.
+`shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection, countdowns and text, violet for placeholders and quiet control chrome. Windows are rounded at 14 with 11/22 gaps, a soft shadow, and buoyant, non-elastic animations.
 
 On a Lua-configured Hyprland (Omarchy 4 default) the theme's `hyprland.conf` is never sourced and git-installed themes cannot ship Lua, so rounding, gaps, shadow, and animations only reach the compositor through a user-owned `~/.config/omarchy/themed/hyprland.lua.tpl`; `hyprland.conf` records the same values for `.conf`-based setups.
 

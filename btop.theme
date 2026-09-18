@@ -2,32 +2,32 @@
 theme[main_bg]="#0b0c14"
 
 # Main text color
-theme[main_fg]="#d3ccf4"
+theme[main_fg]="#dcefe3"
 
 # Title color for boxes
-theme[title]="#a9b3ff"
+theme[title]="#62e2a4"
 
 # Highlight color for keyboard shortcuts
 theme[hi_fg]="#7dd6c8"
 
 # Background color of selected item in processes box
-theme[selected_bg]="#4a4670"
+theme[selected_bg]="#13201a"
 
 # Foreground color of selected item in processes box
 theme[selected_fg]="#62e2a4"
 
 # Color of inactive/disabled text
-theme[inactive_fg]="#4a4670"
+theme[inactive_fg]="#3f5a4c"
 
 # Misc colors for processes box including mini cpu graphs, details memory graph and details status text
-theme[proc_misc]="#a9b3ff"
+theme[proc_misc]="#a8f0b3"
 
 # Box outline and divider line color
-theme[cpu_box]="#8b7cf6"
-theme[mem_box]="#8b7cf6"
-theme[net_box]="#8b7cf6"
-theme[proc_box]="#8b7cf6"
-theme[div_line]="#4a4670"
+theme[cpu_box]="#6fd48c"
+theme[mem_box]="#6fd48c"
+theme[net_box]="#6fd48c"
+theme[proc_box]="#6fd48c"
+theme[div_line]="#3f5a4c"
 
 # Gradient for all meters and graphs
 theme[temp_start]="#7dd6c8"
