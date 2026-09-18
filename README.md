@@ -1,6 +1,8 @@
 # Omarchy Elysian Theme
 
-A desktop theme that translates the mythical serenity of an Elysian forest where ancient, vibrant life glows in golden-green light into a high-contrast, productive workspace.
+A dual-tone glass theme: aurora green leads (accent, focus, selection, active border), twilight violet supports (text tint, inactive frames, muted structure), on an indigo-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
+
+Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#d3ccf4`, support `#9d8cff`, base `#0b0c14`. The active border is a 35° sweep `green → lavender → violet`; the inactive border is violet at 60%.
 
 ![Screenshot](screenshot.png)
 
@@ -14,9 +16,15 @@ Install this theme by running:
 omarchy-theme-install https://github.com/axatbhardwaj/omarchy-elysian-theme
 ```
 
+## Shell surfaces
+
+`shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection and countdowns, violet for placeholders and quiet control chrome. Windows are rounded at 14 with 12/24 gaps, a soft shadow, and buoyant, non-elastic animations.
+
+On a Lua-configured Hyprland (Omarchy 4 default) the theme's `hyprland.conf` is never sourced and git-installed themes cannot ship Lua, so rounding, gaps, shadow, and animations only reach the compositor through a user-owned `~/.config/omarchy/themed/hyprland.lua.tpl`; `hyprland.conf` records the same values for `.conf`-based setups.
+
 ## Balanced Glass
 
-Balanced Glass uses xray to frost the wallpaper beneath windows. Normal windows, browsers, and Nautilus sit at 0.90. Dimming is off entirely, with no active/inactive opacity gap; the green active border is the focus cue.
+Balanced Glass uses xray to frost the wallpaper beneath windows. Normal windows, browsers, and Nautilus sit at 0.90. Dimming is off entirely, with no active/inactive opacity gap; the green-led gradient border is the focus cue.
 
 The fully opaque protected surfaces are:
 
@@ -28,7 +36,7 @@ The fully opaque protected surfaces are:
 
 Alacritty and kitty are pinned opaque at the compositor so terminal glyphs stay crisp. Omarchy 4 generates their palettes, along with Neovim's Aether palette, from `colors.toml`. Git-installed themes cannot ship terminal configuration or Lua, so background-only terminal transparency belongs in a user-owned template under `~/.config/omarchy/themed/`; this repository intentionally does not bypass that boundary. Zed is compositor-pinned opaque so that user-owned background transparency composes cleanly rather than stacking with compositor opacity. Ghostty and Foot are compositor-pinned and intentionally remain opaque.
 
-The shipped CSS/INI/CSS keeps Waybar, Mako, and Walker translucent: Waybar and Mako use 0.55 alpha; Walker’s main panel composes to about 0.55, while its search row and keybind strip use raw `@base` and composite nearer 0.81. `chromium.theme` intentionally stays at `20,26,23` (`#141a17`) instead of the palette’s near-black `#010401`: Chromium’s frame needs that lift for tab-strip legibility.
+The shipped CSS/INI/CSS keeps Waybar, Mako, and Walker translucent: Waybar and Mako use 0.55 alpha; Walker’s main panel composes to about 0.55, while its search row and keybind strip use raw `@base` and composite nearer 0.81. `chromium.theme` uses the base `11,12,20` (`#0b0c14`), which is already lifted enough for tab-strip legibility.
 
 ## Theme Locations
 
