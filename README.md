@@ -1,12 +1,12 @@
 # Omarchy Aurora Theme
 
-A dual-tone glass theme: aurora green leads (accent, focus, selection, borders; text stays white), twilight violet is confined to the closing stop of the active border and ANSI blue/magenta, on a green-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
+A green glass theme: aurora green leads (accent, focus, selection, borders; text stays white) and teal closes the active-border sweep, on a green-black base. ANSI blue is a sea blue and magenta an orchid rose, so terminal output stays green-led rather than lavender. The shell reads as dark glass catching aurora light.
 
-Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#fdfffd`, support `#9d8cff`, base `#0a100d`. The active border is a 35° sweep `green → pale green → violet`; the inactive border is dim green at 60%.
+Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#fdfffd`, support `#7dd6c8`, base `#0a100d`. The active border is a 35° sweep `green → pale green → teal`; the inactive border is dim green at 60%.
 
 ![Screenshot](screenshot.png)
 
-Wallpapers: "Aurora Lake" (default) is an AI-generated illustration commissioned for this theme, upscaled to 3840×2160 with Real-ESRGAN; "Creature of Fantasyland" and "Verdant Mountain" by bisbiswas; ["The Aurora Stones"](https://www.deviantart.com/hyokka/art/The-Aurora-Stones-783847442) by hyokka, © 2019 - 2026 hyokka.
+Wallpaper: "Aurora Lake" is an AI-generated illustration commissioned for this theme, upscaled 4x with Real-ESRGAN and fitted to 3840×2160.
 
 ## Installation
 
@@ -18,13 +18,13 @@ omarchy-theme-install https://github.com/axatbhardwaj/omarchy-aurora-theme
 
 ## Shell surfaces
 
-`shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection, countdowns and text, violet for placeholders and quiet control chrome. Windows are rounded at 14 with 11/22 gaps, a soft shadow, and buoyant, non-elastic animations.
+`shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection, countdowns and text, dim green for placeholders and quiet control chrome. Windows are rounded at 14 with 11/22 gaps, a soft shadow, and buoyant, non-elastic animations.
 
 On a Lua-configured Hyprland (Omarchy 4 default) the theme's `hyprland.conf` is never sourced and git-installed themes cannot ship Lua, so rounding, gaps, shadow, animations and the Balanced Glass policy reach the compositor through `themed/hyprland.lua.tpl`, which you copy to `~/.config/omarchy/themed/` once (Omarchy renders it for whichever theme is active); `hyprland.conf` records the same values for `.conf`-based setups.
 
 ## Balanced Glass
 
-Balanced Glass uses xray to frost the wallpaper beneath windows. Blur is size 24 with 4 passes — Dual Kawase needs the extra radius, not extra passes; 8 passes flatten the wallpaper into a solid color. Normal windows and Nautilus sit at 0.80; browsers sit at 0.90 so pages stay readable. Dimming is off entirely, with no active/inactive opacity gap; the green-led gradient border is the focus cue.
+Balanced Glass uses xray to frost the wallpaper beneath windows. Blur is size 24 with 4 passes — Dual Kawase needs the extra radius, not extra passes; 8 passes flatten the wallpaper into a solid color. Normal windows and Nautilus sit at 0.70; browsers sit at 0.80 so pages stay readable. Dimming is off entirely, with no active/inactive opacity gap; the green-led gradient border is the focus cue.
 
 The fully opaque protected surfaces are:
 

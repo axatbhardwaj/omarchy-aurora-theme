@@ -45,9 +45,9 @@ theme[free_mid]="#6fd48c"
 theme[free_end]="#a8f0b3"
 
 
-theme[cached_start]="#b48cff"
-theme[cached_mid]="#b48cff"
-theme[cached_end]="#b48cff"
+theme[cached_start]="#d98cc0"
+theme[cached_mid]="#d98cc0"
+theme[cached_end]="#d98cc0"
 
 
 theme[available_start]="#7dd6c8"
@@ -56,15 +56,15 @@ theme[available_end]="#7dd6c8"
 
 
 theme[used_start]="#62e2a4"
-theme[used_mid]="#7d8cff"
-theme[used_end]="#b48cff"
+theme[used_mid]="#5fb3d9"
+theme[used_end]="#d98cc0"
 
 
-theme[download_start]="#b48cff"
+theme[download_start]="#d98cc0"
 theme[download_mid]="#7dd6c8"
 theme[download_end]="#62e2a4"
 
 
-theme[upload_start]="#b48cff"
+theme[upload_start]="#d98cc0"
 theme[upload_mid]="#7dd6c8"
 theme[upload_end]="#62e2a4"

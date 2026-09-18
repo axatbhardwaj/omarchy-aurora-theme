@@ -1,8 +1,9 @@
 mode = "dark"
 
-# Aurora is a dual-tone glass theme: aurora green leads (accent, focus,
-# selection, frames; text stays white), twilight violet is confined to the closing stop
-# of the active border and the ANSI blue/magenta slots. Both must stay visible in every shell surface.
+# Aurora is a green glass theme: aurora green leads (accent, focus, selection,
+# frames; text stays white) and teal closes the active-border sweep. No violet
+# anywhere: ANSI blue is a sea blue and magenta an orchid rose so terminal output
+# reads green-led, not lavender.
 
 accent = "#62e2a4"
 selection = "#62e2a4"
@@ -24,18 +25,18 @@ yellow = "#e6d59a"
 orange = "#e0b283"
 green = "#6fd48c"
 cyan = "#7dd6c8"
-blue = "#7d8cff"
-magenta = "#b48cff"
-brown = "#5c4a6e"
+blue = "#5fb3d9"
+magenta = "#d98cc0"
+brown = "#5c6e4a"
 
 bright_red = "#ff9bb3"
 bright_yellow = "#f3e8c2"
 bright_green = "#a8f0b3"
 bright_cyan = "#b0eadf"
-bright_blue = "#a9b3ff"
-bright_magenta = "#d2bcff"
+bright_blue = "#93d2ec"
+bright_magenta = "#eeb4d8"
 
 # Omarchy 4 renders these into hyprland.lua and shell.toml border tokens.
-# Green holds two of three stops; violet only closes the sweep.
-hyprland_active_border = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg"
+# Green holds two of three stops; teal closes the sweep.
+hyprland_active_border = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(7dd6c888) 35deg"
 hyprland_inactive_border = "rgba(3f5a4c99)"

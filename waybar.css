@@ -19,7 +19,7 @@ window#waybar * {
   background-color: transparent;
 }
 
-/* Grouped glass modules: green frame, faint violet interior lift. */
+/* Grouped glass modules: green frame, faint green interior lift. */
 .modules-left,
 .modules-center,
 .modules-right {
