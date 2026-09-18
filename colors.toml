@@ -1,31 +1,41 @@
 mode = "dark"
 
+# Elysian is a dual-tone glass theme: aurora green leads (accent, focus,
+# selection), twilight violet supports (text tint, inactive frames, muted
+# structure). Both must stay visible in every shell surface.
+
 accent = "#62e2a4"
-selection = "#071c07"
-muted = "#595c59"
+selection = "#62e2a4"
+selection_foreground = "#0b0c14"
+muted = "#7a74a8"
 
-background = "#010401"
-dark_background = "#000000"
-darker_background = "#000000"
-lighter_background = "#071c07"
+background = "#0b0c14"
+dark_background = "#080910"
+darker_background = "#05060b"
+lighter_background = "#171626"
 
-foreground = "#fdfffd"
-dark_foreground = "#97ff97"
-light_foreground = "#ffffff"
-bright_foreground = "#ffffff"
+foreground = "#d3ccf4"
+dark_foreground = "#4a4670"
+light_foreground = "#e6e1fa"
+bright_foreground = "#f2efff"
 
-red = "#bf5a7c"
-yellow = "#dfec63"
-orange = "#cfa370"
-green = "#70cf6c"
-cyan = "#9ed8dd"
-blue = "#62e2a4"
-magenta = "#e0eb7a"
-brown = "#6a3345"
+red = "#f0708e"
+yellow = "#e6d59a"
+orange = "#e0b283"
+green = "#6fd48c"
+cyan = "#7dd6c8"
+blue = "#7d8cff"
+magenta = "#b48cff"
+brown = "#5c4a6e"
 
-bright_red = "#dcb0be"
-bright_yellow = "#f6fdb7"
-bright_green = "#b4e8b2"
-bright_cyan = "#e3f5f6"
-bright_blue = "#b0f3d2"
-bright_magenta = "#f8fdce"
+bright_red = "#ff9bb3"
+bright_yellow = "#f3e8c2"
+bright_green = "#a8f0b3"
+bright_cyan = "#b0eadf"
+bright_blue = "#a9b3ff"
+bright_magenta = "#d2bcff"
+
+# Omarchy 4 renders these into hyprland.lua and shell.toml border tokens.
+# Green leads the sweep, lavender text tone bridges, violet closes it.
+hyprland_active_border = "rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg"
+hyprland_inactive_border = "rgba(8b7cf699)"
