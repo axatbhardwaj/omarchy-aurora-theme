@@ -199,16 +199,16 @@ aurora_semantic_pairs() {
         'orange #e0b283' \
         'green #6fd48c' \
         'cyan #7dd6c8' \
-        'blue #7d8cff' \
-        'magenta #b48cff' \
-        'brown #5c4a6e' \
+        'blue #5fb3d9' \
+        'magenta #d98cc0' \
+        'brown #5c6e4a' \
         'bright_red #ff9bb3' \
         'bright_yellow #f3e8c2' \
         'bright_green #a8f0b3' \
         'bright_cyan #b0eadf' \
-        'bright_blue #a9b3ff' \
-        'bright_magenta #d2bcff' \
-        'hyprland_active_border rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg' \
+        'bright_blue #93d2ec' \
+        'bright_magenta #eeb4d8' \
+        'hyprland_active_border rgba(62e2a4ee) rgba(a8f0b3dd) rgba(7dd6c888) 35deg' \
         'hyprland_inactive_border rgba(3f5a4c99)'
 }
 
@@ -953,11 +953,11 @@ fi
 config_without_comments="$(strip_comments <<<"$config_contents")"
 
 expected_policy_rule_lines=(
-    'windowrule = opacity 0.80 0.80, match:tag default-opacity'
-    'windowrule = opacity 0.90 0.90, match:tag chromium-based-browser'
-    'windowrule = opacity 0.90 0.90, match:tag firefox-based-browser'
-    'windowrule = opacity 0.90 0.90, match:class (chromium-[a-z0-9-]+|chrome-.*__-Default|brave-.*)'
-    'windowrule = opacity 0.80 0.80, match:class ^(org.gnome.Nautilus|nautilus)$'
+    'windowrule = opacity 0.70 0.70, match:tag default-opacity'
+    'windowrule = opacity 0.80 0.80, match:tag chromium-based-browser'
+    'windowrule = opacity 0.80 0.80, match:tag firefox-based-browser'
+    'windowrule = opacity 0.80 0.80, match:class (chromium-[a-z0-9-]+|chrome-.*__-Default|brave-.*)'
+    'windowrule = opacity 0.70 0.70, match:class ^(org.gnome.Nautilus|nautilus)$'
     'windowrule = opacity 1 1, match:tag terminal'
     'windowrule = opacity 1 1, match:class ^dev\.zed\.Zed$'
     'windowrule = opacity 1 1, match:class ^(chrome-youtube\.com__-Default|chrome-app\.zoom\.us__wc_home-Default|chrome-www\.crunchyroll\.com__-Default|brave-youtube\.com__-Default|brave-www\.crunchyroll\.com__-Default|brave-www\.jiohotstar\.com__-Default|brave-reanime\.to__home-Default)$'
@@ -1014,8 +1014,8 @@ check "hyprland.conf exists" test -f "$config"
 check "Omarchy 4 hyprland.lua.tpl exists" test -f "$repo_root/themed/hyprland.lua.tpl"
 check "generated hyprland.lua keeps Balanced Glass blur size" matches "$(<"$staged_theme/hyprland.lua")" 'size = 24'
 check "generated hyprland.lua keeps Balanced Glass blur passes" matches "$(<"$staged_theme/hyprland.lua")" 'passes = 4'
-check "generated hyprland.lua keeps Balanced Glass window opacity" matches "$(<"$staged_theme/hyprland.lua")" '0.80 override 0.80 override'
-check "generated hyprland.lua keeps browser opacity above window glass" matches "$(<"$staged_theme/hyprland.lua")" '0.90 override 0.90 override'
+check "generated hyprland.lua keeps Balanced Glass window opacity" matches "$(<"$staged_theme/hyprland.lua")" '0.70 override 0.70 override'
+check "generated hyprland.lua keeps browser opacity above window glass" matches "$(<"$staged_theme/hyprland.lua")" '0.80 override 0.80 override'
 check "chromium.theme exists" test -f "$repo_root/chromium.theme"
 check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '10,16,13'
 check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_has_blur_compatible_background "$repo_root/waybar.css"
@@ -1036,7 +1036,7 @@ if [[ -f "$upstream_themed_dir/kitty.conf.tpl" ]]; then
 else
     skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
 fi
-check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(62e2a4ee\) rgba\(a8f0b3dd\) rgba\(9d8cff88\) 35deg[[:space:]]*$'
+check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(62e2a4ee\) rgba\(a8f0b3dd\) rgba\(7dd6c888\) 35deg[[:space:]]*$'
 check "inactiveBorderColor matches colors.toml" matches "$config_without_comments" '^[[:space:]]*\$inactiveBorderColor[[:space:]]*=[[:space:]]*rgba\(3f5a4c99\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
 check "general { col.inactive_border" equals "$(last_assignment_in_block general 'col[.]inactive_border')" '$inactiveBorderColor'
@@ -1045,7 +1045,7 @@ check "group { col.border_inactive" equals "$(last_assignment_in_block group 'co
 check "general { gaps_in" equals "$(last_assignment_in_block general gaps_in)" 8
 check "general { gaps_out" equals "$(last_assignment_in_block general gaps_out)" 15
 check "shell.toml exists" test -f "$repo_root/shell.toml"
-check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg'
+check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(62e2a4ee) rgba(a8f0b3dd) rgba(7dd6c888) 35deg'
 check "exactly one decoration block" test "$(count_blocks decoration)" -eq 1
 check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_in_block decoration dim_inactive)" false
 check "dim_strength is absent" does_not_match "$config_without_comments" '^[[:space:]]*dim_strength[[:space:]]*='
