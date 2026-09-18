@@ -1,0 +1,167 @@
+# Elysian — dark indigo glass with aurora-green lead and twilight-violet support.
+# Green carries focus, selection, and countdowns; violet carries quiet structure,
+# inactive frames, and placeholder text. Colours mirror colors.toml.
+
+[bar]
+background       = "#0b0c14"
+background-alpha = 0.80
+text             = "#d3ccf4"
+active           = "#62e2a4"
+scale-with-font  = true
+size-horizontal  = 30
+size-vertical    = 32
+
+[hyprland]
+active-border            = "rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg"
+active-border-foreground = "rgb(62e2a4) rgb(a9b3ff) 35deg"
+
+[controls]
+# Quiet controls carry the violet tone without outlining every element.
+normal-color        = "#a9b3ff"
+normal-fill-alpha   = 0.05
+normal-border       = "#7a74a8"
+normal-border-width = 0
+normal-border-alpha = 0.0
+
+hover-cursor-color        = "#d3ccf4"
+hover-cursor-fill-alpha   = 0.10
+hover-cursor-border       = "#62e2a4"
+hover-cursor-border-width = 0
+hover-cursor-border-alpha = 0.0
+
+# Focus catches the green lead and the violet structural edge together.
+focus-color        = "#f2efff"
+focus-fill-alpha   = 0.13
+focus-border       = "hyprland.active-border-foreground"
+focus-border-width = 1
+focus-border-alpha = 0.72
+
+# Persistent selection uses a soft green fill with one disciplined underline.
+selected-color        = "#f2efff"
+selected-fill-alpha   = 0.18
+selected-border       = "#62e2a4"
+selected-border-width = "0 0 1 0"
+selected-border-alpha = 0.82
+
+pressed-fill-alpha   = 0.24
+selection-fill-alpha = 0.34
+
+[spacing]
+scale = 1.08
+scale-with-font = true
+control-gap       = 9
+control-padding-x = 12
+control-padding-y = 7
+input-padding-y   = 8
+control-height    = 31
+popup-row-height  = 32
+row-gap           = 9
+row-padding-x     = 14
+label-gap         = 5
+panel-gap         = 16
+panel-padding     = 20
+popup-padding     = 17
+
+[font]
+base-size     = 12
+caption       = 10
+body-small    = 11
+body          = 12
+subtitle      = 13
+title         = 15
+heading       = 18
+display       = 26
+display-large = 31
+icon-small    = 11
+icon          = 14
+icon-large    = 19
+
+[popups]
+background       = "#0b0c14"
+background-alpha = 0.90
+text             = "#d3ccf4"
+border           = "hyprland.active-border"
+border-alpha     = 0.72
+border-width     = 2
+
+[tooltip]
+background       = "#0b0c14"
+background-alpha = 0.96
+text             = "#f2efff"
+border           = "#7a74a8"
+border-alpha     = 0.68
+
+[notifications]
+background       = "#0b0c14"
+background-alpha = 0.92
+text             = "#d3ccf4"
+border           = "hyprland.active-border"
+border-alpha     = 0.78
+border-width     = 2
+countdown        = "#62e2a4"
+
+[launcher]
+background                = "#0b0c14"
+background-alpha          = 0.91
+text                      = "#a9b3ff"
+border                    = "hyprland.active-border"
+border-alpha              = 0.78
+border-width              = 2
+scrim                     = "#05060b"
+scrim-alpha               = 0.60
+selected-background       = "#62e2a4"
+selected-background-alpha = 0.14
+selected-text             = "#f2efff"
+selected-border           = "hyprland.active-border-foreground"
+selected-border-alpha     = 0.78
+selected-border-width     = 1
+
+[menu]
+background                = "#0b0c14"
+background-alpha          = 0.93
+text                      = "#a9b3ff"
+border                    = "hyprland.active-border"
+border-alpha              = 0.76
+border-width              = 2
+scrim                     = "#05060b"
+scrim-alpha               = 0.56
+selected-background       = "#62e2a4"
+selected-background-alpha = 0.13
+selected-text             = "#f2efff"
+selected-border           = "hyprland.active-border-foreground"
+selected-border-alpha     = 0.74
+selected-border-width     = 1
+
+[polkit]
+background       = "#0b0c14"
+background-alpha = 0.96
+text             = "#d3ccf4"
+text-error       = "#ff9bb3"
+border           = "hyprland.active-border"
+border-error     = "#ff9bb3"
+border-alpha     = 0.88
+scrim            = "#05060b"
+scrim-alpha      = 0.66
+accent           = "#62e2a4"
+
+[lock]
+background       = "#0b0c14"
+background-alpha = 0.84
+text             = "#f2efff"
+placeholder      = "#7a74a8"
+text-error       = "#ff9bb3"
+border           = "#7a74a8"
+border-active    = "hyprland.active-border"
+border-error     = "#ff9bb3"
+border-alpha     = 0.88
+selection        = "#62e2a4"
+selection-alpha  = 0.40
+
+[image-picker]
+scrim                   = "#05060b"
+scrim-alpha             = 0.66
+text                    = "#f2efff"
+selected-border         = "hyprland.active-border"
+selected-border-alpha   = 1.0
+unselected-border       = "#7a74a8"
+unselected-border-alpha = 0.42
