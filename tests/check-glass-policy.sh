@@ -1035,8 +1035,8 @@ check "general { col.active_border" equals "$(last_assignment_in_block general '
 check "general { col.inactive_border" equals "$(last_assignment_in_block general 'col[.]inactive_border')" '$inactiveBorderColor'
 check "group { col.border_active" equals "$(last_assignment_in_block group 'col[.]border_active')" '$activeBorderColor'
 check "group { col.border_inactive" equals "$(last_assignment_in_block group 'col[.]border_inactive')" '$inactiveBorderColor'
-check "general { gaps_in" equals "$(last_assignment_in_block general gaps_in)" 12
-check "general { gaps_out" equals "$(last_assignment_in_block general gaps_out)" 24
+check "general { gaps_in" equals "$(last_assignment_in_block general gaps_in)" 11
+check "general { gaps_out" equals "$(last_assignment_in_block general gaps_out)" 22
 check "shell.toml exists" test -f "$repo_root/shell.toml"
 check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(62e2a4ee) rgba(d3ccf4cc) rgba(9d8cffaa) 35deg'
 check "exactly one decoration block" test "$(count_blocks decoration)" -eq 1

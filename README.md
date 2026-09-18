@@ -18,7 +18,7 @@ omarchy-theme-install https://github.com/axatbhardwaj/omarchy-elysian-theme
 
 ## Shell surfaces
 
-`shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection and countdowns, violet for placeholders and quiet control chrome. Windows are rounded at 14 with 12/24 gaps, a soft shadow, and buoyant, non-elastic animations.
+`shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection and countdowns, violet for placeholders and quiet control chrome. Windows are rounded at 14 with 11/22 gaps, a soft shadow, and buoyant, non-elastic animations.
 
 On a Lua-configured Hyprland (Omarchy 4 default) the theme's `hyprland.conf` is never sourced and git-installed themes cannot ship Lua, so rounding, gaps, shadow, and animations only reach the compositor through a user-owned `~/.config/omarchy/themed/hyprland.lua.tpl`; `hyprland.conf` records the same values for `.conf`-based setups.
 
