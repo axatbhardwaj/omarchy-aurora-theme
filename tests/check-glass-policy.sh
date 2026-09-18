@@ -22,6 +22,8 @@ stage_source="$stage_root/home/.config/omarchy/themes/aurora"
 mkdir -p "$stage_source" "$stage_root/runtime"
 cp -a "$repo_root/"* "$stage_source/"
 mkdir -p "$stage_source/.git"
+mkdir -p "$stage_root/home/.config/omarchy/themed"
+cp "$repo_root/themed/hyprland.lua.tpl" "$stage_root/home/.config/omarchy/themed/hyprland.lua.tpl"
 stage_output="$({
     HOME="$stage_root/home" \
         XDG_RUNTIME_DIR="$stage_root/runtime" \
@@ -951,14 +953,14 @@ fi
 config_without_comments="$(strip_comments <<<"$config_contents")"
 
 expected_policy_rule_lines=(
-    'windowrule = opacity 0.90 0.90, match:tag default-opacity'
+    'windowrule = opacity 0.80 0.80, match:tag default-opacity'
     'windowrule = opacity 0.90 0.90, match:tag chromium-based-browser'
     'windowrule = opacity 0.90 0.90, match:tag firefox-based-browser'
-    'windowrule = opacity 0.90 0.90, match:class (chromium-[a-z0-9-]+|chrome-.*__-Default)'
-    'windowrule = opacity 0.90 0.90, match:class ^(org.gnome.Nautilus|nautilus)$'
+    'windowrule = opacity 0.90 0.90, match:class (chromium-[a-z0-9-]+|chrome-.*__-Default|brave-.*)'
+    'windowrule = opacity 0.80 0.80, match:class ^(org.gnome.Nautilus|nautilus)$'
     'windowrule = opacity 1 1, match:tag terminal'
     'windowrule = opacity 1 1, match:class ^dev\.zed\.Zed$'
-    'windowrule = opacity 1 1, match:class ^(chrome-youtube\.com__-Default|chrome-app\.zoom\.us__wc_home-Default|chrome-www\.crunchyroll\.com__-Default)$'
+    'windowrule = opacity 1 1, match:class ^(chrome-youtube\.com__-Default|chrome-app\.zoom\.us__wc_home-Default|chrome-www\.crunchyroll\.com__-Default|brave-youtube\.com__-Default|brave-www\.crunchyroll\.com__-Default|brave-www\.jiohotstar\.com__-Default|brave-reanime\.to__home-Default)$'
     'windowrule = opacity 1 1, match:tag pip'
     'windowrule = opacity 1 1, match:title WebcamOverlay'
     'windowrule = opacity 1 1, match:class ^(1[pP]assword|Bitwarden|org.keepassxc.KeePassXC|Proton Pass|chrome-nngceckbapebfimnlniiiahkandclblb-Default)$'
@@ -981,11 +983,11 @@ actual_layer_rules="$(extract_layer_rules <<<"$config_contents" | normalize_rule
 default_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+default-opacity([[:space:]]|,|$)')"
 chromium_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+chromium-based-browser([[:space:]]|,|$)')"
 firefox_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+firefox-based-browser([[:space:]]|,|$)')"
-chromium_family_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\(chromium-\\[a-z0-9-\\]\\+\\|chrome-[.][*]__-Default\\)([[:space:]]|,|$)')"
+chromium_family_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\(chromium-\\[a-z0-9-\\]\\+\\|chrome-[.][*]__-Default\\|brave-[.][*]\\)([[:space:]]|,|$)')"
 nautilus_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(org[.]gnome[.]Nautilus\\|nautilus\\)[$]([[:space:]]|,|$)')"
 terminal_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+terminal([[:space:]]|,|$)')"
 zed_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^dev')"
-video_pwa_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(chrome-youtube\\\\[.]com__-Default\\|chrome-app\\\\[.]zoom\\\\[.]us__wc_home-Default\\|chrome-www\\\\[.]crunchyroll\\\\[.]com__-Default\\)[$]([[:space:]]|,|$)')"
+video_pwa_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(chrome-youtube\\\\[.]com__-Default\\|chrome-app\\\\[.]zoom\\\\[.]us__wc_home-Default\\|chrome-www\\\\[.]crunchyroll\\\\[.]com__-Default\\|brave-youtube\\\\[.]com__-Default\\|brave-www\\\\[.]crunchyroll\\\\[.]com__-Default\\|brave-www\\\\[.]jiohotstar\\\\[.]com__-Default\\|brave-reanime\\\\[.]to__home-Default\\)[$]([[:space:]]|,|$)')"
 pip_opacity_line="$(policy_rule_line_number 'match:tag[[:space:]]+pip([[:space:]]|,|$)')"
 webcam_opacity_line="$(policy_rule_line_number 'match:title[[:space:]]+WebcamOverlay([[:space:]]|,|$)')"
 credential_opacity_line="$(policy_rule_line_number 'match:class[[:space:]]+\\^\\(1\\[pP\\]assword\\|Bitwarden\\|org[.]keepassxc[.]KeePassXC\\|Proton Pass\\|chrome-nngceckbapebfimnlniiiahkandclblb-Default\\)[$]([[:space:]]|,|$)')"
@@ -1009,6 +1011,11 @@ pin_opacity_lines=(
 )
 
 check "hyprland.conf exists" test -f "$config"
+check "Omarchy 4 hyprland.lua.tpl exists" test -f "$repo_root/themed/hyprland.lua.tpl"
+check "generated hyprland.lua keeps Balanced Glass blur size" matches "$(<"$staged_theme/hyprland.lua")" 'size = 24'
+check "generated hyprland.lua keeps Balanced Glass blur passes" matches "$(<"$staged_theme/hyprland.lua")" 'passes = 4'
+check "generated hyprland.lua keeps Balanced Glass window opacity" matches "$(<"$staged_theme/hyprland.lua")" '0.80 override 0.80 override'
+check "generated hyprland.lua keeps browser opacity above window glass" matches "$(<"$staged_theme/hyprland.lua")" '0.90 override 0.90 override'
 check "chromium.theme exists" test -f "$repo_root/chromium.theme"
 check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '10,16,13'
 check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_has_blur_compatible_background "$repo_root/waybar.css"
@@ -1044,8 +1051,8 @@ check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_i
 check "dim_strength is absent" does_not_match "$config_without_comments" '^[[:space:]]*dim_strength[[:space:]]*='
 check "exactly one blur block" test "$(count_blocks blur)" -eq 1
 check "blur { enabled at last occurrence" equals "$(last_assignment_in_block blur enabled)" true
-check "blur { size at last occurrence" equals "$(last_assignment_in_block blur size)" 10
-check "blur { passes at last occurrence" equals "$(last_assignment_in_block blur passes)" 3
+check "blur { size at last occurrence" equals "$(last_assignment_in_block blur size)" 24
+check "blur { passes at last occurrence" equals "$(last_assignment_in_block blur passes)" 4
 check "blur { noise at last occurrence" equals "$(last_assignment_in_block blur noise)" 0.03
 check "blur { contrast at last occurrence" equals "$(last_assignment_in_block blur contrast)" 1.45
 check "blur { brightness at last occurrence" equals "$(last_assignment_in_block blur brightness)" 1.15
@@ -1053,7 +1060,7 @@ check "blur { vibrancy at last occurrence" equals "$(last_assignment_in_block bl
 check "blur { vibrancy_darkness at last occurrence" equals "$(last_assignment_in_block blur vibrancy_darkness)" 0.7
 check "blur { special at last occurrence" equals "$(last_assignment_in_block blur special)" true
 check "blur { xray at last occurrence" equals "$(last_assignment_in_block blur xray)" true
-check "blur { ignore_opacity at last occurrence" equals "$(last_assignment_in_block blur ignore_opacity)" false
+check "blur { ignore_opacity at last occurrence" equals "$(last_assignment_in_block blur ignore_opacity)" true
 check "no active_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*active_opacity[[:space:]]*='
 check "no inactive_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*inactive_opacity[[:space:]]*='
 check "no fullscreen_opacity setting" does_not_match "$config_without_comments" '^[[:space:]]*fullscreen_opacity'
