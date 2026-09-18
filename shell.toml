@@ -1,6 +1,6 @@
-# Aurora — dark green glass with aurora-green lead and twilight-violet support.
-# Green carries focus, selection, text, frames and countdowns; violet is limited
-# to the closing stop of the active-border gradient. Colours mirror colors.toml.
+# Aurora — dark green glass with an aurora-green lead and teal support.
+# Green carries focus, selection, text, frames and countdowns; teal closes
+# the active-border gradient. Colours mirror colors.toml.
 
 [bar]
 background       = "#0a100d"
@@ -12,11 +12,11 @@ size-horizontal  = 30
 size-vertical    = 32
 
 [hyprland]
-active-border            = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg"
+active-border            = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(7dd6c888) 35deg"
 active-border-foreground = "rgb(62e2a4) rgb(a8f0b3) 35deg"
 
 [controls]
-# Quiet controls carry the violet tone without outlining every element.
+# Quiet controls stay dim green without outlining every element.
 normal-color        = "#fdfffd"
 normal-fill-alpha   = 0.05
 normal-border       = "#3f5a4c"
@@ -29,7 +29,7 @@ hover-cursor-border       = "#62e2a4"
 hover-cursor-border-width = 0
 hover-cursor-border-alpha = 0.0
 
-# Focus catches the green lead and the violet structural edge together.
+# Focus catches the green lead and the pale-green structural edge together.
 focus-color        = "#ffffff"
 focus-fill-alpha   = 0.13
 focus-border       = "hyprland.active-border-foreground"
