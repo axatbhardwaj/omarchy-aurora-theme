@@ -188,10 +188,10 @@ elysian_semantic_pairs() {
         'dark_background #070c0a' \
         'darker_background #050807' \
         'lighter_background #12221a' \
-        'foreground #dcefe3' \
+        'foreground #c9eedb' \
         'dark_foreground #3f5a4c' \
-        'light_foreground #eaf7f0' \
-        'bright_foreground #f4fff9' \
+        'light_foreground #dbf6e7' \
+        'bright_foreground #eefff5' \
         'red #f0708e' \
         'yellow #e6d59a' \
         'orange #e0b283' \
@@ -207,7 +207,7 @@ elysian_semantic_pairs() {
         'bright_blue #a9b3ff' \
         'bright_magenta #d2bcff' \
         'hyprland_active_border rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg' \
-        'hyprland_inactive_border rgba(8b7cf699)'
+        'hyprland_inactive_border rgba(3f5a4c99)'
 }
 
 elysian_semantic_value() {
@@ -1030,7 +1030,7 @@ else
     skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
 fi
 check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(62e2a4ee\) rgba\(a8f0b3dd\) rgba\(9d8cff88\) 35deg[[:space:]]*$'
-check "inactiveBorderColor matches colors.toml" matches "$config_without_comments" '^[[:space:]]*\$inactiveBorderColor[[:space:]]*=[[:space:]]*rgba\(8b7cf699\)[[:space:]]*$'
+check "inactiveBorderColor matches colors.toml" matches "$config_without_comments" '^[[:space:]]*\$inactiveBorderColor[[:space:]]*=[[:space:]]*rgba\(3f5a4c99\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
 check "general { col.inactive_border" equals "$(last_assignment_in_block general 'col[.]inactive_border')" '$inactiveBorderColor'
 check "group { col.border_active" equals "$(last_assignment_in_block group 'col[.]border_active')" '$activeBorderColor'

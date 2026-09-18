@@ -1,7 +1,7 @@
-@define-color foreground #dcefe3;
+@define-color foreground #c9eedb;
 @define-color background #0a100d;
 @define-color accent #62e2a4;
-@define-color support #9d8cff;
+@define-color support #6fd48c;
 @define-color border alpha(@accent, 0.35);
 
 /* Translucent bar so the Hyprland layer blur has something to show through.

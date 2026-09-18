@@ -1,8 +1,8 @@
 # Omarchy Elysian Theme
 
-A dual-tone glass theme: aurora green leads (accent, focus, selection, borders, text tint), twilight violet supports (inactive frames, placeholders, quiet chrome), on a green-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
+A dual-tone glass theme: aurora green leads (accent, focus, selection, borders, text tint), twilight violet is confined to the closing stop of the active border and ANSI blue/magenta, on a green-black base. The shell reads as dark glass catching green and violet light — never green-only, never violet-only.
 
-Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#dcefe3`, support `#9d8cff`, base `#0a100d`. The active border is a 35° sweep `green → pale green → violet`; the inactive border is violet at 60%.
+Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#c9eedb`, support `#9d8cff`, base `#0a100d`. The active border is a 35° sweep `green → pale green → violet`; the inactive border is dim green at 60%.
 
 ![Screenshot](screenshot.png)
 

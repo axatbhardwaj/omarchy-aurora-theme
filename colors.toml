@@ -1,8 +1,8 @@
 mode = "dark"
 
 # Elysian is a dual-tone glass theme: aurora green leads (accent, focus,
-# selection, text tint), twilight violet supports (inactive frames, quiet
-# chrome, one gradient stop). Both must stay visible in every shell surface.
+# selection, text, frames), twilight violet is confined to the closing stop
+# of the active border and the ANSI blue/magenta slots. Both must stay visible in every shell surface.
 
 accent = "#62e2a4"
 selection = "#62e2a4"
@@ -14,10 +14,10 @@ dark_background = "#070c0a"
 darker_background = "#050807"
 lighter_background = "#12221a"
 
-foreground = "#dcefe3"
+foreground = "#c9eedb"
 dark_foreground = "#3f5a4c"
-light_foreground = "#eaf7f0"
-bright_foreground = "#f4fff9"
+light_foreground = "#dbf6e7"
+bright_foreground = "#eefff5"
 
 red = "#f0708e"
 yellow = "#e6d59a"
@@ -38,4 +38,4 @@ bright_magenta = "#d2bcff"
 # Omarchy 4 renders these into hyprland.lua and shell.toml border tokens.
 # Green holds two of three stops; violet only closes the sweep.
 hyprland_active_border = "rgba(62e2a4ee) rgba(a8f0b3dd) rgba(9d8cff88) 35deg"
-hyprland_inactive_border = "rgba(8b7cf699)"
+hyprland_inactive_border = "rgba(3f5a4c99)"
