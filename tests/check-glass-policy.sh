@@ -188,10 +188,10 @@ elysian_semantic_pairs() {
         'dark_background #070c0a' \
         'darker_background #050807' \
         'lighter_background #12221a' \
-        'foreground #c9eedb' \
+        'foreground #fdfffd' \
         'dark_foreground #3f5a4c' \
-        'light_foreground #dbf6e7' \
-        'bright_foreground #eefff5' \
+        'light_foreground #ffffff' \
+        'bright_foreground #ffffff' \
         'red #f0708e' \
         'yellow #e6d59a' \
         'orange #e0b283' \
