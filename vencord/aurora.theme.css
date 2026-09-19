@@ -1,0 +1,104 @@
+/**
+ * @name Aurora
+ * @author Axat Bhardwaj
+ * @version 1.0.0
+ * @description Aurora for Discord: green glass over a twilight lake, built on ClearVision v7.
+ * @source https://github.com/axatbhardwaj/omarchy-aurora-theme
+ */
+/* IMPORT CSS */
+@import url("https://clearvision.github.io/ClearVision-v7/main.css");
+@import url("https://clearvision.github.io/ClearVision-v7/vencord.css");
+
+/* SETTINGS — colours mirror colors.toml */
+:root {
+  /* ACCENT COLORS */
+  --main-color: #62e2a4;
+  --hover-color: #a8f0b3;
+  --success-color: #6fd48c;
+  --danger-color: #f0708e;
+  /* STATUS COLORS */
+  --online-color: #6fd48c;
+  --idle-color: #e6d59a;
+  --dnd-color: #f0708e;
+  --streaming-color: #d98cc0;
+  --offline-color: #6f9a82;
+  /* APP BACKGROUND */
+  --background-shading-percent: 100%;
+  --background-image: url(https://raw.githubusercontent.com/axatbhardwaj/omarchy-aurora-theme/main/backgrounds/0-aurora-lake.jpg);
+  --background-position: center;
+  --background-size: cover;
+  --background-attachment: fixed;
+  --background-filter: saturate(calc(var(--saturation-factor, 1) * 1));
+  /* USER POPOUT / MODAL BACKGROUND follow the app background */
+  --user-popout-image: var(--background-image);
+  --user-popout-position: var(--background-position);
+  --user-popout-size: var(--background-size);
+  --user-popout-attachment: var(--background-attachment);
+  --user-popout-filter: var(--background-filter);
+  --user-modal-image: var(--background-image);
+  --user-modal-position: var(--background-position);
+  --user-modal-size: var(--background-size);
+  --user-modal-attachment: var(--background-attachment);
+  --user-modal-filter: var(--background-filter);
+  /* HOME ICON */
+  --home-icon: url(https://clearvision.github.io/icons/discord.svg);
+  --home-size: cover;
+  /* FONTS */
+  --main-font: "gg sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --code-font: "JetBrainsMono Nerd Font", "JetBrains Mono", "gg mono", monospace;
+  /* CHANNEL COLORS */
+  --channel-normal: var(--interactive-text-default);
+  --channel-muted: var(--interactive-muted);
+  --channel-hover: var(--interactive-text-hover);
+  --channel-selected: #0a100d;
+  --channel-selected-bg: var(--main-color);
+  --channel-unread: var(--main-color);
+  --channel-unread-hover: var(--hover-color);
+  /* ACCESSIBILITY */
+  --focus-color: var(--main-color);
+}
+
+/* THEME SPECIFIC SHADING — green-black glass (#0a100d) at three depths */
+/* LIGHT THEME */
+:is(.theme-light, .theme-dark .theme-light) {
+  --background-shading: rgba(253, 255, 253, 0.3);
+  --card-shading: rgba(253, 255, 253, 0.3);
+  --popout-shading: rgba(253, 255, 253, 0.7);
+  --modal-shading: rgba(253, 255, 253, 0.5);
+  --input-shading: rgba(10, 16, 13, 0.3);
+  --normal-text: #0a100d;
+  --muted-text: #3f5a4c;
+}
+
+/* ASH THEME */
+:is(.theme-dark, .theme-light .theme-dark) {
+  --background-shading: rgba(10, 16, 13, 0.6);
+  --card-shading: rgba(10, 16, 13, 0.3);
+  --popout-shading: rgba(10, 16, 13, 0.8);
+  --modal-shading: rgba(10, 16, 13, 0.6);
+  --input-shading: rgba(253, 255, 253, 0.05);
+  --normal-text: #fdfffd;
+  --muted-text: #9fb8ab;
+}
+
+/* DARK THEME */
+:is(.theme-darker, .theme-light .theme-darker) {
+  --background-shading: rgba(10, 16, 13, 0.75);
+  --card-shading: rgba(10, 16, 13, 0.4);
+  --popout-shading: rgba(10, 16, 13, 0.85);
+  --modal-shading: rgba(10, 16, 13, 0.7);
+  --input-shading: rgba(253, 255, 253, 0.05);
+  --normal-text: #fdfffd;
+  --muted-text: #9fb8ab;
+}
+
+/* ONYX THEME */
+:is(.theme-midnight, .theme-light .theme-midnight) {
+  --background-shading: rgba(5, 8, 7, 0.88);
+  --card-shading: rgba(5, 8, 7, 0.5);
+  --popout-shading: rgba(5, 8, 7, 0.9);
+  --modal-shading: rgba(5, 8, 7, 0.8);
+  --input-shading: rgba(253, 255, 253, 0.05);
+  --normal-text: #fdfffd;
+  --muted-text: #8aa697;
+}
