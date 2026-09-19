@@ -4,7 +4,7 @@ A green glass theme: aurora green leads (accent, focus, selection, borders; text
 
 Palette lives in `colors.toml`; every other file derives from it. Lead `#62e2a4`, text `#fdfffd`, support `#7dd6c8`, base `#0a100d`. The active border is a 35° sweep `green → pale green → teal`; the inactive border is dim green at 60%.
 
-![Screenshot](screenshot.png)
+![Aurora preview](preview.png)
 
 Wallpaper: "Aurora Lake" is an AI-generated illustration commissioned for this theme, upscaled 4x with Real-ESRGAN and fitted to 3840×2160.
 
