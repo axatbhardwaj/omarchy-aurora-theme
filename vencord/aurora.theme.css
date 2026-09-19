@@ -170,3 +170,13 @@
 [class*="clipBadgeIcon__"] svg path {
   fill: currentColor;
 }
+
+/* Selected channel row: every glyph in it (hash, lock, invite, settings) goes
+   dark like the name; ClearVision only darkens the name and channel icon. */
+[class*="modeSelected_"] svg,
+[class*="modeSelected_"] [class*="actionIcon"],
+[class*="modeSelected_"] [class*="iconItem"],
+[class*="modeSelected_"] [class*="children_"] {
+  color: #0a100d !important;
+  opacity: 1;
+}
