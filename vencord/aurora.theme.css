@@ -180,3 +180,30 @@
   color: #0a100d !important;
   opacity: 1;
 }
+
+/* Every solid-green selection ClearVision paints (DM list row, Friends tabs,
+   settings nav, select options, emoji/sticker categories, pills) reads dark
+   text on green, like the desktop theme's selection. */
+[class*="interactiveSelected_"],
+[class*="interactiveSelected_"] *,
+[class*="topPill_"] [class*="item_"][class*="selected_"],
+[class*="topPill_"] [class*="item_"][class*="selected_"] *,
+[class*="side_"] [class*="item_"][class*="selected_"],
+[class*="side_"] [class*="item_"][class*="selected_"] *,
+[class*="tabBar_"] [class*="addFriend_"][aria-selected="true"],
+[class*="navItem_"][class*="selected_"],
+[class*="navItem_"][class*="selected_"] *,
+[class*="option_"][aria-selected="true"],
+[class*="option_"][aria-selected="true"] *,
+[class*="categoryItemDefaultCategorySelected_"],
+[class*="categoryItemDefaultCategorySelected_"] *,
+[class*="stickerCategoryGenericSelected_"],
+[class*="stickerCategoryGenericSelected_"] *,
+[class*="firstPartyCategorySelected_"],
+[class*="firstPartyCategorySelected_"] *,
+[class*="pill_"][class*="selected_"],
+[class*="pill_"][class*="selected_"] *,
+[class*="pillItemSelected_"],
+[class*="pillItemSelected_"] * {
+  color: #0a100d !important;
+}
