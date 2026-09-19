@@ -133,3 +133,27 @@
 :is(.theme-dark, .theme-light):not(.platform-osx) [class*="leading_"]::after {
   content: none;
 }
+
+/* Mentions: quiet green-tinted pill with green text (Discord renders the pill as
+   `wrapper_* interactive` inside message markup), and a faint tint plus a thin
+   green edge on mentioned messages — not a solid green bar. */
+[class*="markup"] [class*="wrapper_"][class*="interactive"],
+[class*="markup"] [class*="wrapper_"][class*="interactive"]:active,
+[class*="mention__"],
+[class*="mention__"]:active {
+  background: hsl(from var(--hsl-main-color) h s l / 0.18) !important;
+  color: var(--main-color) !important;
+  border-radius: 5px;
+}
+[class*="markup"] [class*="wrapper_"][class*="interactive"]:hover,
+[class*="mention__"]:hover {
+  background: hsl(from var(--hsl-main-color) h s l / 0.32) !important;
+  color: #0a100d !important;
+}
+[class*="mentioned__"] {
+  --background-mentioned: hsl(from var(--hsl-main-color) h s l / 0.05);
+  --background-mentioned-hover: hsl(from var(--hsl-main-color) h s l / 0.08);
+}
+[class*="mentioned__"]::before {
+  background-color: hsl(from var(--hsl-main-color) h s l / 0.6);
+}
