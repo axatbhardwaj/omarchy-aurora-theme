@@ -89,6 +89,7 @@ o.window(
 o.window("^(GeForceNOW|com\\.moonlight_stream\\.Moonlight)$", { opacity = "1 override 1 override" })
 
 hl.layer_rule({ match = { namespace = "waybar" }, blur = true, ignore_alpha = 0.5 })
-hl.layer_rule({ match = { namespace = "omarchy-bar" }, blur = true, ignore_alpha = 0.5 })
+hl.layer_rule({ match = { namespace = "omarchy-bar" }, blur = true, blur_popups = true, ignore_alpha = 0.5 })
+hl.layer_rule({ match = { namespace = "omarchy-keyboard-panel" }, blur = true, blur_popups = true, ignore_alpha = 0.5 })
 hl.layer_rule({ match = { namespace = "walker" }, blur = true, ignore_alpha = 0.5 })
 hl.layer_rule({ match = { namespace = "notifications" }, blur = true })

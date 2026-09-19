@@ -1016,6 +1016,8 @@ check "generated hyprland.lua keeps Balanced Glass blur size" matches "$(<"$stag
 check "generated hyprland.lua keeps Balanced Glass blur passes" matches "$(<"$staged_theme/hyprland.lua")" 'passes = 4'
 check "generated hyprland.lua keeps Balanced Glass window opacity" matches "$(<"$staged_theme/hyprland.lua")" '0.70 override 0.70 override'
 check "generated hyprland.lua keeps browser opacity above window glass" matches "$(<"$staged_theme/hyprland.lua")" '0.80 override 0.80 override'
+check "generated hyprland.lua blurs Omarchy bar popups" matches "$(<"$staged_theme/hyprland.lua")" 'namespace = "omarchy-bar".*blur_popups = true'
+check "generated hyprland.lua blurs keyboard-driven Omarchy plugin panel popups" matches "$(<"$staged_theme/hyprland.lua")" 'namespace = "omarchy-keyboard-panel".*blur = true.*blur_popups = true'
 check "chromium.theme exists" test -f "$repo_root/chromium.theme"
 check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '10,16,13'
 check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_has_blur_compatible_background "$repo_root/waybar.css"
