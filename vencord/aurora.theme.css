@@ -28,7 +28,7 @@
   --background-position: center;
   --background-size: cover;
   --background-attachment: fixed;
-  --background-filter: blur(10px) brightness(0.55) saturate(0.9); /* calm the wallpaper so text sits on near-flat green-black */
+  --background-filter: blur(8px) brightness(0.7) saturate(0.95); /* calm the wallpaper so text sits on near-flat green-black */
   /* USER POPOUT / MODAL BACKGROUND follow the app background */
   --user-popout-image: var(--background-image);
   --user-popout-position: var(--background-position);
@@ -72,8 +72,8 @@
 
 /* ASH THEME */
 :is(.theme-dark, .theme-light .theme-dark) {
-  --background-shading: rgba(10, 16, 13, 0.84);
-  --card-shading: rgba(10, 16, 13, 0.55);
+  --background-shading: rgba(10, 16, 13, 0.72);
+  --card-shading: rgba(10, 16, 13, 0.45);
   --popout-shading: rgba(10, 16, 13, 0.94);
   --modal-shading: rgba(10, 16, 13, 0.85);
   --input-shading: rgba(253, 255, 253, 0.07);
@@ -83,8 +83,8 @@
 
 /* DARK THEME */
 :is(.theme-darker, .theme-light .theme-darker) {
-  --background-shading: rgba(10, 16, 13, 0.9);
-  --card-shading: rgba(10, 16, 13, 0.65);
+  --background-shading: rgba(10, 16, 13, 0.8);
+  --card-shading: rgba(10, 16, 13, 0.55);
   --popout-shading: rgba(10, 16, 13, 0.96);
   --modal-shading: rgba(10, 16, 13, 0.9);
   --input-shading: rgba(253, 255, 253, 0.07);
@@ -94,7 +94,7 @@
 
 /* ONYX THEME */
 :is(.theme-midnight, .theme-light .theme-midnight) {
-  --background-shading: rgba(5, 8, 7, 0.95);
+  --background-shading: rgba(5, 8, 7, 0.88);
   --card-shading: rgba(5, 8, 7, 0.7);
   --popout-shading: rgba(5, 8, 7, 0.97);
   --modal-shading: rgba(5, 8, 7, 0.92);
