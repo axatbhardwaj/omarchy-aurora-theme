@@ -207,3 +207,15 @@
 [class*="pillItemSelected_"] * {
   color: #0a100d !important;
 }
+
+/* Home button: draw the logo through a mask so it can be recoloured — white on
+   the dark tile, dark on the green tile when selected or hovered. */
+[class*="childWrapper_"] > svg {
+  background: #fdfffd;
+  -webkit-mask: var(--home-icon) center / var(--home-size) no-repeat;
+  mask: var(--home-icon) center / var(--home-size) no-repeat;
+}
+[class*="wrapper_"][class*="selected_"] [class*="childWrapper_"] > svg,
+[class*="wrapper_"]:hover [class*="childWrapper_"] > svg {
+  background: #0a100d;
+}
