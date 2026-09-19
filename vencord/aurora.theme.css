@@ -116,3 +116,20 @@
 [class*="selectorButtonSelected__"] {
   color: #0a100d;
 }
+
+/* Unread / mention badges: coral on dark, not another green pill — they must pop
+   against the green accent everywhere else. */
+[class*="numberBadge__"],
+[class*="textBadge__"] {
+  background: #f0708e !important;
+  color: #0a100d !important;
+}
+
+/* Title bar: Aurora, not the ClearVision badge. */
+:is(.theme-dark, .theme-light):not(.platform-osx) [class*="leading_"]::before {
+  content: "Aurora";
+  filter: drop-shadow(0 0 5px var(--hsl-main-color));
+}
+:is(.theme-dark, .theme-light):not(.platform-osx) [class*="leading_"]::after {
+  content: none;
+}
