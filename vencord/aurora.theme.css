@@ -181,9 +181,19 @@
   opacity: 1;
 }
 
-/* Every solid-green selection ClearVision paints (DM list row, Friends tabs,
-   settings nav, select options, emoji/sticker categories, pills) reads dark
-   text on green, like the desktop theme's selection. */
+/* Selected navigation owns its green surface rather than relying on Discord or
+   ClearVision to provide one. Keep descendants transparent. */
+[class*="interactiveSelected_"],
+[class*="topPill_"] [class*="item_"][class*="selected_"],
+[class*="side_"] [class*="item_"][class*="selected_"],
+[class*="tabBar_"] [class*="addFriend_"][aria-selected="true"],
+[class*="navItem_"][class*="selected_"] {
+  background: var(--channel-selected-bg) !important;
+}
+
+/* Every selected surface (DM list row, Friends tabs, settings nav, select
+   options, emoji/sticker categories, pills) reads dark text on green, like the
+   desktop theme's selection. */
 [class*="interactiveSelected_"],
 [class*="interactiveSelected_"] *,
 [class*="topPill_"] [class*="item_"][class*="selected_"],
