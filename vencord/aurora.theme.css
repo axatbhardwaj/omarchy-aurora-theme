@@ -229,7 +229,8 @@
 
 /* Every selected surface (DM list row, Friends tabs, settings nav, select
    options, emoji/sticker categories, pills) reads dark text on green, like the
-   desktop theme's selection. */
+   desktop theme's selection. Discord's current settings nav uses the separate
+   camel-case navItemSelected class rather than the older selected class. */
 [class*="interactiveSelected_"],
 [class*="interactiveSelected_"] *,
 [class*="topPill_"] [class*="item_"][class*="selected_"],
@@ -239,6 +240,8 @@
 [class*="tabBar_"] [class*="addFriend_"][aria-selected="true"],
 [class*="navItem_"][class*="selected_"],
 [class*="navItem_"][class*="selected_"] *,
+[class*="navItem_"][class*="navItemSelected_"],
+[class*="navItem_"][class*="navItemSelected_"] *,
 [class*="option_"][aria-selected="true"],
 [class*="option_"][aria-selected="true"] *,
 [class*="categoryItemDefaultCategorySelected_"],

@@ -87,6 +87,26 @@ try {
     return result.value;
   }
 
+  async function measureSvgFill(selector, backgroundSelector) {
+    const expression = `(() => {
+      const icon = document.querySelector(${JSON.stringify(selector)});
+      const background = document.querySelector(${JSON.stringify(backgroundSelector)});
+      const parse = value => value.match(/rgba?\\(([^)]+)\\)/)[1].split(/[ ,/]+/).map(Number);
+      const luminance = color => {
+        const linear = color.slice(0,3).map(v => { v /= 255; return v <= .04045 ? v/12.92 : ((v+.055)/1.055)**2.4; });
+        return .2126*linear[0] + .7152*linear[1] + .0722*linear[2];
+      };
+      const fillStyle = getComputedStyle(icon);
+      const backgroundStyle = getComputedStyle(background);
+      const fill = parse(fillStyle.fill), bg = parse(backgroundStyle.backgroundColor);
+      const contrast = (Math.max(luminance(fill), luminance(bg)) + .05) / (Math.min(luminance(fill), luminance(bg)) + .05);
+      return { fill: fillStyle.fill, background: backgroundStyle.backgroundColor, contrast };
+    })()`;
+    const { result } = await send("Runtime.evaluate", { expression, returnByValue: true });
+    if (result.subtype === "error") throw new Error(result.description);
+    return result.value;
+  }
+
   const failures = [];
   const checkContrast = async (name, selector, minimum, options = {}) => {
     if (options.hover) await hover(selector);
@@ -109,6 +129,12 @@ try {
     console.log(`${name}: ${actual} ${pass ? "PASS" : "FAIL"}`);
     if (!pass) failures.push(`${name}: ${actual} != ${expected}`);
   };
+  const checkSvgContrast = async (name, selector, backgroundSelector, minimum) => {
+    const got = await measureSvgFill(selector, backgroundSelector);
+    const pass = got.contrast >= minimum;
+    console.log(`${name}: ${got.contrast.toFixed(2)}:1 (${got.fill} on ${got.background}) ${pass ? "PASS" : "FAIL"}`);
+    if (!pass) failures.push(`${name}: ${got.contrast.toFixed(2)} < ${minimum}`);
+  };
 
   for (const [name, selector] of [
     ["legacy brand", "#legacy-brand"], ["legacy success", "#legacy-success"],
@@ -130,6 +156,10 @@ try {
   await checkStyle("selected navigation foreground", "#selected-navigation", "color", "rgb(10, 16, 13)");
   await checkStyle("selected navigation surface", "#selected-navigation", "background", "rgb(98, 226, 164)");
   await checkStyle("selected navigation descendant stays transparent", "#selected-navigation-label", "background", "rgba(0, 0, 0, 0)");
+  await checkContrast("selected settings text", "#settings-selected-label", 4.5, { backgroundSelector: "#settings-selected" });
+  await checkSvgContrast("selected settings icon", "#settings-selected-icon", "#settings-selected", 3);
+  await checkContrast("neutral settings text stays light", "#settings-neutral-label", 4.5, { backgroundSelector: "#settings-neutral" });
+  await checkSvgContrast("neutral settings icon stays light", "#settings-neutral-icon", "#settings-neutral", 3);
 
   for (const [name, selector] of [
     ["legacy brand hover", "#legacy-brand"], ["legacy success hover", "#legacy-success"],
