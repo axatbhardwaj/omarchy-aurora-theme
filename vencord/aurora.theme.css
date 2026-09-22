@@ -104,6 +104,42 @@
 }
 
 /* ADDITIONAL CSS */
+/* ClearVision paints these control families with Aurora's bright accent/status
+   fills, so pair them with the same dark foreground used by selected rows. */
+:is(
+  [class*="lookFilled_"][class*="colorBrand_"],
+  [class*="lookFilled_"][class*="colorPrimary_"],
+  [class*="lookFilled_"][class*="colorGreen_"],
+  [class*="lookFilled_"][class*="colorRed_"],
+  [class*="lookFilled_"][class*="colorWhite_"],
+  [class*="lookFilled_"][class*="colorBrandInverted_"]
+),
+:is(
+  [class*="lookOutlined_"][class*="colorBrand_"],
+  [class*="lookOutlined_"][class*="colorPrimary_"],
+  [class*="lookOutlined_"][class*="colorGreen_"],
+  [class*="lookOutlined_"][class*="colorRed_"]
+):hover,
+.button_a22cb0.primary_a22cb0:not(.custom-user-profile-theme *),
+.button_a22cb0.active_a22cb0,
+.button_a22cb0.critical-primary_a22cb0,
+[class*="botTagRegular_"],
+[class*="iconBackground_"] {
+  color: #0a100d !important;
+}
+
+/* ClearVision's selection foreground follows normal body text, which is too
+   light on Aurora green. */
+::selection {
+  color: #0a100d;
+}
+
+/* The selected voice row's secondary status is independently muted upstream;
+   keep that narrow descendant readable without flattening role colours. */
+[class*="modeSelected_"] [class*="channelInfo_"] {
+  color: #0a100d !important;
+}
+
 /* Dark glyphs on aurora-green fills (voice controls, active nav, selected toggles),
    matching the desktop theme's dark-on-green selection. Prefix selectors survive
    Discord's class-hash rotation. */
@@ -191,7 +227,14 @@
   background: var(--channel-selected-bg) !important;
 }
 
-/* Every selected surface (DM list row, Friends tabs, settings nav, select
+/* The live settings sidebar marks the active link semantically. Own both sides
+   of its contrast pair without depending on Discord's rotating class hashes. */
+[data-list-item-id^="settings-sidebar___"][aria-current="page"] {
+  background: var(--channel-selected-bg) !important;
+  color: var(--channel-selected) !important;
+}
+
+/* Every selected surface (DM list row, Friends tabs, public nav items, select
    options, emoji/sticker categories, pills) reads dark text on green, like the
    desktop theme's selection. */
 [class*="interactiveSelected_"],
@@ -203,6 +246,8 @@
 [class*="tabBar_"] [class*="addFriend_"][aria-selected="true"],
 [class*="navItem_"][class*="selected_"],
 [class*="navItem_"][class*="selected_"] *,
+[class*="navItem_"][class*="navItemSelected_"],
+[class*="navItem_"][class*="navItemSelected_"] *,
 [class*="option_"][aria-selected="true"],
 [class*="option_"][aria-selected="true"] *,
 [class*="categoryItemDefaultCategorySelected_"],

@@ -1,0 +1,158 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+  <meta charset="utf-8">
+  <title>Aurora Discord contrast fixture</title>
+  <style>
+    :root {
+      --text-default: #fdfffd;
+      --text-strong: #fdfffd;
+      --text-muted: #b3c9bd;
+      --interactive-text-active: #fdfffd;
+      --interactive-icon-active: #fdfffd;
+      --icon-strong: #fdfffd;
+      --button-outline-brand-text: #f0708e;
+      --button-secondary-text: #fdfffd;
+      --control-critical-primary-text-default: #f0708e;
+      --control-overlay-primary-background-default: var(--neutral-1);
+      --control-background-primary-default: #29332e;
+      --control-border-primary-default: #52645a;
+      --neutral-1: hsl(0 0% 100%);
+      --hsl-main-color: #62e2a4;
+      --hsl-hover-color: #a8f0b3;
+      --hsl-success-color: #6fd48c;
+      --hsl-danger-color: #f0708e;
+      --hsl-channel-selected: #0a100d;
+      --hsl-channel-selected-bg: #62e2a4;
+    }
+    body { margin: 0; padding: 24px; background: #0a100d; color: var(--text-default); font: 16px sans-serif; }
+    main { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 14px; }
+    section { padding: 12px; border: 1px solid #3f5a4c; border-radius: 8px; }
+    h2 { margin: 0 0 10px; font-size: 15px; }
+    button, .control, .badge, .voice { box-sizing: border-box; min-height: 36px; padding: 8px 12px; border: 1px solid transparent; border-radius: 4px; color: var(--text-default); }
+    .voice { position: relative; overflow: hidden; }
+    .voice > * { position: relative; z-index: 1; }
+    .roleColor_fixture { color: #d98cc0; }
+
+    /* Discord app CSS asset 603779.534a3b36bc3ad4af.css fetched 2026-09-22
+       supplies the white/inverted surfaces. Asset 952007.81adc80a0f44c2ad.css
+       resolves their overlay token through --neutral-1 to white. */
+    .lookFilled__201d5.colorBrandInverted__201d5{background-color:var(--control-overlay-primary-background-default);color:var(--control-primary-text-default)}
+    .lookFilled__201d5.colorWhite__201d5{background-color:var(--control-overlay-primary-background-default);border-color:var(--opacity-8);color:var(--control-primary-text-default)}
+
+    /* Representative rules copied from ClearVision v7 main.css fetched 2026-09-22. */
+    .lookFilled__201d5:is(.colorBrand__201d5,.colorPrimary__201d5){background-color:var(--hsl-main-color);border:none}
+    .lookFilled__201d5:is(.colorBrand__201d5,.colorPrimary__201d5):hover{background-color:var(--hsl-hover-color)}
+    .lookFilled__201d5.colorGreen__201d5{background-color:var(--hsl-success-color);border:none}
+    .lookFilled__201d5.colorGreen__201d5:hover{background-color:hsl(from var(--hsl-success-color) h s l/0.8)}
+    .lookFilled__201d5.colorRed__201d5{background-color:var(--hsl-danger-color);border:none}
+    .lookFilled__201d5.colorRed__201d5:hover{background-color:hsl(from var(--hsl-danger-color) h s l/0.8)}
+    .lookFilled__201d5:is(.colorWhite__201d5,.colorBrandInverted__201d5){color:var(--hsl-main-color);border:none}
+    .lookOutlined__201d5:is(.colorBrand__201d5,.colorPrimary__201d5){background:transparent;border-color:var(--hsl-main-color)}
+    .lookOutlined__201d5:is(.colorBrand__201d5,.colorPrimary__201d5):hover{border-color:var(--hsl-hover-color);background-color:var(--hsl-hover-color)}
+    .primary_a22cb0{background:var(--hsl-main-color);border-color:transparent}
+    .primary_a22cb0:hover,.primary_a22cb0:active{background:var(--hsl-hover-color);border-color:transparent}
+    .secondary_a22cb0{background:transparent;border-color:var(--hsl-main-color)}
+    .active_a22cb0{background:var(--hsl-success-color);border-color:transparent}
+    .active_a22cb0:hover,.active_a22cb0:active{background:hsl(from var(--hsl-success-color) h s l/0.8);border-color:transparent}
+    .critical-primary_a22cb0{background:var(--hsl-danger-color);border-color:transparent}
+    .critical-primary_a22cb0:hover,.critical-primary_a22cb0:active{background:hsl(from var(--hsl-danger-color) h s l/0.8);border-color:transparent}
+    .critical-secondary_a22cb0{background:transparent;border-color:var(--hsl-danger-color);color:var(--control-critical-primary-text-default)}
+    .custom-user-profile-theme .primary_a22cb0{background-color:var(--control-background-primary-default);border-color:var(--control-border-primary-default)}
+    ::selection{background:var(--hsl-main-color);color:var(--text-default)}
+    .numberBadge__463b7{background:var(--hsl-main-color)!important;color:var(--text-strong)}
+    .botTagRegular__82f07{background:var(--hsl-main-color);color:var(--text-strong)}
+    .iconBackground__33980{background:var(--hsl-main-color);color:var(--interactive-icon-active)}
+    .wrapper__2ea32.modeSelected__2ea32 .link__2ea32::before{content:"";position:absolute;inset:0;background:var(--hsl-channel-selected-bg)}
+    .wrapper__2ea32.modeSelected__2ea32 .name__2ea32{color:var(--hsl-channel-selected)}
+    /* Modeled Discord default: the before screenshot supports muted selected-row
+       secondary text, but no matching channelInfo rule was found in the fetched CSS. */
+    .wrapper__2ea32.modeSelected__2ea32 .channelInfo__2ea32{color:var(--text-muted)}
+
+    /* Discord app CSS asset 334324.ba65a76e9632d279.css fetched 2026-09-22.
+       This public navItem shape remains a separate compatibility fixture; it
+       is not the settings-sidebar markup observed in the running client. */
+    .navItem__77616{align-items:center;background:transparent;color:var(--text-muted);display:flex;gap:12px}
+    .navItemSelected__77616{background:var(--hsl-main-color);color:var(--interactive-text-active)}
+    .settingsIcon_fixture{fill:currentColor;height:20px;width:20px}
+
+    /* Live Vesktop settings-sidebar DOM captured through DevTools on
+       2026-09-22. The selected root and every descendant computed to the same
+       pale foreground on Aurora green before the theme repair. */
+    .item_caf372{align-items:center;background:transparent;color:var(--text-muted);display:flex;gap:12px}
+    .item_caf372.active_caf372{background:var(--hsl-main-color);color:var(--interactive-text-active)}
+    .itemContent_caf372{align-items:center;display:flex;gap:12px}
+    .icon_caf372{fill:currentColor;height:20px;width:20px}
+  </style>
+  <link rel="stylesheet" href="../vencord/aurora.theme.css">
+</head>
+<body>
+  <main>
+    <section><h2>Legacy filled</h2>
+      <button id="legacy-brand" class="lookFilled__201d5 colorBrand__201d5">Brand</button>
+      <button id="legacy-success" class="lookFilled__201d5 colorGreen__201d5">Success</button>
+      <button id="legacy-danger" class="lookFilled__201d5 colorRed__201d5">Danger</button>
+      <button id="legacy-white" class="lookFilled__201d5 colorWhite__201d5">Inverted</button>
+    </section>
+    <section><h2>Outlined stays light until filled</h2>
+      <button id="legacy-outline" class="lookOutlined__201d5 colorBrand__201d5">Outline</button>
+    </section>
+    <section><h2>Modern controls</h2>
+      <button id="modern-primary" class="button_a22cb0 primary_a22cb0">Primary</button>
+      <button id="modern-active" class="button_a22cb0 active_a22cb0">Active</button>
+      <button id="modern-critical" class="button_a22cb0 critical-primary_a22cb0">Critical</button>
+      <button id="modern-secondary" class="button_a22cb0 secondary_a22cb0">Secondary</button>
+      <button id="modern-critical-secondary" class="button_a22cb0 critical-secondary_a22cb0">Critical outline</button>
+    </section>
+    <section><h2>Custom profile boundary</h2>
+      <div class="custom-user-profile-theme"><button id="custom-primary" class="button_a22cb0 primary_a22cb0">Profile primary</button></div>
+      <div class="custom-user-profile-theme"><button id="custom-active" class="button_a22cb0 active_a22cb0">Profile active</button></div>
+      <div class="custom-user-profile-theme"><button id="custom-critical" class="button_a22cb0 critical-primary_a22cb0">Profile critical</button></div>
+    </section>
+    <section><h2>Selected voice channel</h2>
+      <div class="wrapper__2ea32 modeSelected__2ea32"><div id="voice-surface" class="link__2ea32 voice">
+        <div id="voice-name" class="name__2ea32">straw-hat-grand-fleet</div>
+        <div id="voice-secondary" class="channelInfo__2ea32">Set a channel status</div>
+      </div></div>
+    </section>
+    <section><h2>Accent surfaces</h2>
+      <span id="badge" class="numberBadge__463b7 badge">63</span>
+      <span id="bot-badge" class="botTagRegular__82f07 badge">BOT</span>
+      <span id="icon-control" class="iconBackground__33980 control">Icon</span>
+      <span id="role-color" class="roleColor_fixture">Role colour</span>
+      <p id="selection">Selected text uses the same readable pair.</p>
+      <div id="selected-navigation" class="interactiveSelected_fixture control">
+        <span id="selected-navigation-label">Friends</span>
+      </div>
+    </section>
+    <section><h2>Public navItem compatibility</h2>
+      <nav>
+        <div id="settings-neutral" class="navItem__77616 control">
+          <svg id="settings-neutral-icon" class="settingsIcon_fixture" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h16v16H2z"/></svg>
+          <span id="settings-neutral-label" class="settingsLabel_fixture">Voice</span>
+        </div>
+        <div id="settings-selected" class="navItem__77616 navItemSelected__77616 control">
+          <svg id="settings-selected-icon" class="settingsIcon_fixture" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h16v16H2z"/></svg>
+          <span id="settings-selected-label" class="settingsLabel_fixture">Voice &amp; Video</span>
+        </div>
+      </nav>
+    </section>
+    <section><h2>Live settings sidebar</h2>
+      <nav>
+        <div id="live-settings-neutral" class="item_caf372" role="link" data-list-item-id="settings-sidebar___appearance" tabindex="-1">
+          <div class="itemContent_caf372">
+            <svg id="live-settings-neutral-icon" class="icon_caf372" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h16v16H2z"/></svg>
+            <div id="live-settings-neutral-label" class="text-md/medium_cf4812" style="color:currentcolor">Appearance</div>
+          </div>
+        </div>
+        <div id="live-settings-selected" class="item_caf372 active_caf372" role="link" data-list-item-id="settings-sidebar___voice_and_video_panel" aria-current="page" tabindex="-1">
+          <div class="itemContent_caf372">
+            <svg id="live-settings-selected-icon" class="icon_caf372" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h16v16H2z"/></svg>
+            <div id="live-settings-selected-label" class="text-md/medium_cf4812" style="color:currentcolor">Voice &amp; Video</div>
+          </div>
+        </div>
+      </nav>
+    </section>
+  </main>
+</body>
+</html>
