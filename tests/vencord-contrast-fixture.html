@@ -1,0 +1,100 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+  <meta charset="utf-8">
+  <title>Aurora Discord contrast fixture</title>
+  <style>
+    :root {
+      --text-default: #fdfffd;
+      --text-strong: #fdfffd;
+      --text-muted: #b3c9bd;
+      --interactive-text-active: #fdfffd;
+      --interactive-icon-active: #fdfffd;
+      --icon-strong: #fdfffd;
+      --button-outline-brand-text: #f0708e;
+      --button-secondary-text: #fdfffd;
+      --control-critical-primary-text-default: #f0708e;
+      --control-background-primary-default: #29332e;
+      --control-border-primary-default: #52645a;
+      --hsl-main-color: #62e2a4;
+      --hsl-hover-color: #a8f0b3;
+      --hsl-success-color: #6fd48c;
+      --hsl-danger-color: #f0708e;
+      --hsl-channel-selected: #0a100d;
+      --hsl-channel-selected-bg: #62e2a4;
+    }
+    body { margin: 0; padding: 24px; background: #0a100d; color: var(--text-default); font: 16px sans-serif; }
+    main { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 14px; }
+    section { padding: 12px; border: 1px solid #3f5a4c; border-radius: 8px; }
+    h2 { margin: 0 0 10px; font-size: 15px; }
+    button, .control, .badge, .voice { box-sizing: border-box; min-height: 36px; padding: 8px 12px; border: 1px solid transparent; border-radius: 4px; color: var(--text-default); }
+    .voice { position: relative; overflow: hidden; }
+    .voice > * { position: relative; z-index: 1; }
+    .roleColor_fixture { color: #d98cc0; }
+
+    /* Representative rules copied from ClearVision v7 main.css fetched 2026-09-22. */
+    .lookFilled__201d5:is(.colorBrand__201d5,.colorPrimary__201d5){background-color:var(--hsl-main-color);border:none}
+    .lookFilled__201d5:is(.colorBrand__201d5,.colorPrimary__201d5):hover{background-color:var(--hsl-hover-color)}
+    .lookFilled__201d5.colorGreen__201d5{background-color:var(--hsl-success-color);border:none}
+    .lookFilled__201d5.colorGreen__201d5:hover{background-color:hsl(from var(--hsl-success-color) h s l/0.8)}
+    .lookFilled__201d5.colorRed__201d5{background-color:var(--hsl-danger-color);border:none}
+    .lookFilled__201d5.colorRed__201d5:hover{background-color:hsl(from var(--hsl-danger-color) h s l/0.8)}
+    .lookFilled__201d5:is(.colorWhite__201d5,.colorBrandInverted__201d5){background:#fdfffd;color:var(--hsl-main-color);border:none}
+    .lookOutlined__201d5:is(.colorBrand__201d5,.colorPrimary__201d5){background:transparent;border-color:var(--hsl-main-color)}
+    .lookOutlined__201d5:is(.colorBrand__201d5,.colorPrimary__201d5):hover{border-color:var(--hsl-hover-color);background-color:var(--hsl-hover-color)}
+    .primary_a22cb0{background:var(--hsl-main-color);border-color:transparent}
+    .primary_a22cb0:hover,.primary_a22cb0:active{background:var(--hsl-hover-color);border-color:transparent}
+    .secondary_a22cb0{background:transparent;border-color:var(--hsl-main-color)}
+    .active_a22cb0{background:var(--hsl-success-color);border-color:transparent}
+    .active_a22cb0:hover,.active_a22cb0:active{background:hsl(from var(--hsl-success-color) h s l/0.8);border-color:transparent}
+    .critical-primary_a22cb0{background:var(--hsl-danger-color);border-color:transparent}
+    .critical-primary_a22cb0:hover,.critical-primary_a22cb0:active{background:hsl(from var(--hsl-danger-color) h s l/0.8);border-color:transparent}
+    .critical-secondary_a22cb0{background:transparent;border-color:var(--hsl-danger-color);color:var(--control-critical-primary-text-default)}
+    .custom-user-profile-theme .primary_a22cb0{background-color:var(--control-background-primary-default);border-color:var(--control-border-primary-default)}
+    ::selection{background:var(--hsl-main-color);color:var(--text-default)}
+    .numberBadge__463b7{background:var(--hsl-main-color)!important;color:var(--text-strong)}
+    .botTagRegular__82f07{background:var(--hsl-main-color);color:var(--text-strong)}
+    .iconBackground__33980{background:var(--hsl-main-color);color:var(--interactive-icon-active)}
+    .wrapper__2ea32.modeSelected__2ea32 .link__2ea32::before{content:"";position:absolute;inset:0;background:var(--hsl-channel-selected-bg)}
+    .wrapper__2ea32.modeSelected__2ea32 .name__2ea32{color:var(--hsl-channel-selected)}
+    .wrapper__2ea32.modeSelected__2ea32 .channelInfo__2ea32{color:var(--text-muted)}
+  </style>
+  <link rel="stylesheet" href="../vencord/aurora.theme.css">
+</head>
+<body>
+  <main>
+    <section><h2>Legacy filled</h2>
+      <button id="legacy-brand" class="lookFilled__201d5 colorBrand__201d5">Brand</button>
+      <button id="legacy-success" class="lookFilled__201d5 colorGreen__201d5">Success</button>
+      <button id="legacy-danger" class="lookFilled__201d5 colorRed__201d5">Danger</button>
+      <button id="legacy-white" class="lookFilled__201d5 colorWhite__201d5">Inverted</button>
+    </section>
+    <section><h2>Outlined stays light until filled</h2>
+      <button id="legacy-outline" class="lookOutlined__201d5 colorBrand__201d5">Outline</button>
+    </section>
+    <section><h2>Modern controls</h2>
+      <button id="modern-primary" class="button_a22cb0 primary_a22cb0">Primary</button>
+      <button id="modern-active" class="button_a22cb0 active_a22cb0">Active</button>
+      <button id="modern-critical" class="button_a22cb0 critical-primary_a22cb0">Critical</button>
+      <button id="modern-secondary" class="button_a22cb0 secondary_a22cb0">Secondary</button>
+      <button id="modern-critical-secondary" class="button_a22cb0 critical-secondary_a22cb0">Critical outline</button>
+    </section>
+    <section><h2>Custom profile boundary</h2>
+      <div class="custom-user-profile-theme"><button id="custom-primary" class="button_a22cb0 primary_a22cb0">Profile primary</button></div>
+    </section>
+    <section><h2>Selected voice channel</h2>
+      <div class="wrapper__2ea32 modeSelected__2ea32"><div id="voice-surface" class="link__2ea32 voice">
+        <div id="voice-name" class="name__2ea32">straw-hat-grand-fleet</div>
+        <div id="voice-secondary" class="channelInfo__2ea32">Set a channel status</div>
+      </div></div>
+    </section>
+    <section><h2>Accent surfaces</h2>
+      <span id="badge" class="numberBadge__463b7 badge">63</span>
+      <span id="bot-badge" class="botTagRegular__82f07 badge">BOT</span>
+      <span id="icon-control" class="iconBackground__33980 control">Icon</span>
+      <span id="role-color" class="roleColor_fixture">Role colour</span>
+      <p id="selection">Selected text uses the same readable pair.</p>
+    </section>
+  </main>
+</body>
+</html>
