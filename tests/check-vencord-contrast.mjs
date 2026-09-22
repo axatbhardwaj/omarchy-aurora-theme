@@ -100,6 +100,13 @@ try {
     console.log(`${name}: rgb(${actual}) ${pass ? "PASS" : "FAIL"}`);
     if (!pass) failures.push(`${name}: rgb(${actual}) != rgb(${expected})`);
   };
+  const checkStyle = async (name, selector, property, expected) => {
+    const got = await measure(selector);
+    const actual = got[property];
+    const pass = actual === expected;
+    console.log(`${name}: ${actual} ${pass ? "PASS" : "FAIL"}`);
+    if (!pass) failures.push(`${name}: ${actual} != ${expected}`);
+  };
 
   for (const [name, selector] of [
     ["legacy brand", "#legacy-brand"], ["legacy success", "#legacy-success"],
@@ -116,6 +123,9 @@ try {
   await checkContrast("custom profile stays paired", "#custom-primary", 4.5);
   await checkColor("critical secondary keeps role colour", "#modern-critical-secondary", "240,112,142");
   await checkColor("role colour remains untouched", "#role-color", "217,140,192");
+  await checkStyle("selected navigation foreground", "#selected-navigation", "color", "rgb(10, 16, 13)");
+  await checkStyle("selected navigation surface", "#selected-navigation", "background", "rgb(98, 226, 164)");
+  await checkStyle("selected navigation descendant stays transparent", "#selected-navigation-label", "background", "rgba(0, 0, 0, 0)");
 
   for (const [name, selector] of [
     ["legacy brand hover", "#legacy-brand"], ["legacy success hover", "#legacy-success"],
