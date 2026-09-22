@@ -20,6 +20,8 @@ let stderr = "";
 browser.stderr.setEncoding("utf8");
 browser.stderr.on("data", chunk => { stderr += chunk; });
 
+let failure;
+let cleanupFailure;
 try {
   const endpoint = await waitForEndpoint();
   const ws = new WebSocket(endpoint);
@@ -121,6 +123,8 @@ try {
   await checkContrast("outlined default stays light", "#legacy-outline", 4.5);
   await checkContrast("modern secondary stays light", "#modern-secondary", 4.5);
   await checkContrast("custom profile stays paired", "#custom-primary", 4.5);
+  await checkContrast("custom profile active", "#custom-active", 4.5);
+  await checkContrast("custom profile critical", "#custom-critical", 4.5);
   await checkColor("critical secondary keeps role colour", "#modern-critical-secondary", "240,112,142");
   await checkColor("role colour remains untouched", "#role-color", "217,140,192");
   await checkStyle("selected navigation foreground", "#selected-navigation", "color", "rgb(10, 16, 13)");
@@ -142,10 +146,35 @@ try {
   ws.close();
   if (failures.length) throw new Error(`${failures.length} contrast regression(s):\n${failures.join("\n")}`);
   console.log("Aurora Discord contrast matrix: PASS");
+} catch (error) {
+  failure = error;
 } finally {
   browser.kill("SIGTERM");
-  if (browser.exitCode === null) await new Promise(resolve => browser.once("exit", resolve));
-  await rm(profile, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
+  await waitForBrowserExit(1000);
+  if (browser.exitCode === null) {
+    browser.kill("SIGKILL");
+    await waitForBrowserExit(1000);
+  }
+  try {
+    await rm(profile, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
+  } catch (error) {
+    cleanupFailure = error;
+  }
+}
+if (failure) throw failure;
+if (cleanupFailure) throw cleanupFailure;
+
+function waitForBrowserExit(timeoutMs) {
+  if (browser.exitCode !== null) return Promise.resolve();
+  return new Promise(resolve => {
+    const finish = () => {
+      clearTimeout(timer);
+      browser.off("exit", finish);
+      resolve();
+    };
+    const timer = setTimeout(finish, timeoutMs);
+    browser.once("exit", finish);
+  });
 }
 
 async function waitForEndpoint() {

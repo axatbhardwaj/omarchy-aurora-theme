@@ -120,11 +120,9 @@
   [class*="lookOutlined_"][class*="colorGreen_"],
   [class*="lookOutlined_"][class*="colorRed_"]
 ):hover,
-:is(
-  .button_a22cb0.primary_a22cb0,
-  .button_a22cb0.active_a22cb0,
-  .button_a22cb0.critical-primary_a22cb0
-):not(.custom-user-profile-theme *),
+.button_a22cb0.primary_a22cb0:not(.custom-user-profile-theme *),
+.button_a22cb0.active_a22cb0,
+.button_a22cb0.critical-primary_a22cb0,
 [class*="botTagRegular_"],
 [class*="iconBackground_"] {
   color: #0a100d !important;
@@ -138,7 +136,7 @@
 
 /* The selected voice row's secondary status is independently muted upstream;
    keep that narrow descendant readable without flattening role colours. */
-[class*="modeSelected_"] :is([class*="channelInfo_"], [class*="subtitle_"]) {
+[class*="modeSelected_"] [class*="channelInfo_"] {
   color: #0a100d !important;
 }
 
