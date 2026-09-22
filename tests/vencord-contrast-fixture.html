@@ -70,12 +70,19 @@
     .wrapper__2ea32.modeSelected__2ea32 .channelInfo__2ea32{color:var(--text-muted)}
 
     /* Discord app CSS asset 334324.ba65a76e9632d279.css fetched 2026-09-22.
-       The current settings navigation uses a distinct camel-case
-       navItemSelected class, not the older navItem + selected pairing. The
-       screenshot supplies the observed Aurora-green selected surface. */
+       This public navItem shape remains a separate compatibility fixture; it
+       is not the settings-sidebar markup observed in the running client. */
     .navItem__77616{align-items:center;background:transparent;color:var(--text-muted);display:flex;gap:12px}
     .navItemSelected__77616{background:var(--hsl-main-color);color:var(--interactive-text-active)}
     .settingsIcon_fixture{fill:currentColor;height:20px;width:20px}
+
+    /* Live Vesktop settings-sidebar DOM captured through DevTools on
+       2026-09-22. The selected root and every descendant computed to the same
+       pale foreground on Aurora green before the theme repair. */
+    .item_caf372{align-items:center;background:transparent;color:var(--text-muted);display:flex;gap:12px}
+    .item_caf372.active_caf372{background:var(--hsl-main-color);color:var(--interactive-text-active)}
+    .itemContent_caf372{align-items:center;display:flex;gap:12px}
+    .icon_caf372{fill:currentColor;height:20px;width:20px}
   </style>
   <link rel="stylesheet" href="../vencord/aurora.theme.css">
 </head>
@@ -118,7 +125,7 @@
         <span id="selected-navigation-label">Friends</span>
       </div>
     </section>
-    <section><h2>Settings navigation</h2>
+    <section><h2>Public navItem compatibility</h2>
       <nav>
         <div id="settings-neutral" class="navItem__77616 control">
           <svg id="settings-neutral-icon" class="settingsIcon_fixture" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h16v16H2z"/></svg>
@@ -127,6 +134,22 @@
         <div id="settings-selected" class="navItem__77616 navItemSelected__77616 control">
           <svg id="settings-selected-icon" class="settingsIcon_fixture" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h16v16H2z"/></svg>
           <span id="settings-selected-label" class="settingsLabel_fixture">Voice &amp; Video</span>
+        </div>
+      </nav>
+    </section>
+    <section><h2>Live settings sidebar</h2>
+      <nav>
+        <div id="live-settings-neutral" class="item_caf372" role="link" data-list-item-id="settings-sidebar___appearance" tabindex="-1">
+          <div class="itemContent_caf372">
+            <svg id="live-settings-neutral-icon" class="icon_caf372" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h16v16H2z"/></svg>
+            <div id="live-settings-neutral-label" class="text-md/medium_cf4812" style="color:currentcolor">Appearance</div>
+          </div>
+        </div>
+        <div id="live-settings-selected" class="item_caf372 active_caf372" role="link" data-list-item-id="settings-sidebar___voice_and_video_panel" aria-current="page" tabindex="-1">
+          <div class="itemContent_caf372">
+            <svg id="live-settings-selected-icon" class="icon_caf372" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 2h16v16H2z"/></svg>
+            <div id="live-settings-selected-label" class="text-md/medium_cf4812" style="color:currentcolor">Voice &amp; Video</div>
+          </div>
         </div>
       </nav>
     </section>

@@ -156,10 +156,14 @@ try {
   await checkStyle("selected navigation foreground", "#selected-navigation", "color", "rgb(10, 16, 13)");
   await checkStyle("selected navigation surface", "#selected-navigation", "background", "rgb(98, 226, 164)");
   await checkStyle("selected navigation descendant stays transparent", "#selected-navigation-label", "background", "rgba(0, 0, 0, 0)");
-  await checkContrast("selected settings text", "#settings-selected-label", 4.5, { backgroundSelector: "#settings-selected" });
-  await checkSvgContrast("selected settings icon", "#settings-selected-icon", "#settings-selected", 3);
-  await checkContrast("neutral settings text stays light", "#settings-neutral-label", 4.5, { backgroundSelector: "#settings-neutral" });
-  await checkSvgContrast("neutral settings icon stays light", "#settings-neutral-icon", "#settings-neutral", 3);
+  await checkContrast("public navItem selected text", "#settings-selected-label", 4.5, { backgroundSelector: "#settings-selected" });
+  await checkSvgContrast("public navItem selected icon", "#settings-selected-icon", "#settings-selected", 3);
+  await checkContrast("public navItem neutral text stays light", "#settings-neutral-label", 4.5, { backgroundSelector: "#settings-neutral" });
+  await checkSvgContrast("public navItem neutral icon stays light", "#settings-neutral-icon", "#settings-neutral", 3);
+  await checkContrast("live selected settings text", "#live-settings-selected-label", 4.5, { backgroundSelector: "#live-settings-selected" });
+  await checkSvgContrast("live selected settings icon", "#live-settings-selected-icon", "#live-settings-selected", 3);
+  await checkContrast("live neutral settings text stays light", "#live-settings-neutral-label", 4.5, { backgroundSelector: "#live-settings-neutral" });
+  await checkSvgContrast("live neutral settings icon stays light", "#live-settings-neutral-icon", "#live-settings-neutral", 3);
 
   for (const [name, selector] of [
     ["legacy brand hover", "#legacy-brand"], ["legacy success hover", "#legacy-success"],
