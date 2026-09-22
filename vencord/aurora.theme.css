@@ -227,10 +227,16 @@
   background: var(--channel-selected-bg) !important;
 }
 
-/* Every selected surface (DM list row, Friends tabs, settings nav, select
+/* The live settings sidebar marks the active link semantically. Own both sides
+   of its contrast pair without depending on Discord's rotating class hashes. */
+[data-list-item-id^="settings-sidebar___"][aria-current="page"] {
+  background: var(--channel-selected-bg) !important;
+  color: var(--channel-selected) !important;
+}
+
+/* Every selected surface (DM list row, Friends tabs, public nav items, select
    options, emoji/sticker categories, pills) reads dark text on green, like the
-   desktop theme's selection. Discord's current settings nav uses the separate
-   camel-case navItemSelected class rather than the older selected class. */
+   desktop theme's selection. */
 [class*="interactiveSelected_"],
 [class*="interactiveSelected_"] *,
 [class*="topPill_"] [class*="item_"][class*="selected_"],
