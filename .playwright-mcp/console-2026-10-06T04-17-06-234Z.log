@@ -1,0 +1,17 @@
+[     595ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3773/ws?clientSurface=web&clientAppVersion=0.0.46-nightly.20261004.2644&clientDeviceType=desktop&clientOs=Linux&clientWebDeployment=server&clientBrowser=Chrome&connectionMethod=direct&orchestrationProtocol=2' failed: HTTP Authentication failed; no valid credentials available @ http://127.0.0.1:3773/assets/atomRegistry-gd-b8bvG.js:0
+[    1593ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://clerk.t3.codes/v1/client?__clerk_api_version=2026-05-12&_clerk_js_version=6.38.0:0
+[    1595ms] [ERROR] e: Clerk: Production Keys are only allowed for domain "t3.codes". 
+API Error: The Request HTTP Origin header must be equal to or a subdomain of the requesting URL.
+    at https://clerk.t3.codes/npm/@clerk/clerk-js@6/dist/clerk.browser.js:43:8984
+    at ip._baseFetch (https://clerk.t3.codes/npm/@clerk/clerk-js@6/dist/clerk.browser.js:44:38)
+    at async iu.execute (https://clerk.t3.codes/npm/@clerk/clerk-js@6/dist/clerk.browser.js:43:6812)
+    at async rN._baseGet (https://clerk.t3.codes/npm/@clerk/clerk-js@6/dist/clerk.browser.js:44:497)
+    at async Promise.all (index 1)
+    at async #eY (https://clerk.t3.codes/npm/@clerk/clerk-js@6/dist/clerk.browser.js:44:251800)
+    at async af.load (https://clerk.t3.codes/npm/@clerk/clerk-js@6/dist/clerk.browser.js:44:206927)
+    at async e.getEntryChunks (http://127.0.0.1:3773/assets/dist-BcjzWph2.js:19:77263) @ http://127.0.0.1:3773/assets/dist-BcjzWph2.js:18
+[    2946ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3773/ws?clientSurface=web&clientAppVersion=0.0.46-nightly.20261004.2644&clientDeviceType=desktop&clientOs=Linux&clientWebDeployment=server&clientBrowser=Chrome&connectionMethod=direct&orchestrationProtocol=2' failed: HTTP Authentication failed; no valid credentials available @ http://127.0.0.1:3773/assets/atomRegistry-gd-b8bvG.js:0
+[    6911ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3773/ws?clientSurface=web&clientAppVersion=0.0.46-nightly.20261004.2644&clientDeviceType=desktop&clientOs=Linux&clientWebDeployment=server&clientBrowser=Chrome&connectionMethod=direct&orchestrationProtocol=2' failed: HTTP Authentication failed; no valid credentials available @ http://127.0.0.1:3773/assets/atomRegistry-gd-b8bvG.js:0
+[   15453ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3773/ws?clientSurface=web&clientAppVersion=0.0.46-nightly.20261004.2644&clientDeviceType=desktop&clientOs=Linux&clientWebDeployment=server&clientBrowser=Chrome&connectionMethod=direct&orchestrationProtocol=2' failed: HTTP Authentication failed; no valid credentials available @ http://127.0.0.1:3773/assets/atomRegistry-gd-b8bvG.js:0
+[   27123ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3773/ws?clientSurface=web&clientAppVersion=0.0.46-nightly.20261004.2644&clientDeviceType=desktop&clientOs=Linux&clientWebDeployment=server&clientBrowser=Chrome&connectionMethod=direct&orchestrationProtocol=2' failed: HTTP Authentication failed; no valid credentials available @ http://127.0.0.1:3773/assets/atomRegistry-gd-b8bvG.js:0
+[   55973ms] [ERROR] WebSocket connection to 'ws://127.0.0.1:3773/ws?clientSurface=web&clientAppVersion=0.0.46-nightly.20261004.2644&clientDeviceType=desktop&clientOs=Linux&clientWebDeployment=server&clientBrowser=Chrome&connectionMethod=direct&orchestrationProtocol=2' failed: HTTP Authentication failed; no valid credentials available @ http://127.0.0.1:3773/assets/atomRegistry-gd-b8bvG.js:0
