@@ -20,6 +20,10 @@ omarchy-theme-install https://github.com/axatbhardwaj/omarchy-aurora-theme
 
 `vencord/aurora.theme.css` is a [ClearVision v7](https://github.com/ClearVision/ClearVision-v7) preset in the Aurora palette: green accents, green-black glass shading, Aurora Lake behind the app. Copy it to `~/.config/Vencord/themes/` (Vesktop: `~/.config/vesktop/themes/`) and enable it under Settings → Vencord → Themes.
 
+## T3 Code
+
+`t3code.json` is a hand-tuned T3 Code palette that replaces the one Omarchy generates from `colors.toml`. It has green-black glass surfaces, a green accent with dark text on solid fills, and tinted (not solid) green for selected sidebar rows so their white text stays readable. Omarchy publishes it to `~/.t3/userdata/themes/omarchy.json` on `omarchy theme set aurora`. Pick **Omarchy** under T3 Code → Settings → Theme, or run `t3 theme set omarchy`. `node tests/check-t3code-theme.mjs` checks its shape and contrast.
+
 ## Shell surfaces
 
 `shell.toml` styles Omarchy 4's bar, launcher, menus, notifications, polkit, and lock screen: dark glass at 0.80–0.96 alpha, gradient borders at ~0.75 alpha, green for selection, countdowns and text, dim green for placeholders and quiet control chrome. Windows are rounded at 14 with 11/22 gaps, a soft shadow, and buoyant, non-elastic animations.
