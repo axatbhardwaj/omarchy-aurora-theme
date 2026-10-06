@@ -10,6 +10,7 @@ const c = theme.colors;
 const failures = [];
 
 const hex = /^#[0-9a-f]{6}$/i;
+if (theme.version !== 1) failures.push("version must be 1");
 if (!theme.name || theme.name.length > 48) failures.push("name must be 1-48 chars");
 if (theme.appearance !== "dark") failures.push("appearance must be dark");
 for (const key of ["canvas", "accent"]) {
