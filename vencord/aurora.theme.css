@@ -297,11 +297,16 @@
   mask: var(--home-icon) center / var(--home-size) no-repeat;
 }
 [class*="wrapper_"][class*="selected_"] [class*="childWrapper_"] > svg,
-[class*="wrapper_"]:hover [class*="childWrapper_"] > svg {
+[class*="childWrapper_"]:hover > svg {
   background: #0a100d;
 }
-/* Servers without art show initials; they flip dark on the same green tile. */
+/* Servers without art show initials; they flip dark on the same green tile.
+   Hover keys off the tile itself: the whole server list is also a wrapper_. */
 [class*="wrapper_"][class*="selected_"] [class*="childWrapper_"],
-[class*="wrapper_"]:hover [class*="childWrapper_"] {
+[class*="childWrapper_"]:hover {
   color: #0a100d;
+}
+/* Own the hovered tile's green too, so the dark glyph never lands on dark. */
+[class*="childWrapper_"]:hover {
+  background-color: var(--hover-color) !important;
 }

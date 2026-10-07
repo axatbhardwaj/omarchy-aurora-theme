@@ -172,6 +172,10 @@ try {
   await checkContrast("server badge when connected", "#guild-badge-connected", 4.5);
   await checkContrast("selected server initials", "#guild-acronym", 4.5);
   await checkContrast("idle server initials stay light", "#guild-acronym-idle", 4.5, { backgroundSelector: "body" });
+  await hover("#guild-list");
+  await checkContrast("idle server initials while hovering the list", "#guild-acronym-idle", 4.5, { backgroundSelector: "body" });
+  await hover("#guild-acronym-hover");
+  await checkContrast("hovered server initials", "#guild-acronym-hover", 4.5);
   await checkContrast("server list NEW pill", "#guild-unread-text", 4.5, { backgroundSelector: "#guild-unread-bar" });
   await checkContrast("vencord primary button", "#vc-primary", 4.5);
   await checkContrast("vencord positive button", "#vc-positive", 4.5);
