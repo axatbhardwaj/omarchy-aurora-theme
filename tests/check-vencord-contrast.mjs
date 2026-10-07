@@ -168,6 +168,11 @@ try {
   await checkContrast("new messages bar text", "#new-messages-text", 4.5, { backgroundSelector: "#new-messages" });
   await checkContrast("autocomplete selected row", "#autocomplete-selected-text", 4.5, { backgroundSelector: "#autocomplete-selected" });
   await checkContrast("autocomplete neutral row stays light", "#autocomplete-neutral-text", 4.5, { backgroundSelector: "#autocomplete-neutral" });
+  await checkContrast("server badge on dark glass", "#guild-badge", 4.5);
+  await checkContrast("server badge when connected", "#guild-badge-connected", 4.5);
+  await checkContrast("selected server initials", "#guild-acronym", 4.5);
+  await checkContrast("idle server initials stay light", "#guild-acronym-idle", 4.5, { backgroundSelector: "body" });
+  await checkContrast("server list NEW pill", "#guild-unread-text", 4.5, { backgroundSelector: "#guild-unread-bar" });
   await checkContrast("vencord primary button", "#vc-primary", 4.5);
   await checkContrast("vencord positive button", "#vc-positive", 4.5);
   await checkContrast("vencord settings selected without aria-current", "#vc-settings-selected-label", 4.5, { backgroundSelector: "#vc-settings-selected" });

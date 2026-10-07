@@ -92,6 +92,19 @@
     .clickable__13533[aria-selected=true] .base__13533{background:var(--hsl-hover-color)}
     .base__13533{color:var(--text-default)}
 
+    /* ClearVision v7: server-list icon badges are dark glass unless you are
+       connected there, then Aurora green. */
+    .iconBadge__650eb{background:var(--hsl-popout-shading)}
+    .iconBadge__650eb.isCurrentUserConnected__650eb{background:var(--hsl-main-color)}
+    .theme-dark{--hsl-popout-shading:rgba(10,16,13,0.94)}
+
+    /* ClearVision v7: server icons without art fill green on hover/selection;
+       the server-list NEW pill is green too. Discord keeps their text white. */
+    .childWrapper__6e9f8{background-color:var(--hsl-card-shading);color:#fff}
+    .wrapper__6e9f8.selected__6e9f8 .childWrapper__6e9f8{background-color:var(--hsl-main-color)}
+    .bar__3b95d{background-color:var(--hsl-main-color)}
+    .text__3b95d{color:var(--text-strong) !important}
+
     /* Vencord v1.15.10 Button.css plus ClearVision's vencord.css fill. */
     .vc-btn-primary{background:var(--hsl-main-color);color:var(--text-strong)}
     .vc-btn-positive{background-color:var(--hsl-success-color);color:#fff}
@@ -170,6 +183,15 @@
       <div id="new-messages" class="newMessagesBar__0f481 control"><span id="new-messages-text">12 new messages</span></div>
       <div class="clickable__13533" aria-selected="true"><div id="autocomplete-selected" class="base__13533 control"><span id="autocomplete-selected-text">Members</span></div></div>
       <div class="clickable__13533" aria-selected="false"><div id="autocomplete-neutral" class="base__13533 control"><span id="autocomplete-neutral-text">JoyBoy</span></div></div>
+    </section>
+    <section><h2>Server icon badges</h2>
+      <div class="blobContainer_e5445c"><div class="upperBadge_cc5dd2"><div id="guild-badge" class="iconBadge__650eb iconBadge__463b7 control">Activity</div></div></div>
+      <div class="blobContainer_e5445c"><div class="upperBadge_cc5dd2"><div id="guild-badge-connected" class="iconBadge__650eb isCurrentUserConnected__650eb iconBadge__463b7 control">In voice</div></div></div>
+    </section>
+    <section><h2>Server list</h2>
+      <div class="wrapper__6e9f8 selected__6e9f8"><div id="guild-acronym" class="childWrapper__6e9f8 acronym__6e9f8 control">NS</div></div>
+      <div class="wrapper__6e9f8"><div id="guild-acronym-idle" class="childWrapper__6e9f8 acronym__6e9f8 control">IOG</div></div>
+      <div id="guild-unread-bar" class="bar__3b95d unreadMentionsBar_ef3116 control"><span id="guild-unread-text" class="text__3b95d">new</span></div>
     </section>
     <section><h2>Vencord buttons</h2>
       <button id="vc-primary" class="vc-btn-base vc-btn-primary">Restart</button>
