@@ -66,7 +66,14 @@ const pairs = [
   ["terminalForeground", "terminalSelection", 4.5],
   ["terminalCursor", "terminalBackground", 3],
   ["focus", "canvas", 3],
+  // T3 draws white glyphs on bg-destructive (stop button) and also uses the
+  // same role as text-destructive, so it must work in both directions.
+  ["white", "error", 3],
+  ["error", "canvas", 4.5],
+  ["error", "errorSurface", 4.5],
 ];
+
+c.white = "#ffffff"; // T3 hard-codes text-white on some role fills
 
 for (const [fg, bg, min] of pairs) {
   if (!c[fg] || !c[bg]) {

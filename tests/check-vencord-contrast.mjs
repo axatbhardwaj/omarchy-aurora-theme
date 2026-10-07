@@ -164,6 +164,18 @@ try {
   await checkSvgContrast("live selected settings icon", "#live-settings-selected-icon", "#live-settings-selected", 3);
   await checkContrast("live neutral settings text stays light", "#live-settings-neutral-label", 4.5, { backgroundSelector: "#live-settings-neutral" });
   await checkSvgContrast("live neutral settings icon stays light", "#live-settings-neutral-icon", "#live-settings-neutral", 3);
+  await checkContrast("unread bar text", "#unread-bar-text", 4.5, { backgroundSelector: "#unread-bar" });
+  await checkContrast("new messages bar text", "#new-messages-text", 4.5, { backgroundSelector: "#new-messages" });
+  await checkContrast("autocomplete selected row", "#autocomplete-selected-text", 4.5, { backgroundSelector: "#autocomplete-selected" });
+  await checkContrast("autocomplete neutral row stays light", "#autocomplete-neutral-text", 4.5, { backgroundSelector: "#autocomplete-neutral" });
+  await checkContrast("server badge on dark glass", "#guild-badge", 4.5);
+  await checkContrast("server badge when connected", "#guild-badge-connected", 4.5);
+  await checkContrast("selected server initials", "#guild-acronym", 4.5);
+  await checkContrast("idle server initials stay light", "#guild-acronym-idle", 4.5, { backgroundSelector: "body" });
+  await checkContrast("server list NEW pill", "#guild-unread-text", 4.5, { backgroundSelector: "#guild-unread-bar" });
+  await checkContrast("vencord primary button", "#vc-primary", 4.5);
+  await checkContrast("vencord positive button", "#vc-positive", 4.5);
+  await checkContrast("vencord settings selected without aria-current", "#vc-settings-selected-label", 4.5, { backgroundSelector: "#vc-settings-selected" });
 
   for (const [name, selector] of [
     ["legacy brand hover", "#legacy-brand"], ["legacy success hover", "#legacy-success"],
