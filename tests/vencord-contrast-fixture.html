@@ -102,6 +102,7 @@
        the server-list NEW pill is green too. Discord keeps their text white. */
     .childWrapper__6e9f8{background-color:var(--hsl-card-shading);color:#fff}
     .wrapper__6e9f8.selected__6e9f8 .childWrapper__6e9f8{background-color:var(--hsl-main-color)}
+    .wrapper__6e9f8:hover .childWrapper__6e9f8{background-color:var(--hsl-hover-color)}
     .bar__3b95d{background-color:var(--hsl-main-color)}
     .text__3b95d{color:var(--text-strong) !important}
 
@@ -190,7 +191,10 @@
     </section>
     <section><h2>Server list</h2>
       <div class="wrapper__6e9f8 selected__6e9f8"><div id="guild-acronym" class="childWrapper__6e9f8 acronym__6e9f8 control">NS</div></div>
-      <div class="wrapper__6e9f8"><div id="guild-acronym-idle" class="childWrapper__6e9f8 acronym__6e9f8 control">IOG</div></div>
+      <div id="guild-list" class="wrapper_ef3116 guilds__5e434">
+        <div class="wrapper__6e9f8"><div id="guild-acronym-hover" class="childWrapper__6e9f8 acronym__6e9f8 control">z</div></div>
+        <div class="wrapper__6e9f8"><div id="guild-acronym-idle" class="childWrapper__6e9f8 acronym__6e9f8 control">IOG</div></div>
+      </div>
       <div id="guild-unread-bar" class="bar__3b95d unreadMentionsBar_ef3116 control"><span id="guild-unread-text" class="text__3b95d">new</span></div>
     </section>
     <section><h2>Vencord buttons</h2>
