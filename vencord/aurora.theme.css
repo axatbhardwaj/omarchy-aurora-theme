@@ -206,6 +206,12 @@
 [class*="clipBadgeIcon__"] svg path {
   fill: currentColor;
 }
+/* Server-list badges stay dark glass until you join that server's voice, so
+   their glyph stays light until then. */
+[class*="upperBadge_"] [class*="iconBadge__"]:not([class*="isCurrentUserConnected_"]),
+[class*="upperBadge_"] [class*="iconBadge__"]:not([class*="isCurrentUserConnected_"]) svg {
+  color: #fdfffd !important;
+}
 
 /* Selected channel row: every glyph in it (hash, lock, invite, settings) goes
    dark like the name; ClearVision only darkens the name and channel icon. */
@@ -239,10 +245,12 @@
 }
 
 /* Other surfaces ClearVision fills with Aurora green but leaves light text on:
-   unread pills, the new-messages bar, the selected autocomplete row and
+   unread pills (channel and server list), the new-messages bar, the selected autocomplete row and
    Vencord's own filled buttons. */
 [class*="bar_"] [class*="barText_"],
 [class*="bar_"] [class*="unreadIcon_"],
+[class*="unreadMentionsBar_"],
+[class*="unreadMentionsBar_"] *,
 [class*="newMessagesBar_"],
 [class*="newMessagesBar_"] *,
 [class*="clickable_"][aria-selected="true"] [class*="base_"],
@@ -291,4 +299,9 @@
 [class*="wrapper_"][class*="selected_"] [class*="childWrapper_"] > svg,
 [class*="wrapper_"]:hover [class*="childWrapper_"] > svg {
   background: #0a100d;
+}
+/* Servers without art show initials; they flip dark on the same green tile. */
+[class*="wrapper_"][class*="selected_"] [class*="childWrapper_"],
+[class*="wrapper_"]:hover [class*="childWrapper_"] {
+  color: #0a100d;
 }
