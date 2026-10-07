@@ -37,7 +37,7 @@
     "secondaryLabel": "#8fb5a0",
     "iconMuted": "#6f9a82",
 
-    "error": "#f0708e",
+    "error": "#e0587a",
     "errorForeground": "#ff9bb3",
     "errorSurface": "#2a1219",
     "warning": "#e6d59a",
