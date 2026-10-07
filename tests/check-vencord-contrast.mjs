@@ -177,6 +177,10 @@ try {
   await hover("#guild-acronym-hover");
   await checkContrast("hovered server initials", "#guild-acronym-hover", 4.5);
   await checkContrast("server list NEW pill", "#guild-unread-text", 4.5, { backgroundSelector: "#guild-unread-bar" });
+  await checkContrast("menu item stays light", "#menu-label", 4.5, { backgroundSelector: "body" });
+  await checkContrast("focused menu item", "#menu-focused-label", 4.5, { backgroundSelector: "#menu-focused" });
+  await checkContrast("focused danger menu item", "#menu-danger-label", 4.5, { backgroundSelector: "#menu-danger-focused" });
+  await checkSvgContrast("focused danger menu icon", "#menu-danger-icon", "#menu-danger-focused", 3);
   await checkContrast("vencord primary button", "#vc-primary", 4.5);
   await checkContrast("vencord positive button", "#vc-positive", 4.5);
   await checkContrast("vencord settings selected without aria-current", "#vc-settings-selected-label", 4.5, { backgroundSelector: "#vc-settings-selected" });

@@ -106,6 +106,16 @@
     .bar__3b95d{background-color:var(--hsl-main-color)}
     .text__3b95d{color:var(--text-strong) !important}
 
+    /* ClearVision v7: context-menu focus fills (green, or rose for danger items)
+       with the label left light. */
+    .menu_c1e9c4{background:var(--hsl-popout-shading)}
+    .item_c1e9c4{color:var(--text-default)}
+    .colorDefault_c1e9c4.focused_c1e9c4{background-color:var(--hsl-hover-color)}
+    .colorDanger_c1e9c4{color:var(--hsl-danger-color)}
+    .colorDanger_c1e9c4.focused_c1e9c4{background-color:var(--hsl-danger-color)}
+    .colorDanger_c1e9c4.focused_c1e9c4:not(.checkboxContainer_c1e9c4) path{fill:var(--interactive-text-active)}
+    .item_c1e9c4.focused_c1e9c4 .label_c1e9c4{color:var(--interactive-text-active)}
+
     /* Vencord v1.15.10 Button.css plus ClearVision's vencord.css fill. */
     .vc-btn-primary{background:var(--hsl-main-color);color:var(--text-strong)}
     .vc-btn-positive{background-color:var(--hsl-success-color);color:#fff}
@@ -196,6 +206,13 @@
         <div class="wrapper__6e9f8"><div id="guild-acronym-idle" class="childWrapper__6e9f8 acronym__6e9f8 control">IOG</div></div>
       </div>
       <div id="guild-unread-bar" class="bar__3b95d unreadMentionsBar_ef3116 control"><span id="guild-unread-text" class="text__3b95d">new</span></div>
+    </section>
+    <section><h2>Context menu</h2>
+      <div class="menu_c1e9c4">
+        <div id="menu-item" class="item_c1e9c4 labelContainer_c1e9c4 colorDefault_c1e9c4 control"><div id="menu-label" class="label_c1e9c4">Mute Soundboard</div></div>
+        <div id="menu-focused" class="item_c1e9c4 labelContainer_c1e9c4 colorDefault_c1e9c4 focused_c1e9c4 control"><div id="menu-focused-label" class="label_c1e9c4">Mute</div></div>
+        <div id="menu-danger-focused" class="item_c1e9c4 labelContainer_c1e9c4 colorDanger_c1e9c4 focused_c1e9c4 control"><div id="menu-danger-label" class="label_c1e9c4">Disconnect</div><svg viewBox="0 0 20 20" width="16" height="16"><path id="menu-danger-icon" d="M2 2h16v16H2z"/></svg></div>
+      </div>
     </section>
     <section><h2>Vencord buttons</h2>
       <button id="vc-primary" class="vc-btn-base vc-btn-primary">Restart</button>
