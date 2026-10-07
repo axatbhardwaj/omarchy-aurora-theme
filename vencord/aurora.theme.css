@@ -128,6 +128,16 @@
   color: #0a100d !important;
 }
 
+/* Context menus: the focused or pressed item fills Aurora green (rose for
+   danger items) but ClearVision keeps its label and icon light. */
+:is([class*="colorDefault_"], [class*="colorDanger_"])[class*="item_"]:is([class*="focused_"], :active),
+:is([class*="colorDefault_"], [class*="colorDanger_"])[class*="item_"]:is([class*="focused_"], :active) * {
+  color: #0a100d !important;
+}
+[class*="colorDanger_"][class*="item_"]:is([class*="focused_"], :active) path {
+  fill: currentColor !important;
+}
+
 /* ClearVision's selection foreground follows normal body text, which is too
    light on Aurora green. */
 ::selection {
