@@ -229,9 +229,27 @@
 
 /* The live settings sidebar marks the active link semantically. Own both sides
    of its contrast pair without depending on Discord's rotating class hashes. */
-[data-list-item-id^="settings-sidebar___"][aria-current="page"] {
+[data-list-item-id^="settings-sidebar___"]:is([aria-current="page"], [class*="active_"]) {
   background: var(--channel-selected-bg) !important;
   color: var(--channel-selected) !important;
+}
+/* Vencord's own tabs paint their label separately and skip aria-current. */
+[data-list-item-id^="settings-sidebar___"]:is([aria-current="page"], [class*="active_"]) * {
+  color: var(--channel-selected) !important;
+}
+
+/* Other surfaces ClearVision fills with Aurora green but leaves light text on:
+   unread pills, the new-messages bar, the selected autocomplete row and
+   Vencord's own filled buttons. */
+[class*="bar_"] [class*="barText_"],
+[class*="bar_"] [class*="unreadIcon_"],
+[class*="newMessagesBar_"],
+[class*="newMessagesBar_"] *,
+[class*="clickable_"][aria-selected="true"] [class*="base_"],
+[class*="clickable_"][aria-selected="true"] [class*="base_"] *,
+.vc-btn-primary,
+.vc-btn-positive {
+  color: #0a100d !important;
 }
 
 /* Every selected surface (DM list row, Friends tabs, public nav items, select
