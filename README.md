@@ -30,6 +30,23 @@ omarchy-theme-install https://github.com/axatbhardwaj/omarchy-aurora-theme
 
 On a Lua-configured Hyprland (Omarchy 4 default) the theme's `hyprland.conf` is never sourced and git-installed themes cannot ship Lua, so rounding, gaps, shadow, animations and the Balanced Glass policy reach the compositor through `themed/hyprland.lua.tpl`, which you copy to `~/.config/omarchy/themed/` once (Omarchy renders it for whichever theme is active); `hyprland.conf` records the same values for `.conf`-based setups.
 
+## Approved io glass preset (2026-11-05)
+
+The [io glass restore preset](presets/io-glass-2026-11-05/README.md) preserves
+Axat's approved desktop appearance and is also backed up in Haoshoku:
+
+- Ghostty: 70% native background opacity, fully opaque terminal text.
+- T3 Code: 92% compositor opacity for readable text with subtle glass.
+- Other apps: 80%; browsers: 90%; credential and media exceptions retained.
+- Omarchy window and bar modes: `glassy`; effective blur size 4, passes 2.
+- Captured Aurora palette, shell styling, wallpaper, and personal window rules.
+
+This is an explicit restore preset, not automatically applied by theme install.
+Its glass settings supersede the older Balanced Glass values below on io.
+The archive manifest contains SHA-256 hashes; follow its README to restore.
+T3 uses whole-window opacity, so its text fades slightly; Ghostty uses native
+background-only transparency. No T3 palette change is needed for this preset.
+
 ## Balanced Glass
 
 Balanced Glass uses xray to frost the wallpaper beneath windows. Blur is size 24 with 4 passes — Dual Kawase needs the extra radius, not extra passes; 8 passes flatten the wallpaper into a solid color. Normal windows and Nautilus sit at 0.70; browsers sit at 0.80 so pages stay readable. Dimming is off entirely, with no active/inactive opacity gap; the green-led gradient border is the focus cue.
