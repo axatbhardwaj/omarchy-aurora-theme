@@ -57,7 +57,7 @@ try {
     await send("CSS.forcePseudoState", { nodeId, forcedPseudoClasses: ["hover"] });
   }
 
-  async function measure(selector, backgroundSelector = selector, backgroundPseudo = null, colorPseudo = null) {
+  async function measure(selector, backgroundSelector = selector, backgroundPseudo = null, colorPseudo = null, foregroundProperty = "color") {
     const expression = `(() => {
       const parse = value => {
         const rgb = value.match(/rgba?\\(([^)]+)\\)/);
@@ -76,11 +76,12 @@ try {
       };
       const fgStyle = getComputedStyle(document.querySelector(${JSON.stringify(selector)}), ${JSON.stringify(colorPseudo)});
       const bgStyle = getComputedStyle(document.querySelector(${JSON.stringify(backgroundSelector)}), ${JSON.stringify(backgroundPseudo)});
-      let fg = parse(fgStyle.color), bg = parse(bgStyle.backgroundColor);
+      const color = fgStyle[${JSON.stringify(foregroundProperty)}];
+      let fg = parse(color), bg = parse(bgStyle.backgroundColor);
       if (bg[3] < 1) bg = composite(bg, parse(getComputedStyle(document.body).backgroundColor));
       if (fg[3] < 1) fg = composite(fg, bg);
       const contrast = (Math.max(luminance(fg), luminance(bg)) + .05) / (Math.min(luminance(fg), luminance(bg)) + .05);
-      return { color: fgStyle.color, background: bgStyle.backgroundColor, rgb: fg.slice(0,3), contrast };
+      return { color, background: bgStyle.backgroundColor, shadow: fgStyle.boxShadow, content: fgStyle.content, rgb: fg.slice(0,3), contrast };
     })()`;
     const { result } = await send("Runtime.evaluate", { expression, returnByValue: true });
     if (result.subtype === "error") throw new Error(result.description);
@@ -110,7 +111,7 @@ try {
   const failures = [];
   const checkContrast = async (name, selector, minimum, options = {}) => {
     if (options.hover) await hover(selector);
-    const got = await measure(selector, options.backgroundSelector, options.backgroundPseudo, options.colorPseudo);
+    const got = await measure(selector, options.backgroundSelector, options.backgroundPseudo, options.colorPseudo, options.foregroundProperty);
     const pass = got.contrast >= minimum;
     console.log(`${name}: ${got.contrast.toFixed(2)}:1 (${got.color} on ${got.background}) ${pass ? "PASS" : "FAIL"}`);
     if (!pass) failures.push(`${name}: ${got.contrast.toFixed(2)} < ${minimum}`);
@@ -122,8 +123,8 @@ try {
     console.log(`${name}: rgb(${actual}) ${pass ? "PASS" : "FAIL"}`);
     if (!pass) failures.push(`${name}: rgb(${actual}) != rgb(${expected})`);
   };
-  const checkStyle = async (name, selector, property, expected) => {
-    const got = await measure(selector);
+  const checkStyle = async (name, selector, property, expected, pseudo = null) => {
+    const got = await measure(selector, selector, null, pseudo);
     const actual = got[property];
     const pass = actual === expected;
     console.log(`${name}: ${actual} ${pass ? "PASS" : "FAIL"}`);
@@ -146,6 +147,14 @@ try {
   await checkContrast("selected voice name", "#voice-name", 4.5, { backgroundSelector: "#voice-surface", backgroundPseudo: "::before" });
   await checkContrast("selected voice secondary", "#voice-secondary", 4.5, { backgroundSelector: "#voice-surface", backgroundPseudo: "::before" });
   await checkColor("selected channel label", "#voice-name", "237,247,239");
+  for (const selector of ["#channel-name", "#status-label", "#idle-name", "#speaking-name"]) {
+    await checkContrast(selector, selector, 4.5, { backgroundSelector: "#voice-glass" });
+  }
+  await checkColor("idle voice name", "#idle-name", "176,200,188");
+  await checkColor("speaking voice name", "#speaking-name", "253,255,253");
+  await checkColor("voice live badge", "#voice-live", "255,255,255");
+  await checkColor("voice microphone", "#voice-mic", "122,123,131");
+  await checkStyle("desktop title", "#app-title", "content", '"Vesktop"', "::before");
   const glass = await send("Runtime.evaluate", {
     expression: `(() => {
       document.querySelector("#composer").focus();
@@ -197,8 +206,16 @@ try {
   await checkContrast("new messages bar text", "#new-messages-text", 4.5, { backgroundSelector: "#new-messages" });
   await checkContrast("autocomplete selected row", "#autocomplete-selected-text", 4.5, { backgroundSelector: "#autocomplete-selected" });
   await checkContrast("autocomplete neutral row stays light", "#autocomplete-neutral-text", 4.5, { backgroundSelector: "#autocomplete-neutral" });
-  await checkContrast("server badge on dark glass", "#guild-badge", 4.5);
+  await checkContrast("idle server badge", "#guild-badge", 4.5);
   await checkContrast("server badge when connected", "#guild-badge-connected", 4.5);
+  await checkContrast("server rail count", "#rail-count", 4.5);
+  await checkSvgContrast("server rail activity glyph", "#rail-glyph", "#rail-activity", 3);
+  for (const selector of ["#rail-count", "#rail-activity"]) {
+    await checkStyle("rail badge fill", selector, "background", "rgb(133, 217, 172)");
+    await checkStyle("rail badge keyline", selector, "shadow", "rgb(10, 16, 13) 0px 0px 0px 1px inset");
+  }
+  await checkContrast("green badge against dark artwork", "#rail-count", 3, { backgroundSelector: "#dark-art", foregroundProperty: "backgroundColor" });
+  await checkContrast("dark badge ink and keyline against light artwork", "#rail-activity", 3, { backgroundSelector: "#light-art" });
   await checkContrast("selected server initials", "#guild-acronym", 4.5);
   await checkContrast("idle server initials stay light", "#guild-acronym-idle", 4.5, { backgroundSelector: "body" });
   await hover("#guild-list");
