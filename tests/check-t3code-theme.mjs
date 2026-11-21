@@ -37,6 +37,13 @@ for (const selector of ["[data-changed-files-state]", "[data-changed-files-state
 if (!/backdrop-filter:\s*blur\(/.test(declarations("[data-changed-files-state] > [data-changed-files-header]"))) {
   failures.push("sticky changed-files header must blur rows scrolling beneath it");
 }
+// User message bubbles sit on the lake as translucent black. A light layer
+// (e.g. rgb(237 247 239 / 8%)) washed them out to grey-white on io.
+const bubble = declarations("[data-user-message-bubble]");
+const bubbleAlpha = Number(bubble.match(/background:\s*rgb\(0 0 0 \/ (\d+)%\)\s*(?:!important)?\s*(?:;|$)/)?.[1]);
+if (!(bubbleAlpha >= 30 && bubbleAlpha < 70)) failures.push("user message bubble must be a single translucent black fill");
+if (/linear-gradient|rgb\((?:1\d\d|2\d\d)\s/.test(bubble)) failures.push("user message bubble must not carry a light wash layer");
+if (!/border:\s*1px solid var\(--app-theme-border\)/.test(bubble)) failures.push("user message bubble must keep its subtle theme border");
 // T3 panes must read as dense as Ghostty over the same lake. Ghostty composites
 // background-opacity of lake ink over the blurred wallpaper; T3 stacks one flat
 // pane scrim over the glass tint, then the approved preset's 92% window opacity
