@@ -20,7 +20,7 @@
   --online-color: #6fd48c;
   --idle-color: #e6d59a;
   --dnd-color: #f0708e;
-  --streaming-color: #d98cc0;
+  --streaming-color: #5fb3d9;
   --offline-color: #6f9a82;
   /* APP BACKGROUND */
   --background-shading-percent: 100%;
@@ -346,12 +346,12 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: rgb(24 14 33 / 2%);
+    background: rgb(14 22 19 / 2%);
     pointer-events: none;
   }
 
   [class*="sidebarList_"] {
-    background: linear-gradient(rgb(11 9 16 / 44%), rgb(11 9 16 / 30%));
+    background: linear-gradient(rgb(10 16 13 / 44%), rgb(10 16 13 / 30%));
     border-inline-end: 1px solid rgb(176 200 188 / 48%);
   }
   /* The guild channel list and DM list sit inside the backed sidebar. */
@@ -359,14 +359,14 @@
     background: transparent;
   }
   [class*="chatContent_"] {
-    background: linear-gradient(rgb(11 9 16 / 42%), rgb(11 9 16 / 20%));
+    background: linear-gradient(rgb(10 16 13 / 42%), rgb(10 16 13 / 20%));
   }
   :is(.theme-dark, .theme-darker, .theme-midnight) [class*="themed_"]:is([role="region"], [class*="container_"]) {
-    background: rgb(11 9 16 / 40%);
+    background: rgb(10 16 13 / 40%);
     border-bottom: 1px solid rgb(176 200 188 / 45%);
   }
   [class*="channelTextArea_"] {
-    background: rgb(11 9 16 / 52%);
+    background: rgb(10 16 13 / 52%);
     border: 1px solid rgb(176 200 188 / 50%);
     box-shadow: none;
   }
