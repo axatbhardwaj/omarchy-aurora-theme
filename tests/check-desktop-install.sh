@@ -34,7 +34,7 @@ grep -q '0.4316' "$root/active/ghostty.conf"
 if command -v ghostty >/dev/null; then
     ghostty +show-config > "$tmp/ghostty"
     grep -Fxq 'background-opacity = 0.4316' "$tmp/ghostty"
-    grep -Fxq 'background = #0b0910' "$tmp/ghostty"
+    grep -Fxq 'background = #0a100d' "$tmp/ghostty"
     grep -Fxq 'window-padding-x = 27' "$tmp/ghostty"
 fi
 cp "$XDG_CONFIG_HOME/ghostty/config" "$tmp/once"
