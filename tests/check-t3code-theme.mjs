@@ -37,6 +37,35 @@ for (const selector of ["[data-changed-files-state]", "[data-changed-files-state
 if (!/backdrop-filter:\s*blur\(/.test(declarations("[data-changed-files-state] > [data-changed-files-header]"))) {
   failures.push("sticky changed-files header must blur rows scrolling beneath it");
 }
+// T3 panes must read as dense as Ghostty over the same lake. Ghostty composites
+// background-opacity of lake ink over the blurred wallpaper; T3 stacks one flat
+// pane scrim over the glass tint, then the approved preset's 92% window opacity
+// lets 8% unscrimmed wallpaper back in. Top-to-bottom fades made the lower
+// conversation half as dense as the terminal beside it.
+const ghosttyAlpha = Number(
+  readFileSync(fileURLToPath(new URL("../desktop/lake/ghostty.conf", import.meta.url)), "utf8")
+    .match(/^background-opacity\s*=\s*([\d.]+)/m)?.[1],
+);
+const css = (theme.css ?? "").replace(/\/\*[\s\S]*?\*\//g, "");
+const stops = (name) =>
+  [...css.matchAll(new RegExp(`--aurora-${name}:\\s*linear-gradient\\(([^;]*)\\);`, "g"))].map(([, body]) =>
+    [...body.matchAll(/rgb\(10 16 13 \/ (\d+)%\)/g)].map(([, a]) => Number(a) / 100),
+  );
+const [pane, ...extraPanes] = stops("pane");
+const [tint] = stops("glass");
+if (extraPanes.length > 0 || !pane || new Set(pane).size !== 1) {
+  failures.push("all T3 panes must share one flat lake ink scrim");
+} else if (tint?.length) {
+  const effective = 1 - (1 - pane[0]) * (1 - tint[0]);
+  if (Math.abs(effective * 0.92 - ghosttyAlpha) > 0.01) {
+    failures.push(`T3 pane scrim ${effective.toFixed(4)} at 92% window opacity must match Ghostty ${ghosttyAlpha}`);
+  }
+}
+// Hyprland covers the portrait or landscape monitor with a centred wallpaper,
+// so a centred cover crop lines a full-height T3 window up with the desktop.
+if (!/var\(--aurora-backdrop\) center \/ cover fixed/.test(css)) {
+  failures.push("T3 wallpaper must use the desktop's centred cover crop");
+}
 for (const [role, expected] of Object.entries({
   accent: "#85d9ac",
   focus: "#85d9ac",
