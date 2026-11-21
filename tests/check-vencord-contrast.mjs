@@ -145,6 +145,35 @@ try {
   await checkContrast("accent icon", "#icon-control", 3);
   await checkContrast("selected voice name", "#voice-name", 4.5, { backgroundSelector: "#voice-surface", backgroundPseudo: "::before" });
   await checkContrast("selected voice secondary", "#voice-secondary", 4.5, { backgroundSelector: "#voice-surface", backgroundPseudo: "::before" });
+  await checkColor("selected channel label", "#voice-name", "237,247,239");
+  const glass = await send("Runtime.evaluate", {
+    expression: `(() => {
+      document.querySelector("#composer").focus();
+      const style = selector => getComputedStyle(document.querySelector(selector));
+      const root = style("html");
+      const composer = style(".channelTextArea_fixture");
+      const row = getComputedStyle(document.querySelector("#voice-surface"), "::before");
+      const tint = getComputedStyle(document.querySelector(".bg_fixture"), "::after");
+      return [
+        root.getPropertyValue("--background-filter").trim(),
+        root.getPropertyValue("--muted-text").trim().toUpperCase(),
+        style(".sidebarList_fixture").backgroundImage,
+        style(".chatContent_fixture").backgroundImage,
+        composer.backgroundColor, composer.outlineWidth, composer.outlineColor,
+        row.borderInlineStartWidth, row.backgroundColor, tint.backgroundColor,
+      ];
+    })()`, returnByValue: true,
+  });
+  const expectedGlass = [
+    "blur(24px)", "#B0C8BC",
+    "linear-gradient(rgba(11, 9, 16, 0.44), rgba(11, 9, 16, 0.3))",
+    "linear-gradient(rgba(11, 9, 16, 0.42), rgba(11, 9, 16, 0.2))",
+    "rgba(11, 9, 16, 0.52)", "2px", "rgb(133, 217, 172)", "3px",
+    "rgba(133, 217, 172, 0.2)", "rgba(24, 14, 33, 0.02)",
+  ];
+  if (JSON.stringify(glass.result.value) !== JSON.stringify(expectedGlass)) {
+    failures.push(`Unexpected Aurora glass: ${JSON.stringify(glass.result.value)}`);
+  }
   await checkContrast("text selection", "#selection", 4.5, { colorPseudo: "::selection", backgroundSelector: "#selection", backgroundPseudo: "::selection" });
   await checkContrast("outlined default stays light", "#legacy-outline", 4.5);
   await checkContrast("modern secondary stays light", "#modern-secondary", 4.5);
@@ -154,7 +183,7 @@ try {
   await checkColor("critical secondary keeps role colour", "#modern-critical-secondary", "240,112,142");
   await checkColor("role colour remains untouched", "#role-color", "217,140,192");
   await checkStyle("selected navigation foreground", "#selected-navigation", "color", "rgb(10, 16, 13)");
-  await checkStyle("selected navigation surface", "#selected-navigation", "background", "rgb(98, 226, 164)");
+  await checkStyle("selected navigation surface", "#selected-navigation", "background", "rgb(133, 217, 172)");
   await checkStyle("selected navigation descendant stays transparent", "#selected-navigation-label", "background", "rgba(0, 0, 0, 0)");
   await checkContrast("public navItem selected text", "#settings-selected-label", 4.5, { backgroundSelector: "#settings-selected" });
   await checkSvgContrast("public navItem selected icon", "#settings-selected-icon", "#settings-selected", 3);
