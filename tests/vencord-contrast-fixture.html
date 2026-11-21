@@ -18,6 +18,10 @@
       --control-background-primary-default: #29332e;
       --control-border-primary-default: #52645a;
       --neutral-1: hsl(0 0% 100%);
+      --white: hsl(0 0% 100%);
+      --border-subtle: hsl(0 0% 100% / 0.08);
+      --red-new-50: #d22d39;
+      --background-feedback-notification: var(--red-new-50);
       --hsl-main-color: var(--main-color);
       --hsl-hover-color: #a8f0b3;
       --hsl-success-color: #6fd48c;
@@ -132,6 +136,24 @@
     .colorDanger_c1e9c4.focused_c1e9c4:not(.checkboxContainer_c1e9c4) path{fill:var(--interactive-text-active)}
     .item_c1e9c4.focused_c1e9c4 .label_c1e9c4{color:var(--interactive-text-active)}
 
+    /* Discord asset 560338.1a716231a1c481e4.css fetched 2026-11-22 (component
+       in web.355a76e660bee7a5.js): the unread divider's NEW end cap keeps its
+       text on --white over --divider-color. ClearVision v7 main.css turns that
+       colour Aurora green. */
+    .divider_4TfzT5{align-items:center;border-top:thin solid var(--border-subtle);box-sizing:border-box;display:flex;flex:0 0 auto;height:0;justify-content:center;pointer-events:none;position:relative;z-index:1;--divider-color:var(--background-feedback-notification)}
+    .isUnread_4TfzT5{border-color:var(--divider-color)}
+    .hasContent_4TfzT5{inset-inline:auto;position:relative}
+    .endCap_4TfzT5{align-items:center;border-inline-start:none;border-radius:0 4px 4px 0;box-sizing:border-box;color:var(--white);display:flex;font-size:10px;font-weight:700;height:13px;inset-inline-end:0;justify-content:center;line-height:9px;padding-block:0;padding-inline:1px 4px;position:absolute;text-transform:uppercase;top:-7px}
+    .unreadPill_4TfzT5{background-color:var(--divider-color)}
+    .unreadPillCap_4TfzT5{display:block;height:13px;inset-inline-start:-8px;position:absolute;top:0}
+    .unreadPillCapStroke_4TfzT5{color:var(--divider-color);fill:var(--divider-color)}
+    .content_4TfzT5{border-radius:8px;color:var(--text-muted);display:block;flex:0 0 auto;font-size:12px;font-weight:600;line-height:13px;margin-top:-1px;padding:2px 4px}
+    .isUnread_4TfzT5 .content_4TfzT5{color:var(--divider-color)}
+    .divider_4TfzT5{--divider-color: var(--hsl-main-color)}
+    .divider_4TfzT5.hasContent_4TfzT5{border-color:rgba(0,0,0,0)}
+    .isUnread_4TfzT5 .content_4TfzT5::before,.isUnread_4TfzT5 .content_4TfzT5::after{background:var(--divider-color)}
+    #unread-divider-frame{padding:16px 0 8px}
+
     /* Vencord v1.15.10 Button.css plus ClearVision's vencord.css fill. */
     .vc-btn-primary{background:var(--hsl-main-color);color:var(--text-strong)}
     .vc-btn-positive{background-color:var(--hsl-success-color);color:#fff}
@@ -245,6 +267,13 @@
         <div class="wrapper__6e9f8"><div id="guild-acronym-idle" class="childWrapper__6e9f8 acronym__6e9f8 control">IOG</div></div>
       </div>
       <div id="guild-unread-bar" class="bar__3b95d unreadMentionsBar_ef3116 control"><span id="guild-unread-text" class="text__3b95d">new</span></div>
+    </section>
+    <section><h2>Unread chat divider</h2>
+      <div id="unread-divider-frame">
+        <div id="unread-divider" class="divider_4TfzT5 isUnread_4TfzT5" role="separator" aria-label="New messages">
+          <span id="unread-divider-pill" class="unreadPill_4TfzT5 endCap_4TfzT5"><svg id="unread-divider-cap" class="unreadPillCap_4TfzT5" width="8" height="13" viewBox="0 0 8 13" aria-hidden="true"><path id="unread-divider-cap-stroke" class="unreadPillCapStroke_4TfzT5" stroke="currentColor" fill="transparent" d="M8.16639 0.5H9C10.933 0.5 12.5 2.067 12.5 4V9C12.5 10.933 10.933 12.5 9 12.5H8.16639C7.23921 12.5 6.34992 12.1321 5.69373 11.4771L0.707739 6.5L5.69373 1.52292C6.34992 0.86789 7.23921 0.5 8.16639 0.5Z"/></svg>New</span>
+        </div>
+      </div>
     </section>
     <section><h2>Context menu</h2>
       <div class="menu_c1e9c4">
