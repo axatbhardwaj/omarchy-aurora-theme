@@ -171,9 +171,9 @@
   color: #0a100d !important;
 }
 
-/* Title bar: Aurora, not the ClearVision badge. */
+/* Show the client name in the title bar. */
 :is(.theme-dark, .theme-light):not(.platform-osx) [class*="leading_"]::before {
-  content: "Aurora";
+  content: "Vesktop";
   filter: drop-shadow(0 0 5px var(--hsl-main-color));
 }
 :is(.theme-dark, .theme-light):not(.platform-osx) [class*="leading_"]::after {
@@ -216,11 +216,15 @@
 [class*="clipBadgeIcon__"] svg path {
   fill: currentColor;
 }
-/* Server-list badges stay dark glass until you join that server's voice, so
-   their glyph stays light until then. */
-[class*="upperBadge_"] [class*="iconBadge__"]:not([class*="isCurrentUserConnected_"]),
-[class*="upperBadge_"] [class*="iconBadge__"]:not([class*="isCurrentUserConnected_"]) svg {
-  color: #fdfffd !important;
+/* Pair each rail badge with its own fill. The inset edge stays visible
+   against bright artwork without changing the count or glyph dimensions. */
+:is([class*="upperBadge_"], [class*="lowerBadge_"]) :is([class*="iconBadge_"], [class*="numberBadge_"]) {
+  background: var(--main-color) !important;
+  color: #0a100d !important;
+  box-shadow: inset 0 0 0 1px #0a100d;
+}
+[class*="upperBadge_"] [class*="iconBadge_"] svg {
+  color: inherit !important;
 }
 
 /* Selected channel row: every glyph in it (hash, lock, invite, settings) goes
@@ -362,6 +366,15 @@
     outline: 2px solid var(--focus-color);
     outline-offset: -1px;
     box-shadow: none;
+  }
+
+  /* Change the idle label tokens at their leaves. Discord supplies a
+     separate foreground for speaking names and for hover. */
+  [class*="sidebarList_"] [class*="voiceUser_"] [class*="username_"] {
+    --channels-default: var(--muted-text);
+  }
+  [class*="sidebarList_"] [class*="channelStatus_"] {
+    --channel-icon: var(--muted-text);
   }
 
   /* Only the channel list uses a translucent selection. Other navigation
