@@ -69,6 +69,22 @@
        secondary text, but no matching channelInfo rule was found in the fetched CSS. */
     .wrapper__2ea32.modeSelected__2ea32 .channelInfo__2ea32{color:var(--text-muted)}
 
+    /* Discord assets 880186.7a87dc8f25403652.css and 249727.b91ce589016fa240.css.
+       Representative foreground and light glass sampled from the Vesktop sidebar. */
+    #voice-glass { background: #354544; --channels-default: #7a7b83; --channel-icon: #7a7b83; }
+    .icon_YUoOxm,.username_YUoOxm { color: var(--channels-default); }
+    .usernameSpeaking_YUoOxm { color: var(--interactive-text-active); }
+    .liveIcon_YUoOxm { color: white; background: var(--danger-color); }
+    .channelStatusClickable_neq5ug,.channelStatus_neq5ug { color: var(--channel-icon); }
+    .name_TNyK-N { color: var(--channel-normal); }
+
+    /* ClearVision v7 main.css and Discord badge assets 5257 and 607986. */
+    .numberBadge_lMvXrQ { background: var(--hsl-main-color) !important; color: var(--text-strong); }
+    .iconBadge_JJ37Ii { background: var(--hsl-main-color) !important; }
+    .iconBadge_rwEpIL { background: var(--hsl-popout-shading); }
+    .iconBadge_rwEpIL.isCurrentUserConnected_rwEpIL { background: var(--hsl-main-color); }
+    .icon_lMvXrQ { width: 16px; height: 16px; }
+
     /* Discord app CSS asset 334324.ba65a76e9632d279.css fetched 2026-09-22.
        This public navItem shape remains a separate compatibility fixture; it
        is not the settings-sidebar markup observed in the running client. */
@@ -124,6 +140,7 @@
 </head>
 <body>
   <div id="app-mount" aria-hidden="true"><div class="bg_fixture" hidden></div></div>
+  <header class="leading_3zSH5d" id="app-title"></header>
   <main>
     <section><h2>Legacy filled</h2>
       <button id="legacy-brand" class="lookFilled__201d5 colorBrand__201d5">Brand</button>
@@ -151,6 +168,18 @@
         <div id="voice-name" class="name__2ea32">straw-hat-grand-fleet</div>
         <div id="voice-secondary" class="channelInfo__2ea32">Set a channel status</div>
       </div></div>
+    </section>
+    <section class="sidebarList_fixture" id="voice-glass"><h2>Voice channel</h2>
+      <div class="wrapper_TNyK-N"><div class="link_TNyK-N">
+        <div class="name_TNyK-N" id="channel-name">Voice lounge</div>
+        <div class="channelStatusClickable_neq5ug"><span id="status-label" class="channelStatus_neq5ug">Set a channel status</span></div>
+      </div></div>
+      <div class="voiceUser_YUoOxm"><div class="content_YUoOxm">
+        <span id="idle-name" class="username_YUoOxm">Listener</span>
+        <span id="voice-live" class="liveIcon_YUoOxm">LIVE</span>
+        <svg id="voice-mic" class="icon_YUoOxm" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="4" fill="currentColor"/></svg>
+      </div></div>
+      <div class="voiceUser_YUoOxm"><span id="speaking-name" class="username_YUoOxm usernameSpeaking_YUoOxm">Speaker</span></div>
     </section>
     <section class="chatContent_fixture"><h2>Conversation</h2>
       <div class="channelTextArea_fixture"><input id="composer" placeholder="Message #general"></div>
@@ -202,6 +231,12 @@
     <section><h2>Server icon badges</h2>
       <div class="blobContainer_e5445c"><div class="upperBadge_cc5dd2"><div id="guild-badge" class="iconBadge__650eb iconBadge__463b7 control">Activity</div></div></div>
       <div class="blobContainer_e5445c"><div class="upperBadge_cc5dd2"><div id="guild-badge-connected" class="iconBadge__650eb isCurrentUserConnected__650eb iconBadge__463b7 control">In voice</div></div></div>
+    </section>
+    <section><h2>Server artwork badges</h2>
+      <div id="dark-art" style="background:#15171a" class="lowerBadge_hqZPsU"><span class="numberBadge_lMvXrQ" id="rail-count">39</span></div>
+      <div id="light-art" style="background:#e7ebea" class="upperBadge_hqZPsU"><span class="iconBadge_rwEpIL iconBadge_JJ37Ii" id="rail-activity">
+        <svg class="icon_lMvXrQ" viewBox="0 0 16 16" aria-hidden="true"><path id="rail-glyph" fill="currentColor" d="M2 6h3l4-3v10l-4-3H2z"/></svg>
+      </span></div>
     </section>
     <section><h2>Server list</h2>
       <div class="wrapper__6e9f8 selected__6e9f8"><div id="guild-acronym" class="childWrapper__6e9f8 acronym__6e9f8 control">NS</div></div>
