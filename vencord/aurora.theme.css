@@ -274,6 +274,14 @@
   color: #0a100d !important;
 }
 
+/* The chat's unread divider ends in a NEW pill filled with --divider-color,
+   which ClearVision sets to Aurora green, while Discord keeps its text white.
+   Darken only the pill's own text: its SVG cap sets its own colour and keeps
+   the green outline that joins the divider line. */
+[class*="isUnread_"] > [class*="unreadPill_"][class*="endCap_"] {
+  color: #0a100d;
+}
+
 /* Every selected surface (DM list row, Friends tabs, public nav items, select
    options, emoji/sticker categories, pills) reads dark text on green, like the
    desktop theme's selection. */
