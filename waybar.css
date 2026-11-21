@@ -1,19 +1,19 @@
 @define-color foreground #edf7ef;
-@define-color background #180e21;
+@define-color background #0e1613;
 @define-color accent #85d9ac;
 @define-color secondary #b0c8bc;
 
 /* Two independent background layers keep module glyphs fully opaque. */
 window#waybar {
-  background-color: rgba(24, 14, 33, 0.02);
-  background-image: linear-gradient(rgba(11, 9, 16, 0.42), rgba(11, 9, 16, 0.42));
+  background-color: rgba(14, 22, 19, 0.02);
+  background-image: linear-gradient(rgba(10, 16, 13, 0.42), rgba(10, 16, 13, 0.42));
   color: @foreground;
 }
 
 window#waybar * {
   background-color: transparent;
   color: @foreground;
-  text-shadow: 0 0 1.2px rgba(11, 9, 16, 0.55);
+  text-shadow: 0 0 1.2px rgba(10, 16, 13, 0.55);
 }
 
 window#waybar #workspaces button label {
