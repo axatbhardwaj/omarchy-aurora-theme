@@ -35,10 +35,10 @@ hl.config({
       enabled = true,
       size = 24,
       passes = 4,
-      noise = 0.03,
-      contrast = 1.45,
-      brightness = 1.15,
-      vibrancy = 0.03,
+      noise = 0.0,
+      contrast = 1.0,
+      brightness = 1.0,
+      vibrancy = 0.0,
       vibrancy_darkness = 0.7,
       xray = true,
       ignore_opacity = true,
@@ -67,13 +67,15 @@ hl.animation({ leaf = "layersIn", enabled = true, speed = 5, bezier = "auroraDri
 hl.animation({ leaf = "layersOut", enabled = true, speed = 4, bezier = "glassFade", style = "fade" })
 hl.animation({ leaf = "workspaces", enabled = true, speed = 7, bezier = "workspaceGlide", style = "slide" })
 
+o.window({ focus = false, float = false }, { border_size = 1 })
+
 o.window({ tag = "default-opacity" }, { opacity = "0.70 override 0.70 override" })
 o.window({ tag = "chromium-based-browser" }, { opacity = "0.80 override 0.80 override" })
 o.window({ tag = "firefox-based-browser" }, { opacity = "0.80 override 0.80 override" })
 o.window("chromium-[a-z0-9-]+", { opacity = "0.80 override 0.80 override" })
 o.window("chrome-.*__-Default", { opacity = "0.80 override 0.80 override" })
 o.window("brave-.*", { opacity = "0.80 override 0.80 override" })
-o.window("^(org\\.gnome\\.Nautilus|nautilus)$", { opacity = "0.70 override 0.70 override" })
+o.window("^(org\\.gnome\\.Nautilus|nautilus)$", { opacity = "1 override 1 override" })
 o.window({ tag = "terminal" }, { opacity = "1 override 1 override" })
 o.window("dev\\.zed\\.Zed", { opacity = "1 override 1 override" })
 o.window(
@@ -88,8 +90,10 @@ o.window(
 )
 o.window("^(GeForceNOW|com\\.moonlight_stream\\.Moonlight)$", { opacity = "1 override 1 override" })
 
-hl.layer_rule({ match = { namespace = "waybar" }, blur = true, ignore_alpha = 0.5 })
-hl.layer_rule({ match = { namespace = "omarchy-bar" }, blur = true, blur_popups = true, ignore_alpha = 0.5 })
+o.window("^(steam|zoom|vlc|mpv|org\\.kde\\.kdenlive|com\\.obsproject\\.Studio|com\\.github\\.PintaProject\\.Pinta|imv|org\\.gnome\\.NautilusPreviewer|com\\.libretro\\.RetroArch|qemu)$", { opacity = "1 override 1 override" })
+
+hl.layer_rule({ match = { namespace = "waybar" }, blur = true, ignore_alpha = 0.01 })
+hl.layer_rule({ match = { namespace = "omarchy-bar" }, blur = true, blur_popups = true, ignore_alpha = 0.01 })
 hl.layer_rule({ match = { namespace = "omarchy-keyboard-panel" }, blur = true, blur_popups = true, ignore_alpha = 0.5 })
 hl.layer_rule({ match = { namespace = "walker" }, blur = true, ignore_alpha = 0.5 })
 hl.layer_rule({ match = { namespace = "notifications" }, blur = true })

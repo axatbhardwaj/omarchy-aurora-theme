@@ -20,7 +20,7 @@
   --online-color: #6fd48c;
   --idle-color: #e6d59a;
   --dnd-color: #f0708e;
-  --streaming-color: #d98cc0;
+  --streaming-color: #5fb3d9;
   --offline-color: #6f9a82;
   /* APP BACKGROUND */
   --background-shading-percent: 100%;
@@ -120,9 +120,10 @@
   [class*="lookOutlined_"][class*="colorGreen_"],
   [class*="lookOutlined_"][class*="colorRed_"]
 ):hover,
-.button_a22cb0.primary_a22cb0:not(.custom-user-profile-theme *),
-.button_a22cb0.active_a22cb0,
-.button_a22cb0.critical-primary_a22cb0,
+/* Discord's Mana buttons (Vesktop's Go Live too) rotate their class hash, so
+   match the stable component marker plus each filled variant's class token. */
+[data-mana-component="button"]:is([class^="primary_"], [class*=" primary_"]):not(.custom-user-profile-theme *),
+[data-mana-component="button"]:is([class^="active_"], [class*=" active_"], [class^="critical-primary_"], [class*=" critical-primary_"]),
 [class*="botTagRegular_"],
 [class*="iconBackground_"] {
   color: #0a100d !important;
@@ -171,9 +172,9 @@
   color: #0a100d !important;
 }
 
-/* Title bar: Aurora, not the ClearVision badge. */
+/* Show the client name in the title bar. */
 :is(.theme-dark, .theme-light):not(.platform-osx) [class*="leading_"]::before {
-  content: "Aurora";
+  content: "Vesktop";
   filter: drop-shadow(0 0 5px var(--hsl-main-color));
 }
 :is(.theme-dark, .theme-light):not(.platform-osx) [class*="leading_"]::after {
@@ -216,11 +217,15 @@
 [class*="clipBadgeIcon__"] svg path {
   fill: currentColor;
 }
-/* Server-list badges stay dark glass until you join that server's voice, so
-   their glyph stays light until then. */
-[class*="upperBadge_"] [class*="iconBadge__"]:not([class*="isCurrentUserConnected_"]),
-[class*="upperBadge_"] [class*="iconBadge__"]:not([class*="isCurrentUserConnected_"]) svg {
-  color: #fdfffd !important;
+/* Pair each rail badge with its own fill. The inset edge stays visible
+   against bright artwork without changing the count or glyph dimensions. */
+:is([class*="upperBadge_"], [class*="lowerBadge_"]) :is([class*="iconBadge_"], [class*="numberBadge_"]) {
+  background: var(--main-color) !important;
+  color: #0a100d !important;
+  box-shadow: inset 0 0 0 1px #0a100d;
+}
+[class*="upperBadge_"] [class*="iconBadge_"] svg {
+  color: inherit !important;
 }
 
 /* Selected channel row: every glyph in it (hash, lock, invite, settings) goes
@@ -268,6 +273,45 @@
 .vc-btn-primary,
 .vc-btn-positive {
   color: #0a100d !important;
+}
+
+/* The chat's unread divider ends in a NEW pill filled with --divider-color,
+   which ClearVision sets to Aurora green, while Discord keeps its text white.
+   Darken only the pill's own text: its SVG cap sets its own colour and keeps
+   the green outline that joins the divider line. */
+[class*="isUnread_"] > [class*="unreadPill_"][class*="endCap_"] {
+  color: #0a100d;
+}
+
+/* Discord's Select popout (Vesktop's audio source menu opens upward over the
+   screen share picker's own chips). ClearVision gives it translucent shading
+   and no edge, so the covered controls ghost through and the menu reads as an
+   overlap. Make it an opaque, edged layer and lift unselected rows from
+   Discord's grey --text-subtle to body text. */
+[role="listbox"]:is([class^="popout_"], [class*=" popout_"]) {
+  background: rgb(from var(--popout-shading) r g b / 1) !important;
+  border: 1px solid rgb(176 200 188 / 48%) !important;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 60%);
+}
+[role="listbox"]:is([class^="popout_"], [class*=" popout_"]) [role="option"]:not([aria-selected="true"]) {
+  color: var(--normal-text);
+}
+
+/* Vesktop's picker chips and source tiles use Discord's blurple --brand-500
+   under light text. Use the Aurora selection pair and a visible glass edge. */
+.vcd-screen-picker-option-radios .vcd-screen-picker-option-radio {
+  border-color: rgb(176 200 188 / 48%);
+}
+.vcd-screen-picker-option-radios .vcd-screen-picker-option-radio[data-checked="true"] {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+}
+.vcd-screen-picker-option-radios .vcd-screen-picker-option-radio[data-checked="true"],
+.vcd-screen-picker-option-radios .vcd-screen-picker-option-radio[data-checked="true"] * {
+  color: #0a100d;
+}
+.vcd-screen-picker-screen-grid .vcd-screen-picker-screen-label:hover {
+  outline-color: var(--main-color);
 }
 
 /* Every selected surface (DM list row, Friends tabs, public nav items, select
@@ -334,12 +378,12 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: rgb(24 14 33 / 2%);
+    background: rgb(14 22 19 / 2%);
     pointer-events: none;
   }
 
   [class*="sidebarList_"] {
-    background: linear-gradient(rgb(11 9 16 / 44%), rgb(11 9 16 / 30%));
+    background: linear-gradient(rgb(10 16 13 / 44%), rgb(10 16 13 / 30%));
     border-inline-end: 1px solid rgb(176 200 188 / 48%);
   }
   /* The guild channel list and DM list sit inside the backed sidebar. */
@@ -347,14 +391,14 @@
     background: transparent;
   }
   [class*="chatContent_"] {
-    background: linear-gradient(rgb(11 9 16 / 42%), rgb(11 9 16 / 20%));
+    background: linear-gradient(rgb(10 16 13 / 42%), rgb(10 16 13 / 20%));
   }
   :is(.theme-dark, .theme-darker, .theme-midnight) [class*="themed_"]:is([role="region"], [class*="container_"]) {
-    background: rgb(11 9 16 / 40%);
+    background: rgb(10 16 13 / 40%);
     border-bottom: 1px solid rgb(176 200 188 / 45%);
   }
   [class*="channelTextArea_"] {
-    background: rgb(11 9 16 / 52%);
+    background: rgb(10 16 13 / 52%);
     border: 1px solid rgb(176 200 188 / 50%);
     box-shadow: none;
   }
@@ -362,6 +406,19 @@
     outline: 2px solid var(--focus-color);
     outline-offset: -1px;
     box-shadow: none;
+  }
+
+  /* Change the idle label tokens at their leaves. Discord supplies a
+     separate foreground for speaking names and for hover. */
+  [class*="sidebarList_"] [class*="voiceUser_"] [class*="username_"] {
+    --channels-default: var(--muted-text);
+  }
+  [class*="sidebarList_"] :is([class*="channelStatus_"], [class*="channelStatusClickable_"], [class*="linkBottom_"]) {
+    --channel-icon: var(--muted-text);
+    --text-muted: var(--muted-text);
+  }
+  [class*="sidebarList_"] :is([class*="channelStatus_"], [class*="channelStatusClickable_"], [class*="linkBottom_"]) :is(span, [data-text-variant]) {
+    color: var(--muted-text) !important;
   }
 
   /* Only the channel list uses a translucent selection. Other navigation

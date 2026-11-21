@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Omarchy runs this hook with bash. Never load an executable from the current theme.
+set -eu
+root="${XDG_CONFIG_HOME:-$HOME/.config}/aurora-desktop"
+current="$HOME/.local/state/omarchy/current/theme.name"
+[[ -f $current ]] || current="$HOME/.config/omarchy/current/theme.name"
+exec 9>"$root/.switch.lock"
+flock 9
+# A deferred hook can finish after a second theme switch. Read actual state.
+name=$(cat "$current" 2>/dev/null || true)
+profile=off
+[[ $name != aurora ]] || profile=lake
+if [[ ! -L $root/active && -e $root/active ]]; then
+  echo "Existing $root/active needs a manual merge" >&2
+  exit 1
+fi
+stage=$(mktemp -d "$root/.select.XXXXXX")
+trap 'rm -f "$stage/active"; rmdir "$stage"' EXIT
+ln -s "$profile" "$stage/active"
+mv -Tf "$stage/active" "$root/active"
+
+if [[ $name == aurora && -n ${DBUS_SESSION_BUS_ADDRESS:-} ]]; then
+  if [[ -f /usr/share/icons/Yaru-olive/index.theme || -f ${XDG_DATA_HOME:-$HOME/.local/share}/icons/Yaru-olive/index.theme || -f $HOME/.icons/Yaru-olive/index.theme ]]; then
+    gsettings set org.gnome.desktop.interface icon-theme Yaru-olive
+  else
+    echo "Install the Yaru-olive icon theme to see green folders in Files." >&2
+  fi
+fi
+# Omarchy refreshes terminals before its hook. Reload again after switching
+# the include; a new terminal also reads the active files.
+if [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} && -n ${WAYLAND_DISPLAY:-} ]] && command -v omarchy-restart-terminal >/dev/null; then
+  omarchy-restart-terminal
+fi

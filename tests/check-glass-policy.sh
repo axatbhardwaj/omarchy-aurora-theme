@@ -89,7 +89,7 @@ waybar_has_blur_compatible_background() {
             alpha = $0
             sub(/^.*,[[:space:]]*/, "", alpha)
             sub(/\)[[:space:]]*;?[[:space:]]*$/, "", alpha)
-            if (alpha ~ /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/ && alpha + 0 > 0.5 && alpha + 0 < 1.0) {
+            if (alpha ~ /^([0-9]+([.][0-9]*)?|[.][0-9]+)$/ && alpha + 0 == 0.02) {
                 found = 1
             }
         }
@@ -181,19 +181,19 @@ theme_stages_without_denied_file_warning() {
 
 aurora_semantic_pairs() {
     printf '%s\n' \
-        'accent #62e2a4' \
-        'selection #62e2a4' \
-        'selection_background #62e2a4' \
-        'selection_foreground #0a100d' \
-        'muted #6f9a82' \
-        'background #0a100d' \
-        'dark_background #070c0a' \
-        'darker_background #050807' \
-        'lighter_background #12221a' \
-        'foreground #fdfffd' \
-        'dark_foreground #3f5a4c' \
-        'light_foreground #ffffff' \
-        'bright_foreground #ffffff' \
+        'accent #85d9ac' \
+        'selection #85d9ac' \
+        'selection_background #85d9ac' \
+        'selection_foreground #0e1613' \
+        'muted #b0c8bc' \
+        'background #0e1613' \
+        'dark_background #0a100d' \
+        'darker_background #060a08' \
+        'lighter_background #1f2a26' \
+        'foreground #edf7ef' \
+        'dark_foreground #727773' \
+        'light_foreground #edf7ef' \
+        'bright_foreground #edf7ef' \
         'red #f0708e' \
         'yellow #e6d59a' \
         'orange #e0b283' \
@@ -208,8 +208,8 @@ aurora_semantic_pairs() {
         'bright_cyan #b0eadf' \
         'bright_blue #93d2ec' \
         'bright_magenta #eeb4d8' \
-        'hyprland_active_border rgba(62e2a4ee) rgba(a8f0b3dd) rgba(7dd6c888) 35deg' \
-        'hyprland_inactive_border rgba(3f5a4c99)'
+        'hyprland_active_border rgba(85d9acff)' \
+        'hyprland_inactive_border rgba(727773ff)'
 }
 
 aurora_semantic_value() {
@@ -957,13 +957,14 @@ expected_policy_rule_lines=(
     'windowrule = opacity 0.80 0.80, match:tag chromium-based-browser'
     'windowrule = opacity 0.80 0.80, match:tag firefox-based-browser'
     'windowrule = opacity 0.80 0.80, match:class (chromium-[a-z0-9-]+|chrome-.*__-Default|brave-.*)'
-    'windowrule = opacity 0.70 0.70, match:class ^(org.gnome.Nautilus|nautilus)$'
-    'windowrule = opacity 1 1, match:tag terminal'
+    'windowrule = opacity 1 override 1 override, match:class ^(org.gnome.Nautilus|nautilus)$'
+    'windowrule = opacity 1 override 1 override, match:tag terminal'
     'windowrule = opacity 1 1, match:class ^dev\.zed\.Zed$'
     'windowrule = opacity 1 1, match:class ^(chrome-youtube\.com__-Default|chrome-app\.zoom\.us__wc_home-Default|chrome-www\.crunchyroll\.com__-Default|brave-youtube\.com__-Default|brave-www\.crunchyroll\.com__-Default|brave-www\.jiohotstar\.com__-Default|brave-reanime\.to__home-Default)$'
     'windowrule = opacity 1 1, match:tag pip'
     'windowrule = opacity 1 1, match:title WebcamOverlay'
     'windowrule = opacity 1 1, match:class ^(1[pP]assword|Bitwarden|org.keepassxc.KeePassXC|Proton Pass|chrome-nngceckbapebfimnlniiiahkandclblb-Default)$'
+    'windowrule = opacity 1 1, match:class ^(steam|zoom|vlc|mpv|org\.kde\.kdenlive|com\.obsproject\.Studio|com\.github\.PintaProject\.Pinta|imv|org\.gnome\.NautilusPreviewer|com\.libretro\.RetroArch|qemu)$'
     'windowrule = opacity 1 1, match:class ^(GeForceNOW|com.moonlight_stream.Moonlight)$'
 )
 
@@ -971,7 +972,7 @@ expected_layer_rule_lines=(
     'layerrule = blur on, match:namespace waybar'
     'layerrule = blur on, match:namespace walker'
     'layerrule = blur on, match:namespace notifications'
-    'layerrule = ignore_alpha 0.5, match:namespace waybar'
+    'layerrule = ignore_alpha 0.01, match:namespace waybar'
     'layerrule = ignore_alpha 0.5, match:namespace walker'
 )
 
@@ -1013,14 +1014,15 @@ pin_opacity_lines=(
 check "hyprland.conf exists" test -f "$config"
 check "Omarchy 4 hyprland.lua.tpl exists" test -f "$repo_root/themed/hyprland.lua.tpl"
 check "generated hyprland.lua keeps Balanced Glass blur size" matches "$(<"$staged_theme/hyprland.lua")" 'size = 24'
+check "generated Lua pins Files glyphs at full opacity" matches "$(<"$staged_theme/hyprland.lua")" 'Nautilus.*opacity = "1 override 1 override"'
 check "generated hyprland.lua keeps Balanced Glass blur passes" matches "$(<"$staged_theme/hyprland.lua")" 'passes = 4'
 check "generated hyprland.lua keeps Balanced Glass window opacity" matches "$(<"$staged_theme/hyprland.lua")" '0.70 override 0.70 override'
 check "generated hyprland.lua keeps browser opacity above window glass" matches "$(<"$staged_theme/hyprland.lua")" '0.80 override 0.80 override'
 check "generated hyprland.lua blurs Omarchy bar popups" matches "$(<"$staged_theme/hyprland.lua")" 'namespace = "omarchy-bar".*blur_popups = true'
 check "generated hyprland.lua blurs keyboard-driven Omarchy plugin panel popups" matches "$(<"$staged_theme/hyprland.lua")" 'namespace = "omarchy-keyboard-panel".*blur = true.*blur_popups = true'
 check "chromium.theme exists" test -f "$repo_root/chromium.theme"
-check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '10,16,13'
-check "waybar.css window#waybar background alpha is between 0.5 and 1.0" waybar_has_blur_compatible_background "$repo_root/waybar.css"
+check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '14,22,19'
+check "waybar.css window#waybar uses the 2% base tint" waybar_has_blur_compatible_background "$repo_root/waybar.css"
 check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_translucent_background "$repo_root/mako.ini"
 check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
 check "Git-installed theme stages without denied-file warnings" theme_stages_without_denied_file_warning
@@ -1038,8 +1040,8 @@ if [[ -f "$upstream_themed_dir/kitty.conf.tpl" ]]; then
 else
     skip "kitty upstream template colour pairs match the hardcoded list" "upstream template unavailable at $upstream_themed_dir/kitty.conf.tpl"
 fi
-check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(62e2a4ee\) rgba\(a8f0b3dd\) rgba\(7dd6c888\) 35deg[[:space:]]*$'
-check "inactiveBorderColor matches colors.toml" matches "$config_without_comments" '^[[:space:]]*\$inactiveBorderColor[[:space:]]*=[[:space:]]*rgba\(3f5a4c99\)[[:space:]]*$'
+check "activeBorderColor matches colors.toml gradient" matches "$config_without_comments" '^[[:space:]]*\$activeBorderColor[[:space:]]*=[[:space:]]*rgba\(85d9acff\)[[:space:]]*$'
+check "inactiveBorderColor matches colors.toml" matches "$config_without_comments" '^[[:space:]]*\$inactiveBorderColor[[:space:]]*=[[:space:]]*rgba\(727773ff\)[[:space:]]*$'
 check "general { col.active_border" equals "$(last_assignment_in_block general 'col[.]active_border')" '$activeBorderColor'
 check "general { col.inactive_border" equals "$(last_assignment_in_block general 'col[.]inactive_border')" '$inactiveBorderColor'
 check "group { col.border_active" equals "$(last_assignment_in_block group 'col[.]border_active')" '$activeBorderColor'
@@ -1047,7 +1049,7 @@ check "group { col.border_inactive" equals "$(last_assignment_in_block group 'co
 check "general { gaps_in" equals "$(last_assignment_in_block general gaps_in)" 8
 check "general { gaps_out" equals "$(last_assignment_in_block general gaps_out)" 15
 check "shell.toml exists" test -f "$repo_root/shell.toml"
-check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(62e2a4ee) rgba(a8f0b3dd) rgba(7dd6c888) 35deg'
+check "shell.toml active-border matches colors.toml gradient" equals "$(toml_path_value "$repo_root/shell.toml" hyprland.active-border)" 'rgba(85d9acff)'
 check "exactly one decoration block" test "$(count_blocks decoration)" -eq 1
 check "decoration { dim_inactive at last occurrence" equals "$(last_assignment_in_block decoration dim_inactive)" false
 check "dim_strength is absent" does_not_match "$config_without_comments" '^[[:space:]]*dim_strength[[:space:]]*='
@@ -1055,10 +1057,10 @@ check "exactly one blur block" test "$(count_blocks blur)" -eq 1
 check "blur { enabled at last occurrence" equals "$(last_assignment_in_block blur enabled)" true
 check "blur { size at last occurrence" equals "$(last_assignment_in_block blur size)" 24
 check "blur { passes at last occurrence" equals "$(last_assignment_in_block blur passes)" 4
-check "blur { noise at last occurrence" equals "$(last_assignment_in_block blur noise)" 0.03
-check "blur { contrast at last occurrence" equals "$(last_assignment_in_block blur contrast)" 1.45
-check "blur { brightness at last occurrence" equals "$(last_assignment_in_block blur brightness)" 1.15
-check "blur { vibrancy at last occurrence" equals "$(last_assignment_in_block blur vibrancy)" 0.03
+check "blur { noise at last occurrence" equals "$(last_assignment_in_block blur noise)" 0.0
+check "blur { contrast at last occurrence" equals "$(last_assignment_in_block blur contrast)" 1.0
+check "blur { brightness at last occurrence" equals "$(last_assignment_in_block blur brightness)" 1.0
+check "blur { vibrancy at last occurrence" equals "$(last_assignment_in_block blur vibrancy)" 0.0
 check "blur { vibrancy_darkness at last occurrence" equals "$(last_assignment_in_block blur vibrancy_darkness)" 0.7
 check "blur { special at last occurrence" equals "$(last_assignment_in_block blur special)" true
 check "blur { xray at last occurrence" equals "$(last_assignment_in_block blur xray)" true

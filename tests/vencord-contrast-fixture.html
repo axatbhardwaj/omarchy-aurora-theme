@@ -18,6 +18,10 @@
       --control-background-primary-default: #29332e;
       --control-border-primary-default: #52645a;
       --neutral-1: hsl(0 0% 100%);
+      --white: hsl(0 0% 100%);
+      --border-subtle: hsl(0 0% 100% / 0.08);
+      --red-new-50: #d22d39;
+      --background-feedback-notification: var(--red-new-50);
       --hsl-main-color: var(--main-color);
       --hsl-hover-color: #a8f0b3;
       --hsl-success-color: #6fd48c;
@@ -50,15 +54,15 @@
     .lookFilled__201d5:is(.colorWhite__201d5,.colorBrandInverted__201d5){color:var(--hsl-main-color);border:none}
     .lookOutlined__201d5:is(.colorBrand__201d5,.colorPrimary__201d5){background:transparent;border-color:var(--hsl-main-color)}
     .lookOutlined__201d5:is(.colorBrand__201d5,.colorPrimary__201d5):hover{border-color:var(--hsl-hover-color);background-color:var(--hsl-hover-color)}
-    .primary_a22cb0{background:var(--hsl-main-color);border-color:transparent}
-    .primary_a22cb0:hover,.primary_a22cb0:active{background:var(--hsl-hover-color);border-color:transparent}
-    .secondary_a22cb0{background:transparent;border-color:var(--hsl-main-color)}
-    .active_a22cb0{background:var(--hsl-success-color);border-color:transparent}
-    .active_a22cb0:hover,.active_a22cb0:active{background:hsl(from var(--hsl-success-color) h s l/0.8);border-color:transparent}
-    .critical-primary_a22cb0{background:var(--hsl-danger-color);border-color:transparent}
-    .critical-primary_a22cb0:hover,.critical-primary_a22cb0:active{background:hsl(from var(--hsl-danger-color) h s l/0.8);border-color:transparent}
-    .critical-secondary_a22cb0{background:transparent;border-color:var(--hsl-danger-color);color:var(--control-critical-primary-text-default)}
-    .custom-user-profile-theme .primary_a22cb0{background-color:var(--control-background-primary-default);border-color:var(--control-border-primary-default)}
+    .primary_F7qvhY{background:var(--hsl-main-color);border-color:transparent}
+    .primary_F7qvhY:hover,.primary_F7qvhY:active{background:var(--hsl-hover-color);border-color:transparent}
+    .secondary_F7qvhY{background:transparent;border-color:var(--hsl-main-color)}
+    .active_F7qvhY{background:var(--hsl-success-color);border-color:transparent}
+    .active_F7qvhY:hover,.active_F7qvhY:active{background:hsl(from var(--hsl-success-color) h s l/0.8);border-color:transparent}
+    .critical-primary_F7qvhY{background:var(--hsl-danger-color);border-color:transparent}
+    .critical-primary_F7qvhY:hover,.critical-primary_F7qvhY:active{background:hsl(from var(--hsl-danger-color) h s l/0.8);border-color:transparent}
+    .critical-secondary_F7qvhY{background:transparent;border-color:var(--hsl-danger-color);color:var(--control-critical-primary-text-default)}
+    .custom-user-profile-theme .primary_F7qvhY{background-color:var(--control-background-primary-default);border-color:var(--control-border-primary-default)}
     ::selection{background:var(--hsl-main-color);color:var(--text-default)}
     .numberBadge__463b7{background:var(--hsl-main-color)!important;color:var(--text-strong)}
     .botTagRegular__82f07{background:var(--hsl-main-color);color:var(--text-strong)}
@@ -68,6 +72,22 @@
     /* Modeled Discord default: the before screenshot supports muted selected-row
        secondary text, but no matching channelInfo rule was found in the fetched CSS. */
     .wrapper__2ea32.modeSelected__2ea32 .channelInfo__2ea32{color:var(--text-muted)}
+
+    /* Discord assets 880186.7a87dc8f25403652.css and 249727.b91ce589016fa240.css.
+       Representative foreground and light glass sampled from the Vesktop sidebar. */
+    #voice-glass { background: #354544; --channels-default: #7a7b83; --channel-icon: #7a7b83; }
+    .icon_YUoOxm,.username_YUoOxm { color: var(--channels-default); }
+    .usernameSpeaking_YUoOxm { color: var(--interactive-text-active); }
+    .liveIcon_YUoOxm { color: white; background: var(--danger-color); }
+    .channelStatusClickable_neq5ug,.channelStatus_neq5ug { color: var(--channel-icon); }
+    .name_TNyK-N { color: var(--channel-normal); }
+
+    /* ClearVision v7 main.css and Discord badge assets 5257 and 607986. */
+    .numberBadge_lMvXrQ { background: var(--hsl-main-color) !important; color: var(--text-strong); }
+    .iconBadge_JJ37Ii { background: var(--hsl-main-color) !important; }
+    .iconBadge_rwEpIL { background: var(--hsl-popout-shading); }
+    .iconBadge_rwEpIL.isCurrentUserConnected_rwEpIL { background: var(--hsl-main-color); }
+    .icon_lMvXrQ { width: 16px; height: 16px; }
 
     /* Discord app CSS asset 334324.ba65a76e9632d279.css fetched 2026-09-22.
        This public navItem shape remains a separate compatibility fixture; it
@@ -116,14 +136,60 @@
     .colorDanger_c1e9c4.focused_c1e9c4:not(.checkboxContainer_c1e9c4) path{fill:var(--interactive-text-active)}
     .item_c1e9c4.focused_c1e9c4 .label_c1e9c4{color:var(--interactive-text-active)}
 
+    /* Discord asset 560338.1a716231a1c481e4.css fetched 2026-11-22 (component
+       in web.355a76e660bee7a5.js): the unread divider's NEW end cap keeps its
+       text on --white over --divider-color. ClearVision v7 main.css turns that
+       colour Aurora green. */
+    .divider_4TfzT5{align-items:center;border-top:thin solid var(--border-subtle);box-sizing:border-box;display:flex;flex:0 0 auto;height:0;justify-content:center;pointer-events:none;position:relative;z-index:1;--divider-color:var(--background-feedback-notification)}
+    .isUnread_4TfzT5{border-color:var(--divider-color)}
+    .hasContent_4TfzT5{inset-inline:auto;position:relative}
+    .endCap_4TfzT5{align-items:center;border-inline-start:none;border-radius:0 4px 4px 0;box-sizing:border-box;color:var(--white);display:flex;font-size:10px;font-weight:700;height:13px;inset-inline-end:0;justify-content:center;line-height:9px;padding-block:0;padding-inline:1px 4px;position:absolute;text-transform:uppercase;top:-7px}
+    .unreadPill_4TfzT5{background-color:var(--divider-color)}
+    .unreadPillCap_4TfzT5{display:block;height:13px;inset-inline-start:-8px;position:absolute;top:0}
+    .unreadPillCapStroke_4TfzT5{color:var(--divider-color);fill:var(--divider-color)}
+    .content_4TfzT5{border-radius:8px;color:var(--text-muted);display:block;flex:0 0 auto;font-size:12px;font-weight:600;line-height:13px;margin-top:-1px;padding:2px 4px}
+    .isUnread_4TfzT5 .content_4TfzT5{color:var(--divider-color)}
+    .divider_4TfzT5{--divider-color: var(--hsl-main-color)}
+    .divider_4TfzT5.hasContent_4TfzT5{border-color:rgba(0,0,0,0)}
+    .isUnread_4TfzT5 .content_4TfzT5::before,.isUnread_4TfzT5 .content_4TfzT5::after{background:var(--divider-color)}
+    #unread-divider-frame{padding:16px 0 8px}
+
     /* Vencord v1.15.10 Button.css plus ClearVision's vencord.css fill. */
     .vc-btn-primary{background:var(--hsl-main-color);color:var(--text-strong)}
     .vc-btn-positive{background-color:var(--hsl-success-color);color:#fff}
+
+    /* Vesktop screen share picker, fetched 2026-11-22. Discord assets
+       384209.a1808559fefd7c5d.css (Mana button, data-mana-component="button"),
+       775417.e044d11ccd5012e6.css (Select popout role="listbox" and its
+       role="option" rows) and 952007.8c2302e28f050501.css (per-theme
+       --text-subtle, --brand-500); ClearVision v7 main.css fills; Vesktop
+       src/renderer/components/screenSharePicker.css chips. */
+    :root{--control-primary-text-default:var(--neutral-1);--brand-500:hsl(234.935 85.556% 64.706%);--primary-800:hsl(240 5.263% 7.451%)}
+    .theme-dark{--text-subtle:hsl(228 4.505% 78.235%)}
+    .theme-darker{--text-subtle:hsl(231.429 4.348% 68.431%)}
+    .theme-midnight{--text-subtle:hsl(232.5 3.96% 60.392%)}
+    .picker_fixture{--hsl-popout-shading:var(--popout-shading);--hsl-modal-shading:var(--modal-shading);background:var(--hsl-modal-shading)}
+    .primary_F7qvhY{color:var(--control-primary-text-default)}
+    .popout_uFkqU2{background-color:var(--background-surface-higher);border:1px solid var(--border-subtle);border-radius:8px}
+    .popout_uFkqU2,.popout_uFkqU2.popoutPositionTop_uFkqU2{background:var(--hsl-popout-shading);border:none}
+    .option_uFkqU2{color:var(--text-subtle);padding:12px}
+    .option_uFkqU2[aria-selected=true]{background:var(--hsl-main-color)}
+    .selectedIcon_uFkqU2{color:var(--icon-strong)}
+    .vcd-screen-picker-option-radios{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));width:100%}
+    .vcd-screen-picker-option-radio{text-align:center;background-color:var(--background-secondary);border:1px solid var(--primary-800);padding:.3em}
+    .vcd-screen-picker-option-input{display:none}
+    .vcd-screen-picker-option-radio[data-checked="true"]{background-color:var(--brand-500);border-color:var(--brand-500)}
+    .vcd-screen-picker-screen-label{padding:8px}
+    .vcd-screen-picker-screen-label:hover{outline:2px solid var(--brand-500)}
+    .vcText_fixture{color:var(--text-default);font-weight:700}
+    .pickerStack_fixture{position:relative;padding-top:8px}
+    .pickerStack_fixture [role="listbox"]{position:absolute;inset:0 0 auto 0}
   </style>
   <link rel="stylesheet" href="../vencord/aurora.theme.css">
 </head>
 <body>
   <div id="app-mount" aria-hidden="true"><div class="bg_fixture" hidden></div></div>
+  <header class="leading_3zSH5d" id="app-title"></header>
   <main>
     <section><h2>Legacy filled</h2>
       <button id="legacy-brand" class="lookFilled__201d5 colorBrand__201d5">Brand</button>
@@ -135,22 +201,34 @@
       <button id="legacy-outline" class="lookOutlined__201d5 colorBrand__201d5">Outline</button>
     </section>
     <section><h2>Modern controls</h2>
-      <button id="modern-primary" class="button_a22cb0 primary_a22cb0">Primary</button>
-      <button id="modern-active" class="button_a22cb0 active_a22cb0">Active</button>
-      <button id="modern-critical" class="button_a22cb0 critical-primary_a22cb0">Critical</button>
-      <button id="modern-secondary" class="button_a22cb0 secondary_a22cb0">Secondary</button>
-      <button id="modern-critical-secondary" class="button_a22cb0 critical-secondary_a22cb0">Critical outline</button>
+      <button id="modern-primary" data-mana-component="button" class="button_F7qvhY md_F7qvhY primary_F7qvhY hasText_F7qvhY">Primary</button>
+      <button id="modern-active" data-mana-component="button" class="button_F7qvhY md_F7qvhY active_F7qvhY hasText_F7qvhY">Active</button>
+      <button id="modern-critical" data-mana-component="button" class="button_F7qvhY md_F7qvhY critical-primary_F7qvhY hasText_F7qvhY">Critical</button>
+      <button id="modern-secondary" data-mana-component="button" class="button_F7qvhY md_F7qvhY secondary_F7qvhY hasText_F7qvhY">Secondary</button>
+      <button id="modern-critical-secondary" data-mana-component="button" class="button_F7qvhY md_F7qvhY critical-secondary_F7qvhY hasText_F7qvhY">Critical outline</button>
     </section>
     <section><h2>Custom profile boundary</h2>
-      <div class="custom-user-profile-theme"><button id="custom-primary" class="button_a22cb0 primary_a22cb0">Profile primary</button></div>
-      <div class="custom-user-profile-theme"><button id="custom-active" class="button_a22cb0 active_a22cb0">Profile active</button></div>
-      <div class="custom-user-profile-theme"><button id="custom-critical" class="button_a22cb0 critical-primary_a22cb0">Profile critical</button></div>
+      <div class="custom-user-profile-theme"><button id="custom-primary" data-mana-component="button" class="button_F7qvhY md_F7qvhY primary_F7qvhY hasText_F7qvhY">Profile primary</button></div>
+      <div class="custom-user-profile-theme"><button id="custom-active" data-mana-component="button" class="button_F7qvhY md_F7qvhY active_F7qvhY hasText_F7qvhY">Profile active</button></div>
+      <div class="custom-user-profile-theme"><button id="custom-critical" data-mana-component="button" class="button_F7qvhY md_F7qvhY critical-primary_F7qvhY hasText_F7qvhY">Profile critical</button></div>
     </section>
     <section class="sidebarList_fixture"><h2>Selected voice channel</h2>
       <div class="wrapper__2ea32 modeSelected__2ea32"><div id="voice-surface" class="link__2ea32 voice">
         <div id="voice-name" class="name__2ea32">straw-hat-grand-fleet</div>
         <div id="voice-secondary" class="channelInfo__2ea32">Set a channel status</div>
       </div></div>
+    </section>
+    <section class="sidebarList_fixture" id="voice-glass"><h2>Voice channel</h2>
+      <div class="wrapper_TNyK-N"><div class="link_TNyK-N">
+        <div class="name_TNyK-N" id="channel-name">Voice lounge</div>
+        <div class="channelStatusClickable_neq5ug"><span id="status-label" class="channelStatus_neq5ug">Set a channel status</span></div>
+      </div></div>
+      <div class="voiceUser_YUoOxm"><div class="content_YUoOxm">
+        <span id="idle-name" class="username_YUoOxm">Listener</span>
+        <span id="voice-live" class="liveIcon_YUoOxm">LIVE</span>
+        <svg id="voice-mic" class="icon_YUoOxm" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="4" fill="currentColor"/></svg>
+      </div></div>
+      <div class="voiceUser_YUoOxm"><span id="speaking-name" class="username_YUoOxm usernameSpeaking_YUoOxm">Speaker</span></div>
     </section>
     <section class="chatContent_fixture"><h2>Conversation</h2>
       <div class="channelTextArea_fixture"><input id="composer" placeholder="Message #general"></div>
@@ -203,6 +281,12 @@
       <div class="blobContainer_e5445c"><div class="upperBadge_cc5dd2"><div id="guild-badge" class="iconBadge__650eb iconBadge__463b7 control">Activity</div></div></div>
       <div class="blobContainer_e5445c"><div class="upperBadge_cc5dd2"><div id="guild-badge-connected" class="iconBadge__650eb isCurrentUserConnected__650eb iconBadge__463b7 control">In voice</div></div></div>
     </section>
+    <section><h2>Server artwork badges</h2>
+      <div id="dark-art" style="background:#15171a" class="lowerBadge_hqZPsU"><span class="numberBadge_lMvXrQ" id="rail-count">39</span></div>
+      <div id="light-art" style="background:#e7ebea" class="upperBadge_hqZPsU"><span class="iconBadge_rwEpIL iconBadge_JJ37Ii" id="rail-activity">
+        <svg class="icon_lMvXrQ" viewBox="0 0 16 16" aria-hidden="true"><path id="rail-glyph" fill="currentColor" d="M2 6h3l4-3v10l-4-3H2z"/></svg>
+      </span></div>
+    </section>
     <section><h2>Server list</h2>
       <div class="wrapper__6e9f8 selected__6e9f8"><div id="guild-acronym" class="childWrapper__6e9f8 acronym__6e9f8 control">NS</div></div>
       <div id="guild-list" class="wrapper_ef3116 guilds__5e434">
@@ -210,6 +294,13 @@
         <div class="wrapper__6e9f8"><div id="guild-acronym-idle" class="childWrapper__6e9f8 acronym__6e9f8 control">IOG</div></div>
       </div>
       <div id="guild-unread-bar" class="bar__3b95d unreadMentionsBar_ef3116 control"><span id="guild-unread-text" class="text__3b95d">new</span></div>
+    </section>
+    <section><h2>Unread chat divider</h2>
+      <div id="unread-divider-frame">
+        <div id="unread-divider" class="divider_4TfzT5 isUnread_4TfzT5" role="separator" aria-label="New messages">
+          <span id="unread-divider-pill" class="unreadPill_4TfzT5 endCap_4TfzT5"><svg id="unread-divider-cap" class="unreadPillCap_4TfzT5" width="8" height="13" viewBox="0 0 8 13" aria-hidden="true"><path id="unread-divider-cap-stroke" class="unreadPillCapStroke_4TfzT5" stroke="currentColor" fill="transparent" d="M8.16639 0.5H9C10.933 0.5 12.5 2.067 12.5 4V9C12.5 10.933 10.933 12.5 9 12.5H8.16639C7.23921 12.5 6.34992 12.1321 5.69373 11.4771L0.707739 6.5L5.69373 1.52292C6.34992 0.86789 7.23921 0.5 8.16639 0.5Z"/></svg>New</span>
+        </div>
+      </div>
     </section>
     <section><h2>Context menu</h2>
       <div class="menu_c1e9c4">
@@ -224,6 +315,23 @@
       <div id="vc-settings-selected" class="item_caf372 active_caf372" role="link" data-list-item-id="settings-sidebar___vencord_updater" tabindex="-1">
         <div class="itemContent_caf372"><div id="vc-settings-selected-label" class="text-md/medium_cf4812" style="color:var(--interactive-text-active)">Updater</div></div>
       </div>
+    </section>
+    <section id="picker-theme" class="theme-dark picker_fixture"><h2>Vesktop screen share picker</h2>
+      <div class="vcd-screen-picker-screen-grid"><label id="picker-screen" class="vcd-screen-picker-screen-label"><span class="vcText_fixture">Entire screen</span></label></div>
+      <div class="vcd-screen-picker-option-radios">
+        <label id="picker-chip" class="vcd-screen-picker-option-radio" data-checked="false"><span id="picker-chip-text" class="vcText_fixture">720</span><input class="vcd-screen-picker-option-input" type="radio"></label>
+        <label id="picker-chip-checked" class="vcd-screen-picker-option-radio" data-checked="true"><span id="picker-chip-checked-text" class="vcText_fixture">1440</span><input class="vcd-screen-picker-option-input" type="radio" checked></label>
+      </div>
+      <div class="pickerStack_fixture">
+        <div class="vcd-screen-picker-option-radios"><label id="picker-under" class="vcd-screen-picker-option-radio" data-checked="false"><span id="picker-under-text" class="vcText_fixture">Prefer Smoothness</span></label></div>
+        <div class="vcd-screen-picker-option-radios"><label class="vcd-screen-picker-option-radio" data-checked="false"><span class="vcText_fixture">Prefer Clarity</span></label></div>
+        <div id="picker-listbox" class="thin_fixture scrollerBase_fixture popout_uFkqU2 popoutPositionTop_uFkqU2" role="listbox">
+          <div id="picker-option" class="option_uFkqU2" role="option" aria-selected="false" tabindex="-1">Entire System</div>
+          <div id="picker-option-selected" class="option_uFkqU2" role="option" aria-selected="true" tabindex="-1">Brave<svg class="selectedIcon_uFkqU2" width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="currentColor"/></svg></div>
+        </div>
+      </div>
+      <button id="picker-cancel" data-mana-component="button" class="button_F7qvhY md_F7qvhY secondary_F7qvhY hasText_F7qvhY"><div class="buttonChildrenWrapper_F7qvhY"><div class="buttonChildren_F7qvhY"><span id="picker-cancel-text" data-text-variant="body-md/medium">Cancel</span></div></div></button>
+      <button id="picker-go-live" data-mana-component="button" class="button_F7qvhY md_F7qvhY primary_F7qvhY hasText_F7qvhY"><div class="buttonChildrenWrapper_F7qvhY"><div class="buttonChildren_F7qvhY"><span id="picker-go-live-text" data-text-variant="body-md/medium">Go Live</span></div></div></button>
     </section>
   </main>
 </body>

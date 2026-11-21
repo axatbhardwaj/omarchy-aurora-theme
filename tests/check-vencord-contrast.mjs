@@ -57,7 +57,7 @@ try {
     await send("CSS.forcePseudoState", { nodeId, forcedPseudoClasses: ["hover"] });
   }
 
-  async function measure(selector, backgroundSelector = selector, backgroundPseudo = null, colorPseudo = null) {
+  async function measure(selector, backgroundSelector = selector, backgroundPseudo = null, colorPseudo = null, foregroundProperty = "color") {
     const expression = `(() => {
       const parse = value => {
         const rgb = value.match(/rgba?\\(([^)]+)\\)/);
@@ -76,11 +76,12 @@ try {
       };
       const fgStyle = getComputedStyle(document.querySelector(${JSON.stringify(selector)}), ${JSON.stringify(colorPseudo)});
       const bgStyle = getComputedStyle(document.querySelector(${JSON.stringify(backgroundSelector)}), ${JSON.stringify(backgroundPseudo)});
-      let fg = parse(fgStyle.color), bg = parse(bgStyle.backgroundColor);
+      const color = fgStyle[${JSON.stringify(foregroundProperty)}];
+      let fg = parse(color), bg = parse(bgStyle.backgroundColor);
       if (bg[3] < 1) bg = composite(bg, parse(getComputedStyle(document.body).backgroundColor));
       if (fg[3] < 1) fg = composite(fg, bg);
       const contrast = (Math.max(luminance(fg), luminance(bg)) + .05) / (Math.min(luminance(fg), luminance(bg)) + .05);
-      return { color: fgStyle.color, background: bgStyle.backgroundColor, rgb: fg.slice(0,3), contrast };
+      return { color, background: bgStyle.backgroundColor, shadow: fgStyle.boxShadow, content: fgStyle.content, rgb: fg.slice(0,3), contrast };
     })()`;
     const { result } = await send("Runtime.evaluate", { expression, returnByValue: true });
     if (result.subtype === "error") throw new Error(result.description);
@@ -110,7 +111,7 @@ try {
   const failures = [];
   const checkContrast = async (name, selector, minimum, options = {}) => {
     if (options.hover) await hover(selector);
-    const got = await measure(selector, options.backgroundSelector, options.backgroundPseudo, options.colorPseudo);
+    const got = await measure(selector, options.backgroundSelector, options.backgroundPseudo, options.colorPseudo, options.foregroundProperty);
     const pass = got.contrast >= minimum;
     console.log(`${name}: ${got.contrast.toFixed(2)}:1 (${got.color} on ${got.background}) ${pass ? "PASS" : "FAIL"}`);
     if (!pass) failures.push(`${name}: ${got.contrast.toFixed(2)} < ${minimum}`);
@@ -122,12 +123,21 @@ try {
     console.log(`${name}: rgb(${actual}) ${pass ? "PASS" : "FAIL"}`);
     if (!pass) failures.push(`${name}: rgb(${actual}) != rgb(${expected})`);
   };
-  const checkStyle = async (name, selector, property, expected) => {
-    const got = await measure(selector);
+  const checkStyle = async (name, selector, property, expected, pseudo = null) => {
+    const got = await measure(selector, selector, null, pseudo);
     const actual = got[property];
     const pass = actual === expected;
     console.log(`${name}: ${actual} ${pass ? "PASS" : "FAIL"}`);
     if (!pass) failures.push(`${name}: ${actual} != ${expected}`);
+  };
+  const checkProperty = async (name, selector, property, expected) => {
+    const { result } = await send("Runtime.evaluate", {
+      expression: `getComputedStyle(document.querySelector(${JSON.stringify(selector)}))[${JSON.stringify(property)}]`,
+      returnByValue: true,
+    });
+    const pass = result.value === expected;
+    console.log(`${name}: ${result.value} ${pass ? "PASS" : "FAIL"}`);
+    if (!pass) failures.push(`${name}: ${result.value} != ${expected}`);
   };
   const checkSvgContrast = async (name, selector, backgroundSelector, minimum) => {
     const got = await measureSvgFill(selector, backgroundSelector);
@@ -146,6 +156,14 @@ try {
   await checkContrast("selected voice name", "#voice-name", 4.5, { backgroundSelector: "#voice-surface", backgroundPseudo: "::before" });
   await checkContrast("selected voice secondary", "#voice-secondary", 4.5, { backgroundSelector: "#voice-surface", backgroundPseudo: "::before" });
   await checkColor("selected channel label", "#voice-name", "237,247,239");
+  for (const selector of ["#channel-name", "#status-label", "#idle-name", "#speaking-name"]) {
+    await checkContrast(selector, selector, 4.5, { backgroundSelector: "#voice-glass" });
+  }
+  await checkColor("idle voice name", "#idle-name", "176,200,188");
+  await checkColor("speaking voice name", "#speaking-name", "253,255,253");
+  await checkColor("voice live badge", "#voice-live", "255,255,255");
+  await checkColor("voice microphone", "#voice-mic", "122,123,131");
+  await checkStyle("desktop title", "#app-title", "content", '"Vesktop"', "::before");
   const glass = await send("Runtime.evaluate", {
     expression: `(() => {
       document.querySelector("#composer").focus();
@@ -166,10 +184,10 @@ try {
   });
   const expectedGlass = [
     "blur(24px)", "#B0C8BC",
-    "linear-gradient(rgba(11, 9, 16, 0.44), rgba(11, 9, 16, 0.3))",
-    "linear-gradient(rgba(11, 9, 16, 0.42), rgba(11, 9, 16, 0.2))",
-    "rgba(11, 9, 16, 0.52)", "2px", "rgb(133, 217, 172)", "3px",
-    "rgba(133, 217, 172, 0.2)", "rgba(24, 14, 33, 0.02)",
+    "linear-gradient(rgba(10, 16, 13, 0.44), rgba(10, 16, 13, 0.3))",
+    "linear-gradient(rgba(10, 16, 13, 0.42), rgba(10, 16, 13, 0.2))",
+    "rgba(10, 16, 13, 0.52)", "2px", "rgb(133, 217, 172)", "3px",
+    "rgba(133, 217, 172, 0.2)", "rgba(14, 22, 19, 0.02)",
   ];
   if (JSON.stringify(glass.result.value) !== JSON.stringify(expectedGlass)) {
     failures.push(`Unexpected Aurora glass: ${JSON.stringify(glass.result.value)}`);
@@ -197,8 +215,16 @@ try {
   await checkContrast("new messages bar text", "#new-messages-text", 4.5, { backgroundSelector: "#new-messages" });
   await checkContrast("autocomplete selected row", "#autocomplete-selected-text", 4.5, { backgroundSelector: "#autocomplete-selected" });
   await checkContrast("autocomplete neutral row stays light", "#autocomplete-neutral-text", 4.5, { backgroundSelector: "#autocomplete-neutral" });
-  await checkContrast("server badge on dark glass", "#guild-badge", 4.5);
+  await checkContrast("idle server badge", "#guild-badge", 4.5);
   await checkContrast("server badge when connected", "#guild-badge-connected", 4.5);
+  await checkContrast("server rail count", "#rail-count", 4.5);
+  await checkSvgContrast("server rail activity glyph", "#rail-glyph", "#rail-activity", 3);
+  for (const selector of ["#rail-count", "#rail-activity"]) {
+    await checkStyle("rail badge fill", selector, "background", "rgb(133, 217, 172)");
+    await checkStyle("rail badge keyline", selector, "shadow", "rgb(10, 16, 13) 0px 0px 0px 1px inset");
+  }
+  await checkContrast("green badge against dark artwork", "#rail-count", 3, { backgroundSelector: "#dark-art", foregroundProperty: "backgroundColor" });
+  await checkContrast("dark badge ink and keyline against light artwork", "#rail-activity", 3, { backgroundSelector: "#light-art" });
   await checkContrast("selected server initials", "#guild-acronym", 4.5);
   await checkContrast("idle server initials stay light", "#guild-acronym-idle", 4.5, { backgroundSelector: "body" });
   await hover("#guild-list");
@@ -206,6 +232,13 @@ try {
   await hover("#guild-acronym-hover");
   await checkContrast("hovered server initials", "#guild-acronym-hover", 4.5);
   await checkContrast("server list NEW pill", "#guild-unread-text", 4.5, { backgroundSelector: "#guild-unread-bar" });
+  await checkContrast("unread divider NEW text", "#unread-divider-pill", 4.5);
+  await checkStyle("unread divider pill stays Aurora green", "#unread-divider-pill", "background", "rgb(133, 217, 172)");
+  await checkProperty("unread divider line is drawn", "#unread-divider", "borderTopStyle", "solid");
+  await checkProperty("unread divider line stays Aurora green", "#unread-divider", "borderTopColor", "rgb(133, 217, 172)");
+  await checkProperty("unread divider cap outline stays Aurora green", "#unread-divider-cap-stroke", "stroke", "rgb(133, 217, 172)");
+  await checkProperty("unread divider cap fill stays Aurora green", "#unread-divider-cap-stroke", "fill", "rgb(133, 217, 172)");
+  await checkContrast("unread divider cap against chat", "#unread-divider-cap-stroke", 3, { backgroundSelector: "body", foregroundProperty: "stroke" });
   await checkContrast("menu item stays light", "#menu-label", 4.5, { backgroundSelector: "body" });
   await checkContrast("focused menu item", "#menu-focused-label", 4.5, { backgroundSelector: "#menu-focused" });
   await checkContrast("focused danger menu item", "#menu-danger-label", 4.5, { backgroundSelector: "#menu-danger-focused" });
@@ -214,7 +247,59 @@ try {
   await checkContrast("vencord positive button", "#vc-positive", 4.5);
   await checkContrast("vencord settings selected without aria-current", "#vc-settings-selected-label", 4.5, { backgroundSelector: "#vc-settings-selected" });
 
+  // Vesktop screen share picker: the audio Select opens upward over the
+  // picker's own chips. Separate occlusion (menu must hide what it covers and
+  // show an edge) from dimming (unselected rows must not use Discord's grey).
+  const checkPickerMenuLayer = async name => {
+    const { result } = await send("Runtime.evaluate", { returnByValue: true, expression: `(() => {
+      const parse = value => {
+        const rgb = value.match(/rgba?\\(([^)]+)\\)/);
+        if (rgb) { const p = rgb[1].split(/[ ,/]+/).map(Number); return [p[0], p[1], p[2], p[3] ?? 1]; }
+        const srgb = value.match(/color\\(srgb ([^ )]+) ([^ )]+) ([^ /)]+)(?: \\/ ([^ )]+))?\\)/);
+        if (srgb) return [+srgb[1]*255, +srgb[2]*255, +srgb[3]*255, srgb[4] ? +srgb[4] : 1];
+        throw new Error("Unsupported computed color: " + value);
+      };
+      const over = (front, back) => [0,1,2].map(i => front[i]*front[3] + back[i]*(1-front[3])).concat(1);
+      const lum = c => { const l = c.slice(0,3).map(v => { v /= 255; return v <= .04045 ? v/12.92 : ((v+.055)/1.055)**2.4; }); return .2126*l[0] + .7152*l[1] + .0722*l[2]; };
+      const ratio = (a, b) => (Math.max(lum(a), lum(b)) + .05) / (Math.min(lum(a), lum(b)) + .05);
+      const listbox = document.querySelector("#picker-listbox"), under = document.querySelector("#picker-under-text");
+      under.scrollIntoView({ block: "center" });
+      const box = under.getBoundingClientRect();
+      const top = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+      const style = getComputedStyle(listbox), bg = parse(style.backgroundColor);
+      const page = parse(getComputedStyle(document.body).backgroundColor);
+      const surface = over(parse(getComputedStyle(document.querySelector("#picker-theme")).backgroundColor), page);
+      const menu = over(bg, surface);
+      return {
+        covered: listbox.contains(top), alpha: bg[3],
+        bleed: ratio(over(bg, parse(getComputedStyle(under).color)), menu),
+        edge: style.borderTopStyle === "solid" ? ratio(over(parse(style.borderTopColor), menu), surface) : 0,
+      };
+    })()` });
+    if (result.subtype === "error") throw new Error(result.description);
+    const got = result.value;
+    const pass = got.covered && got.alpha === 1 && got.bleed <= 1.01 && got.edge >= 3;
+    console.log(`${name}: covers=${got.covered} alpha=${got.alpha} bleed=${got.bleed.toFixed(2)}:1 edge=${got.edge.toFixed(2)}:1 ${pass ? "PASS" : "FAIL"}`);
+    if (!pass) failures.push(`${name}: ${JSON.stringify(got)}`);
+  };
+  for (const theme of ["theme-dark", "theme-darker", "theme-midnight"]) {
+    await send("Runtime.evaluate", { expression: `document.querySelector("#picker-theme").className = "${theme} picker_fixture"` });
+    const label = `picker ${theme}`;
+    await checkContrast(`${label} Go Live`, "#picker-go-live-text", 4.5, { backgroundSelector: "#picker-go-live" });
+    await checkContrast(`${label} Cancel stays light`, "#picker-cancel-text", 4.5, { backgroundSelector: "#picker-theme" });
+    await checkContrast(`${label} checked chip`, "#picker-chip-checked-text", 4.5, { backgroundSelector: "#picker-chip-checked" });
+    await checkStyle(`${label} checked chip is Aurora green, not blurple`, "#picker-chip-checked", "background", "rgb(133, 217, 172)");
+    await checkContrast(`${label} idle chip stays light`, "#picker-chip-text", 4.5, { backgroundSelector: "#picker-theme" });
+    await checkPickerMenuLayer(`${label} audio menu occludes the chips beneath`);
+    await checkColor(`${label} unselected audio option uses body text`, "#picker-option", "237,247,239");
+    await checkContrast(`${label} unselected audio option`, "#picker-option", 7, { backgroundSelector: "#picker-listbox" });
+    await checkContrast(`${label} selected audio option`, "#picker-option-selected", 4.5);
+  }
+  await hover("#picker-screen");
+  await checkProperty("picker source hover outline is Aurora green", "#picker-screen", "outlineColor", "rgb(133, 217, 172)");
+
   for (const [name, selector] of [
+    ["picker Go Live hover", "#picker-go-live"],
     ["legacy brand hover", "#legacy-brand"], ["legacy success hover", "#legacy-success"],
     ["legacy danger hover", "#legacy-danger"], ["outlined hover", "#legacy-outline"],
     ["modern primary hover", "#modern-primary"], ["modern active hover", "#modern-active"],
