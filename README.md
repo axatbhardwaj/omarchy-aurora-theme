@@ -44,6 +44,8 @@ install -m 644 backgrounds/0-aurora-lake.jpg "$themes/aurora.jpg"
 t3 theme set --id aurora ./t3code.json
 ```
 
+Every T3 pane uses one flat 46% lake ink scrim over the 2% tint, centred like the desktop wallpaper. With T3 at 92% window opacity this matches Ghostty's 0.4316 background.
+
 Select **Aurora** for dark appearance if the client has a separate theme selection. For Omarchy's automatically generated `omarchy.json` alias, install the same JPEG as `omarchy.jpg`. Run `node tests/check-t3code-theme.mjs` to check the palette and fallback contrast, and `node tests/check-no-purple.mjs` to keep violet and magenta fills out of every shipped surface (ANSI magenta slots excepted).
 
 ## Desktop surfaces
