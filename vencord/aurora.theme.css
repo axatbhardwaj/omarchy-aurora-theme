@@ -373,8 +373,12 @@
   [class*="sidebarList_"] [class*="voiceUser_"] [class*="username_"] {
     --channels-default: var(--muted-text);
   }
-  [class*="sidebarList_"] [class*="channelStatus_"] {
+  [class*="sidebarList_"] :is([class*="channelStatus_"], [class*="channelStatusClickable_"], [class*="linkBottom_"]) {
     --channel-icon: var(--muted-text);
+    --text-muted: var(--muted-text);
+  }
+  [class*="sidebarList_"] :is([class*="channelStatus_"], [class*="channelStatusClickable_"], [class*="linkBottom_"]) :is(span, [data-text-variant]) {
+    color: var(--muted-text) !important;
   }
 
   /* Only the channel list uses a translucent selection. Other navigation
