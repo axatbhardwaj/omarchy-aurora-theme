@@ -247,7 +247,59 @@ try {
   await checkContrast("vencord positive button", "#vc-positive", 4.5);
   await checkContrast("vencord settings selected without aria-current", "#vc-settings-selected-label", 4.5, { backgroundSelector: "#vc-settings-selected" });
 
+  // Vesktop screen share picker: the audio Select opens upward over the
+  // picker's own chips. Separate occlusion (menu must hide what it covers and
+  // show an edge) from dimming (unselected rows must not use Discord's grey).
+  const checkPickerMenuLayer = async name => {
+    const { result } = await send("Runtime.evaluate", { returnByValue: true, expression: `(() => {
+      const parse = value => {
+        const rgb = value.match(/rgba?\\(([^)]+)\\)/);
+        if (rgb) { const p = rgb[1].split(/[ ,/]+/).map(Number); return [p[0], p[1], p[2], p[3] ?? 1]; }
+        const srgb = value.match(/color\\(srgb ([^ )]+) ([^ )]+) ([^ /)]+)(?: \\/ ([^ )]+))?\\)/);
+        if (srgb) return [+srgb[1]*255, +srgb[2]*255, +srgb[3]*255, srgb[4] ? +srgb[4] : 1];
+        throw new Error("Unsupported computed color: " + value);
+      };
+      const over = (front, back) => [0,1,2].map(i => front[i]*front[3] + back[i]*(1-front[3])).concat(1);
+      const lum = c => { const l = c.slice(0,3).map(v => { v /= 255; return v <= .04045 ? v/12.92 : ((v+.055)/1.055)**2.4; }); return .2126*l[0] + .7152*l[1] + .0722*l[2]; };
+      const ratio = (a, b) => (Math.max(lum(a), lum(b)) + .05) / (Math.min(lum(a), lum(b)) + .05);
+      const listbox = document.querySelector("#picker-listbox"), under = document.querySelector("#picker-under-text");
+      under.scrollIntoView({ block: "center" });
+      const box = under.getBoundingClientRect();
+      const top = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+      const style = getComputedStyle(listbox), bg = parse(style.backgroundColor);
+      const page = parse(getComputedStyle(document.body).backgroundColor);
+      const surface = over(parse(getComputedStyle(document.querySelector("#picker-theme")).backgroundColor), page);
+      const menu = over(bg, surface);
+      return {
+        covered: listbox.contains(top), alpha: bg[3],
+        bleed: ratio(over(bg, parse(getComputedStyle(under).color)), menu),
+        edge: style.borderTopStyle === "solid" ? ratio(over(parse(style.borderTopColor), menu), surface) : 0,
+      };
+    })()` });
+    if (result.subtype === "error") throw new Error(result.description);
+    const got = result.value;
+    const pass = got.covered && got.alpha === 1 && got.bleed <= 1.01 && got.edge >= 3;
+    console.log(`${name}: covers=${got.covered} alpha=${got.alpha} bleed=${got.bleed.toFixed(2)}:1 edge=${got.edge.toFixed(2)}:1 ${pass ? "PASS" : "FAIL"}`);
+    if (!pass) failures.push(`${name}: ${JSON.stringify(got)}`);
+  };
+  for (const theme of ["theme-dark", "theme-darker", "theme-midnight"]) {
+    await send("Runtime.evaluate", { expression: `document.querySelector("#picker-theme").className = "${theme} picker_fixture"` });
+    const label = `picker ${theme}`;
+    await checkContrast(`${label} Go Live`, "#picker-go-live-text", 4.5, { backgroundSelector: "#picker-go-live" });
+    await checkContrast(`${label} Cancel stays light`, "#picker-cancel-text", 4.5, { backgroundSelector: "#picker-theme" });
+    await checkContrast(`${label} checked chip`, "#picker-chip-checked-text", 4.5, { backgroundSelector: "#picker-chip-checked" });
+    await checkStyle(`${label} checked chip is Aurora green, not blurple`, "#picker-chip-checked", "background", "rgb(133, 217, 172)");
+    await checkContrast(`${label} idle chip stays light`, "#picker-chip-text", 4.5, { backgroundSelector: "#picker-theme" });
+    await checkPickerMenuLayer(`${label} audio menu occludes the chips beneath`);
+    await checkColor(`${label} unselected audio option uses body text`, "#picker-option", "237,247,239");
+    await checkContrast(`${label} unselected audio option`, "#picker-option", 7, { backgroundSelector: "#picker-listbox" });
+    await checkContrast(`${label} selected audio option`, "#picker-option-selected", 4.5);
+  }
+  await hover("#picker-screen");
+  await checkProperty("picker source hover outline is Aurora green", "#picker-screen", "outlineColor", "rgb(133, 217, 172)");
+
   for (const [name, selector] of [
+    ["picker Go Live hover", "#picker-go-live"],
     ["legacy brand hover", "#legacy-brand"], ["legacy success hover", "#legacy-success"],
     ["legacy danger hover", "#legacy-danger"], ["outlined hover", "#legacy-outline"],
     ["modern primary hover", "#modern-primary"], ["modern active hover", "#modern-active"],
