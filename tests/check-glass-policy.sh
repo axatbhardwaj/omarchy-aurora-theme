@@ -184,12 +184,12 @@ aurora_semantic_pairs() {
         'accent #85d9ac' \
         'selection #85d9ac' \
         'selection_background #85d9ac' \
-        'selection_foreground #180e21' \
+        'selection_foreground #0e1613' \
         'muted #b0c8bc' \
-        'background #180e21' \
-        'dark_background #0b0910' \
-        'darker_background #08070c' \
-        'lighter_background #25212c' \
+        'background #0e1613' \
+        'dark_background #0a100d' \
+        'darker_background #060a08' \
+        'lighter_background #1f2a26' \
         'foreground #edf7ef' \
         'dark_foreground #727773' \
         'light_foreground #edf7ef' \
@@ -1021,7 +1021,7 @@ check "generated hyprland.lua keeps browser opacity above window glass" matches 
 check "generated hyprland.lua blurs Omarchy bar popups" matches "$(<"$staged_theme/hyprland.lua")" 'namespace = "omarchy-bar".*blur_popups = true'
 check "generated hyprland.lua blurs keyboard-driven Omarchy plugin panel popups" matches "$(<"$staged_theme/hyprland.lua")" 'namespace = "omarchy-keyboard-panel".*blur = true.*blur_popups = true'
 check "chromium.theme exists" test -f "$repo_root/chromium.theme"
-check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '24,14,33'
+check "chromium.theme colour" file_contents_equal "$repo_root/chromium.theme" '14,22,19'
 check "waybar.css window#waybar uses the 2% base tint" waybar_has_blur_compatible_background "$repo_root/waybar.css"
 check "mako.ini background-color is 8-digit hex with non-FF alpha" mako_has_translucent_background "$repo_root/mako.ini"
 check "walker.css @define-color base alpha is between 0.5 and 1.0" walker_has_blur_compatible_base "$repo_root/walker.css"
