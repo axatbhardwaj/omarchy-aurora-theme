@@ -16,7 +16,7 @@ if (!theme.css?.includes("var(--theme-background-image,")) failures.push("missin
 
 // T3 v0.1.11 paints .surface-glass (the composer context strip under the
 // prompt, glass buttons, chart tooltips) with 80% of --background, which is the
-// purple canvas seed. Aurora must let the wallpaper continue through that strip.
+// opaque canvas seed. Aurora must let the wallpaper continue through that strip.
 const declarations = (selector) =>
   [...(theme.css ?? "").replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)]
     .filter(([, selectors]) => selectors.split(",").some((s) => s.trim() === selector))
@@ -26,7 +26,17 @@ const strip = declarations('[data-slot="composer-context-strip"]');
 if (!/background:\s*transparent\s*!important/.test(strip)) failures.push("composer context strip must be transparent");
 if (!/backdrop-filter:\s*none\s*!important/.test(strip)) failures.push("composer context strip must not re-blur the pane");
 const glass = declarations('html[data-theme-id] .surface-glass');
-if (!/background:\s*rgb\(11 9 16 \/ \d+%\)/.test(glass)) failures.push("surface glass must use neutral ink, not the purple canvas");
+if (!/background:\s*rgb\(10 16 13 \/ \d+%\)/.test(glass)) failures.push("surface glass must use lake ink, not the opaque canvas");
+// The turn diff card ("N changed files / Open diff") header carries T3's
+// dark:bg-background, an opaque canvas fill inside the translucent card.
+const ink = /background:\s*rgb\(10 16 13 \/ (\d+)%\)\s*!important/;
+for (const selector of ["[data-changed-files-state]", "[data-changed-files-state] > [data-changed-files-header]"]) {
+  const alpha = Number(declarations(selector).match(ink)?.[1]);
+  if (!(alpha > 0 && alpha < 60)) failures.push(`${selector} must use translucent lake ink !important`);
+}
+if (!/backdrop-filter:\s*blur\(/.test(declarations("[data-changed-files-state] > [data-changed-files-header]"))) {
+  failures.push("sticky changed-files header must blur rows scrolling beneath it");
+}
 for (const [role, expected] of Object.entries({
   accent: "#85d9ac",
   focus: "#85d9ac",
@@ -35,7 +45,7 @@ for (const [role, expected] of Object.entries({
 })) {
   if (c[role]?.toLowerCase() !== expected) failures.push(`${role} must match ${expected}`);
 }
-if (theme.canvas?.toLowerCase() !== "#180e21" || theme.accent !== c.accent) {
+if (theme.canvas?.toLowerCase() !== "#0e1613" || theme.accent !== c.accent) {
   failures.push("wrong glass or accent seed");
 }
 
