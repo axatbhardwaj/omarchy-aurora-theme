@@ -184,10 +184,10 @@ try {
   });
   const expectedGlass = [
     "blur(24px)", "#B0C8BC",
-    "linear-gradient(rgba(11, 9, 16, 0.44), rgba(11, 9, 16, 0.3))",
-    "linear-gradient(rgba(11, 9, 16, 0.42), rgba(11, 9, 16, 0.2))",
-    "rgba(11, 9, 16, 0.52)", "2px", "rgb(133, 217, 172)", "3px",
-    "rgba(133, 217, 172, 0.2)", "rgba(24, 14, 33, 0.02)",
+    "linear-gradient(rgba(10, 16, 13, 0.44), rgba(10, 16, 13, 0.3))",
+    "linear-gradient(rgba(10, 16, 13, 0.42), rgba(10, 16, 13, 0.2))",
+    "rgba(10, 16, 13, 0.52)", "2px", "rgb(133, 217, 172)", "3px",
+    "rgba(133, 217, 172, 0.2)", "rgba(14, 22, 19, 0.02)",
   ];
   if (JSON.stringify(glass.result.value) !== JSON.stringify(expectedGlass)) {
     failures.push(`Unexpected Aurora glass: ${JSON.stringify(glass.result.value)}`);
