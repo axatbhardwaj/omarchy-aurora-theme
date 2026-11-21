@@ -1,7 +1,7 @@
 /**
  * @name Aurora
  * @author Axat Bhardwaj
- * @version 1.0.0
+ * @version 1.1.0
  * @description Aurora for Discord: green glass over a twilight lake, built on ClearVision v7.
  * @source https://github.com/axatbhardwaj/omarchy-aurora-theme
  */
@@ -9,10 +9,10 @@
 @import url("https://clearvision.github.io/ClearVision-v7/main.css");
 @import url("https://clearvision.github.io/ClearVision-v7/vencord.css");
 
-/* SETTINGS — colours mirror colors.toml */
+/* Aurora palette and ClearVision settings */
 :root {
   /* ACCENT COLORS */
-  --main-color: #62e2a4;
+  --main-color: #85D9AC;
   --hover-color: #a8f0b3;
   --success-color: #6fd48c;
   --danger-color: #f0708e;
@@ -28,7 +28,7 @@
   --background-position: center;
   --background-size: cover;
   --background-attachment: fixed;
-  --background-filter: blur(8px) brightness(0.7) saturate(0.95); /* calm the wallpaper so text sits on near-flat green-black */
+  --background-filter: blur(24px);
   /* USER POPOUT / MODAL BACKGROUND follow the app background */
   --user-popout-image: var(--background-image);
   --user-popout-position: var(--background-position);
@@ -47,8 +47,8 @@
   --main-font: "gg sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --code-font: "JetBrainsMono Nerd Font", "JetBrains Mono", "gg mono", monospace;
   /* CHANNEL COLORS */
-  --channel-normal: #d3e3da;
-  --channel-muted: #7f9c8d;
+  --channel-normal: #EDF7EF;
+  --channel-muted: #B0C8BC;
   --channel-hover: #fdfffd;
   --channel-selected: #0a100d;
   --channel-selected-bg: var(--main-color);
@@ -77,8 +77,8 @@
   --popout-shading: rgba(10, 16, 13, 0.94);
   --modal-shading: rgba(10, 16, 13, 0.85);
   --input-shading: rgba(253, 255, 253, 0.07);
-  --normal-text: #fdfffd;
-  --muted-text: #b3c9bd;
+  --normal-text: #EDF7EF;
+  --muted-text: #B0C8BC;
 }
 
 /* DARK THEME */
@@ -88,8 +88,8 @@
   --popout-shading: rgba(10, 16, 13, 0.96);
   --modal-shading: rgba(10, 16, 13, 0.9);
   --input-shading: rgba(253, 255, 253, 0.07);
-  --normal-text: #fdfffd;
-  --muted-text: #b3c9bd;
+  --normal-text: #EDF7EF;
+  --muted-text: #B0C8BC;
 }
 
 /* ONYX THEME */
@@ -99,8 +99,8 @@
   --popout-shading: rgba(5, 8, 7, 0.97);
   --modal-shading: rgba(5, 8, 7, 0.92);
   --input-shading: rgba(253, 255, 253, 0.07);
-  --normal-text: #fdfffd;
-  --muted-text: #a6bfb2;
+  --normal-text: #EDF7EF;
+  --muted-text: #B0C8BC;
 }
 
 /* ADDITIONAL CSS */
@@ -319,4 +319,65 @@
 /* Own the hovered tile's green too, so the dark glyph never lands on dark. */
 [class*="childWrapper_"]:hover {
   background-color: var(--hover-color) !important;
+}
+
+/* Paint the base tint once, over the wallpaper. ClearVision otherwise stacks
+   shading on both app wrappers. Keep settings, profiles and dialogs backed. */
+@scope (:is(.theme-dark, .theme-darker, .theme-midnight)) to (.theme-light) {
+  [class^="app_"], [class*=" app_"] {
+    background: transparent;
+  }
+  :is(#app-mount, [class^="app_"], [class*=" app_"]) > [class^="bg_"] {
+    background-color: #101916;
+  }
+  :is(#app-mount, [class^="app_"], [class*=" app_"]) > [class^="bg_"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(24 14 33 / 2%);
+    pointer-events: none;
+  }
+
+  [class*="sidebarList_"] {
+    background: linear-gradient(rgb(11 9 16 / 44%), rgb(11 9 16 / 30%));
+    border-inline-end: 1px solid rgb(176 200 188 / 48%);
+  }
+  /* The guild channel list and DM list sit inside the backed sidebar. */
+  [class*="sidebarList_"] :is(nav, [class*="privateChannels_"]) {
+    background: transparent;
+  }
+  [class*="chatContent_"] {
+    background: linear-gradient(rgb(11 9 16 / 42%), rgb(11 9 16 / 20%));
+  }
+  :is(.theme-dark, .theme-darker, .theme-midnight) [class*="themed_"]:is([role="region"], [class*="container_"]) {
+    background: rgb(11 9 16 / 40%);
+    border-bottom: 1px solid rgb(176 200 188 / 45%);
+  }
+  [class*="channelTextArea_"] {
+    background: rgb(11 9 16 / 52%);
+    border: 1px solid rgb(176 200 188 / 50%);
+    box-shadow: none;
+  }
+  [class*="channelTextArea_"]:focus-within {
+    outline: 2px solid var(--focus-color);
+    outline-offset: -1px;
+    box-shadow: none;
+  }
+
+  /* Only the channel list uses a translucent selection. Other navigation
+     surfaces keep their established dark-on-solid-accent pairing. */
+  [class*="modeSelected_"] [class*="link_"]::before {
+    background: rgb(133 217 172 / 20%) !important;
+    border-inline-start: 3px solid var(--main-color);
+  }
+  [class*="modeSelected_"] [class*="name_"] {
+    color: var(--normal-text) !important;
+    font-weight: 700;
+  }
+  [class*="modeSelected_"] [class*="channelInfo_"] {
+    color: var(--muted-text) !important;
+  }
+  [class*="modeSelected_"] :is(svg, [class*="icon_"], [class*="actionIcon"], [class*="iconItem"], [class*="children_"]) {
+    color: var(--main-color) !important;
+  }
 }
