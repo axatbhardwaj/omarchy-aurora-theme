@@ -130,6 +130,15 @@ try {
     console.log(`${name}: ${actual} ${pass ? "PASS" : "FAIL"}`);
     if (!pass) failures.push(`${name}: ${actual} != ${expected}`);
   };
+  const checkProperty = async (name, selector, property, expected) => {
+    const { result } = await send("Runtime.evaluate", {
+      expression: `getComputedStyle(document.querySelector(${JSON.stringify(selector)}))[${JSON.stringify(property)}]`,
+      returnByValue: true,
+    });
+    const pass = result.value === expected;
+    console.log(`${name}: ${result.value} ${pass ? "PASS" : "FAIL"}`);
+    if (!pass) failures.push(`${name}: ${result.value} != ${expected}`);
+  };
   const checkSvgContrast = async (name, selector, backgroundSelector, minimum) => {
     const got = await measureSvgFill(selector, backgroundSelector);
     const pass = got.contrast >= minimum;
@@ -223,6 +232,13 @@ try {
   await hover("#guild-acronym-hover");
   await checkContrast("hovered server initials", "#guild-acronym-hover", 4.5);
   await checkContrast("server list NEW pill", "#guild-unread-text", 4.5, { backgroundSelector: "#guild-unread-bar" });
+  await checkContrast("unread divider NEW text", "#unread-divider-pill", 4.5);
+  await checkStyle("unread divider pill stays Aurora green", "#unread-divider-pill", "background", "rgb(133, 217, 172)");
+  await checkProperty("unread divider line is drawn", "#unread-divider", "borderTopStyle", "solid");
+  await checkProperty("unread divider line stays Aurora green", "#unread-divider", "borderTopColor", "rgb(133, 217, 172)");
+  await checkProperty("unread divider cap outline stays Aurora green", "#unread-divider-cap-stroke", "stroke", "rgb(133, 217, 172)");
+  await checkProperty("unread divider cap fill stays Aurora green", "#unread-divider-cap-stroke", "fill", "rgb(133, 217, 172)");
+  await checkContrast("unread divider cap against chat", "#unread-divider-cap-stroke", 3, { backgroundSelector: "body", foregroundProperty: "stroke" });
   await checkContrast("menu item stays light", "#menu-label", 4.5, { backgroundSelector: "body" });
   await checkContrast("focused menu item", "#menu-focused-label", 4.5, { backgroundSelector: "#menu-focused" });
   await checkContrast("focused danger menu item", "#menu-danger-label", 4.5, { backgroundSelector: "#menu-danger-focused" });
