@@ -54,15 +54,15 @@
     .lookFilled__201d5:is(.colorWhite__201d5,.colorBrandInverted__201d5){color:var(--hsl-main-color);border:none}
     .lookOutlined__201d5:is(.colorBrand__201d5,.colorPrimary__201d5){background:transparent;border-color:var(--hsl-main-color)}
     .lookOutlined__201d5:is(.colorBrand__201d5,.colorPrimary__201d5):hover{border-color:var(--hsl-hover-color);background-color:var(--hsl-hover-color)}
-    .primary_a22cb0{background:var(--hsl-main-color);border-color:transparent}
-    .primary_a22cb0:hover,.primary_a22cb0:active{background:var(--hsl-hover-color);border-color:transparent}
-    .secondary_a22cb0{background:transparent;border-color:var(--hsl-main-color)}
-    .active_a22cb0{background:var(--hsl-success-color);border-color:transparent}
-    .active_a22cb0:hover,.active_a22cb0:active{background:hsl(from var(--hsl-success-color) h s l/0.8);border-color:transparent}
-    .critical-primary_a22cb0{background:var(--hsl-danger-color);border-color:transparent}
-    .critical-primary_a22cb0:hover,.critical-primary_a22cb0:active{background:hsl(from var(--hsl-danger-color) h s l/0.8);border-color:transparent}
-    .critical-secondary_a22cb0{background:transparent;border-color:var(--hsl-danger-color);color:var(--control-critical-primary-text-default)}
-    .custom-user-profile-theme .primary_a22cb0{background-color:var(--control-background-primary-default);border-color:var(--control-border-primary-default)}
+    .primary_F7qvhY{background:var(--hsl-main-color);border-color:transparent}
+    .primary_F7qvhY:hover,.primary_F7qvhY:active{background:var(--hsl-hover-color);border-color:transparent}
+    .secondary_F7qvhY{background:transparent;border-color:var(--hsl-main-color)}
+    .active_F7qvhY{background:var(--hsl-success-color);border-color:transparent}
+    .active_F7qvhY:hover,.active_F7qvhY:active{background:hsl(from var(--hsl-success-color) h s l/0.8);border-color:transparent}
+    .critical-primary_F7qvhY{background:var(--hsl-danger-color);border-color:transparent}
+    .critical-primary_F7qvhY:hover,.critical-primary_F7qvhY:active{background:hsl(from var(--hsl-danger-color) h s l/0.8);border-color:transparent}
+    .critical-secondary_F7qvhY{background:transparent;border-color:var(--hsl-danger-color);color:var(--control-critical-primary-text-default)}
+    .custom-user-profile-theme .primary_F7qvhY{background-color:var(--control-background-primary-default);border-color:var(--control-border-primary-default)}
     ::selection{background:var(--hsl-main-color);color:var(--text-default)}
     .numberBadge__463b7{background:var(--hsl-main-color)!important;color:var(--text-strong)}
     .botTagRegular__82f07{background:var(--hsl-main-color);color:var(--text-strong)}
@@ -157,6 +157,33 @@
     /* Vencord v1.15.10 Button.css plus ClearVision's vencord.css fill. */
     .vc-btn-primary{background:var(--hsl-main-color);color:var(--text-strong)}
     .vc-btn-positive{background-color:var(--hsl-success-color);color:#fff}
+
+    /* Vesktop screen share picker, fetched 2026-11-22. Discord assets
+       384209.a1808559fefd7c5d.css (Mana button, data-mana-component="button"),
+       775417.e044d11ccd5012e6.css (Select popout role="listbox" and its
+       role="option" rows) and 952007.8c2302e28f050501.css (per-theme
+       --text-subtle, --brand-500); ClearVision v7 main.css fills; Vesktop
+       src/renderer/components/screenSharePicker.css chips. */
+    :root{--control-primary-text-default:var(--neutral-1);--brand-500:hsl(234.935 85.556% 64.706%);--primary-800:hsl(240 5.263% 7.451%)}
+    .theme-dark{--text-subtle:hsl(228 4.505% 78.235%)}
+    .theme-darker{--text-subtle:hsl(231.429 4.348% 68.431%)}
+    .theme-midnight{--text-subtle:hsl(232.5 3.96% 60.392%)}
+    .picker_fixture{--hsl-popout-shading:var(--popout-shading);--hsl-modal-shading:var(--modal-shading);background:var(--hsl-modal-shading)}
+    .primary_F7qvhY{color:var(--control-primary-text-default)}
+    .popout_uFkqU2{background-color:var(--background-surface-higher);border:1px solid var(--border-subtle);border-radius:8px}
+    .popout_uFkqU2,.popout_uFkqU2.popoutPositionTop_uFkqU2{background:var(--hsl-popout-shading);border:none}
+    .option_uFkqU2{color:var(--text-subtle);padding:12px}
+    .option_uFkqU2[aria-selected=true]{background:var(--hsl-main-color)}
+    .selectedIcon_uFkqU2{color:var(--icon-strong)}
+    .vcd-screen-picker-option-radios{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));width:100%}
+    .vcd-screen-picker-option-radio{text-align:center;background-color:var(--background-secondary);border:1px solid var(--primary-800);padding:.3em}
+    .vcd-screen-picker-option-input{display:none}
+    .vcd-screen-picker-option-radio[data-checked="true"]{background-color:var(--brand-500);border-color:var(--brand-500)}
+    .vcd-screen-picker-screen-label{padding:8px}
+    .vcd-screen-picker-screen-label:hover{outline:2px solid var(--brand-500)}
+    .vcText_fixture{color:var(--text-default);font-weight:700}
+    .pickerStack_fixture{position:relative;padding-top:8px}
+    .pickerStack_fixture [role="listbox"]{position:absolute;inset:0 0 auto 0}
   </style>
   <link rel="stylesheet" href="../vencord/aurora.theme.css">
 </head>
@@ -174,16 +201,16 @@
       <button id="legacy-outline" class="lookOutlined__201d5 colorBrand__201d5">Outline</button>
     </section>
     <section><h2>Modern controls</h2>
-      <button id="modern-primary" class="button_a22cb0 primary_a22cb0">Primary</button>
-      <button id="modern-active" class="button_a22cb0 active_a22cb0">Active</button>
-      <button id="modern-critical" class="button_a22cb0 critical-primary_a22cb0">Critical</button>
-      <button id="modern-secondary" class="button_a22cb0 secondary_a22cb0">Secondary</button>
-      <button id="modern-critical-secondary" class="button_a22cb0 critical-secondary_a22cb0">Critical outline</button>
+      <button id="modern-primary" data-mana-component="button" class="button_F7qvhY md_F7qvhY primary_F7qvhY hasText_F7qvhY">Primary</button>
+      <button id="modern-active" data-mana-component="button" class="button_F7qvhY md_F7qvhY active_F7qvhY hasText_F7qvhY">Active</button>
+      <button id="modern-critical" data-mana-component="button" class="button_F7qvhY md_F7qvhY critical-primary_F7qvhY hasText_F7qvhY">Critical</button>
+      <button id="modern-secondary" data-mana-component="button" class="button_F7qvhY md_F7qvhY secondary_F7qvhY hasText_F7qvhY">Secondary</button>
+      <button id="modern-critical-secondary" data-mana-component="button" class="button_F7qvhY md_F7qvhY critical-secondary_F7qvhY hasText_F7qvhY">Critical outline</button>
     </section>
     <section><h2>Custom profile boundary</h2>
-      <div class="custom-user-profile-theme"><button id="custom-primary" class="button_a22cb0 primary_a22cb0">Profile primary</button></div>
-      <div class="custom-user-profile-theme"><button id="custom-active" class="button_a22cb0 active_a22cb0">Profile active</button></div>
-      <div class="custom-user-profile-theme"><button id="custom-critical" class="button_a22cb0 critical-primary_a22cb0">Profile critical</button></div>
+      <div class="custom-user-profile-theme"><button id="custom-primary" data-mana-component="button" class="button_F7qvhY md_F7qvhY primary_F7qvhY hasText_F7qvhY">Profile primary</button></div>
+      <div class="custom-user-profile-theme"><button id="custom-active" data-mana-component="button" class="button_F7qvhY md_F7qvhY active_F7qvhY hasText_F7qvhY">Profile active</button></div>
+      <div class="custom-user-profile-theme"><button id="custom-critical" data-mana-component="button" class="button_F7qvhY md_F7qvhY critical-primary_F7qvhY hasText_F7qvhY">Profile critical</button></div>
     </section>
     <section class="sidebarList_fixture"><h2>Selected voice channel</h2>
       <div class="wrapper__2ea32 modeSelected__2ea32"><div id="voice-surface" class="link__2ea32 voice">
@@ -288,6 +315,23 @@
       <div id="vc-settings-selected" class="item_caf372 active_caf372" role="link" data-list-item-id="settings-sidebar___vencord_updater" tabindex="-1">
         <div class="itemContent_caf372"><div id="vc-settings-selected-label" class="text-md/medium_cf4812" style="color:var(--interactive-text-active)">Updater</div></div>
       </div>
+    </section>
+    <section id="picker-theme" class="theme-dark picker_fixture"><h2>Vesktop screen share picker</h2>
+      <div class="vcd-screen-picker-screen-grid"><label id="picker-screen" class="vcd-screen-picker-screen-label"><span class="vcText_fixture">Entire screen</span></label></div>
+      <div class="vcd-screen-picker-option-radios">
+        <label id="picker-chip" class="vcd-screen-picker-option-radio" data-checked="false"><span id="picker-chip-text" class="vcText_fixture">720</span><input class="vcd-screen-picker-option-input" type="radio"></label>
+        <label id="picker-chip-checked" class="vcd-screen-picker-option-radio" data-checked="true"><span id="picker-chip-checked-text" class="vcText_fixture">1440</span><input class="vcd-screen-picker-option-input" type="radio" checked></label>
+      </div>
+      <div class="pickerStack_fixture">
+        <div class="vcd-screen-picker-option-radios"><label id="picker-under" class="vcd-screen-picker-option-radio" data-checked="false"><span id="picker-under-text" class="vcText_fixture">Prefer Smoothness</span></label></div>
+        <div class="vcd-screen-picker-option-radios"><label class="vcd-screen-picker-option-radio" data-checked="false"><span class="vcText_fixture">Prefer Clarity</span></label></div>
+        <div id="picker-listbox" class="thin_fixture scrollerBase_fixture popout_uFkqU2 popoutPositionTop_uFkqU2" role="listbox">
+          <div id="picker-option" class="option_uFkqU2" role="option" aria-selected="false" tabindex="-1">Entire System</div>
+          <div id="picker-option-selected" class="option_uFkqU2" role="option" aria-selected="true" tabindex="-1">Brave<svg class="selectedIcon_uFkqU2" width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="currentColor"/></svg></div>
+        </div>
+      </div>
+      <button id="picker-cancel" data-mana-component="button" class="button_F7qvhY md_F7qvhY secondary_F7qvhY hasText_F7qvhY"><div class="buttonChildrenWrapper_F7qvhY"><div class="buttonChildren_F7qvhY"><span id="picker-cancel-text" data-text-variant="body-md/medium">Cancel</span></div></div></button>
+      <button id="picker-go-live" data-mana-component="button" class="button_F7qvhY md_F7qvhY primary_F7qvhY hasText_F7qvhY"><div class="buttonChildrenWrapper_F7qvhY"><div class="buttonChildren_F7qvhY"><span id="picker-go-live-text" data-text-variant="body-md/medium">Go Live</span></div></div></button>
     </section>
   </main>
 </body>
