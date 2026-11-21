@@ -120,9 +120,10 @@
   [class*="lookOutlined_"][class*="colorGreen_"],
   [class*="lookOutlined_"][class*="colorRed_"]
 ):hover,
-.button_a22cb0.primary_a22cb0:not(.custom-user-profile-theme *),
-.button_a22cb0.active_a22cb0,
-.button_a22cb0.critical-primary_a22cb0,
+/* Discord's Mana buttons (Vesktop's Go Live too) rotate their class hash, so
+   match the stable component marker plus each filled variant's class token. */
+[data-mana-component="button"]:is([class^="primary_"], [class*=" primary_"]):not(.custom-user-profile-theme *),
+[data-mana-component="button"]:is([class^="active_"], [class*=" active_"], [class^="critical-primary_"], [class*=" critical-primary_"]),
 [class*="botTagRegular_"],
 [class*="iconBackground_"] {
   color: #0a100d !important;
@@ -280,6 +281,37 @@
    the green outline that joins the divider line. */
 [class*="isUnread_"] > [class*="unreadPill_"][class*="endCap_"] {
   color: #0a100d;
+}
+
+/* Discord's Select popout (Vesktop's audio source menu opens upward over the
+   screen share picker's own chips). ClearVision gives it translucent shading
+   and no edge, so the covered controls ghost through and the menu reads as an
+   overlap. Make it an opaque, edged layer and lift unselected rows from
+   Discord's grey --text-subtle to body text. */
+[role="listbox"]:is([class^="popout_"], [class*=" popout_"]) {
+  background: rgb(from var(--popout-shading) r g b / 1) !important;
+  border: 1px solid rgb(176 200 188 / 48%) !important;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 60%);
+}
+[role="listbox"]:is([class^="popout_"], [class*=" popout_"]) [role="option"]:not([aria-selected="true"]) {
+  color: var(--normal-text);
+}
+
+/* Vesktop's picker chips and source tiles use Discord's blurple --brand-500
+   under light text. Use the Aurora selection pair and a visible glass edge. */
+.vcd-screen-picker-option-radios .vcd-screen-picker-option-radio {
+  border-color: rgb(176 200 188 / 48%);
+}
+.vcd-screen-picker-option-radios .vcd-screen-picker-option-radio[data-checked="true"] {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+}
+.vcd-screen-picker-option-radios .vcd-screen-picker-option-radio[data-checked="true"],
+.vcd-screen-picker-option-radios .vcd-screen-picker-option-radio[data-checked="true"] * {
+  color: #0a100d;
+}
+.vcd-screen-picker-screen-grid .vcd-screen-picker-screen-label:hover {
+  outline-color: var(--main-color);
 }
 
 /* Every selected surface (DM list row, Friends tabs, public nav items, select
