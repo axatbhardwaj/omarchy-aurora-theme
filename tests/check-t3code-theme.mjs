@@ -13,6 +13,20 @@ if (theme.version !== 1) failures.push("version must be 1");
 if (theme.name !== "Aurora" || theme.id !== "aurora") failures.push("expected Aurora (aurora)");
 if (Object.keys(c).length !== 61) failures.push("expected all 61 T3 v1 color roles");
 if (!theme.css?.includes("var(--theme-background-image,")) failures.push("missing published wallpaper hook");
+
+// T3 v0.1.11 paints .surface-glass (the composer context strip under the
+// prompt, glass buttons, chart tooltips) with 80% of --background, which is the
+// purple canvas seed. Aurora must let the wallpaper continue through that strip.
+const declarations = (selector) =>
+  [...(theme.css ?? "").replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+    .filter(([, selectors]) => selectors.split(",").some((s) => s.trim() === selector))
+    .map(([, , body]) => body)
+    .join(";");
+const strip = declarations('[data-slot="composer-context-strip"]');
+if (!/background:\s*transparent\s*!important/.test(strip)) failures.push("composer context strip must be transparent");
+if (!/backdrop-filter:\s*none\s*!important/.test(strip)) failures.push("composer context strip must not re-blur the pane");
+const glass = declarations('html[data-theme-id] .surface-glass');
+if (!/background:\s*rgb\(11 9 16 \/ \d+%\)/.test(glass)) failures.push("surface glass must use neutral ink, not the purple canvas");
 for (const [role, expected] of Object.entries({
   accent: "#85d9ac",
   focus: "#85d9ac",
