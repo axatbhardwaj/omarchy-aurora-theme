@@ -11,7 +11,7 @@ theme[title]="#85d9ac"
 theme[hi_fg]="#7dd6c8"
 
 # Background color of selected item in processes box
-theme[selected_bg]="#25212c"
+theme[selected_bg]="#1f2a26"
 
 # Foreground color of selected item in processes box
 theme[selected_fg]="#85d9ac"
@@ -45,9 +45,9 @@ theme[free_mid]="#6fd48c"
 theme[free_end]="#a8f0b3"
 
 
-theme[cached_start]="#d98cc0"
-theme[cached_mid]="#d98cc0"
-theme[cached_end]="#d98cc0"
+theme[cached_start]="#93d2ec"
+theme[cached_mid]="#93d2ec"
+theme[cached_end]="#93d2ec"
 
 
 theme[available_start]="#7dd6c8"
@@ -57,14 +57,14 @@ theme[available_end]="#7dd6c8"
 
 theme[used_start]="#85d9ac"
 theme[used_mid]="#5fb3d9"
-theme[used_end]="#d98cc0"
+theme[used_end]="#e0b283"
 
 
-theme[download_start]="#d98cc0"
+theme[download_start]="#5fb3d9"
 theme[download_mid]="#7dd6c8"
 theme[download_end]="#85d9ac"
 
 
-theme[upload_start]="#d98cc0"
+theme[upload_start]="#5fb3d9"
 theme[upload_mid]="#7dd6c8"
 theme[upload_end]="#85d9ac"
