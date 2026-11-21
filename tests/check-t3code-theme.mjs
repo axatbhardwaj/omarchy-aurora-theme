@@ -1,17 +1,30 @@
 #!/usr/bin/env node
-// Validates t3code.json: shape T3 Code accepts, and WCAG contrast for every
-// foreground/background pair the app actually draws together.
+// Checks Aurora’s T3 v1 roles and contrast on their opaque fallback surfaces.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const path = fileURLToPath(new URL("../t3code.json", import.meta.url));
-const theme = JSON.parse(readFileSync(path, "utf8"));
+const theme = JSON.parse(readFileSync(process.argv[2] ?? path, "utf8"));
 const c = theme.colors;
 const failures = [];
 
 const hex = /^#[0-9a-f]{6}$/i;
 if (theme.version !== 1) failures.push("version must be 1");
-if (!theme.name || theme.name.length > 48) failures.push("name must be 1-48 chars");
+if (theme.name !== "Aurora" || theme.id !== "aurora") failures.push("expected Aurora (aurora)");
+if (Object.keys(c).length !== 61) failures.push("expected all 61 T3 v1 color roles");
+if (!theme.css?.includes("var(--theme-background-image,")) failures.push("missing published wallpaper hook");
+for (const [role, expected] of Object.entries({
+  accent: "#85d9ac",
+  focus: "#85d9ac",
+  text: "#edf7ef",
+  textMuted: "#b0c8bc",
+})) {
+  if (c[role]?.toLowerCase() !== expected) failures.push(`${role} must match ${expected}`);
+}
+if (theme.canvas?.toLowerCase() !== "#180e21" || theme.accent !== c.accent) {
+  failures.push("wrong glass or accent seed");
+}
+
 if (theme.appearance !== "dark") failures.push("appearance must be dark");
 for (const key of ["canvas", "accent"]) {
   if (!hex.test(theme[key] ?? "")) failures.push(`${key} seed must be #rrggbb`);
@@ -23,7 +36,7 @@ for (const [role, value] of Object.entries(c)) {
 const luminance = (value) => {
   const [r, g, b] = [1, 3, 5].map((i) => {
     const v = parseInt(value.slice(i, i + 2), 16) / 255;
-    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
   });
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 };
@@ -35,6 +48,10 @@ const ratio = (a, b) => {
 // [foreground, background, minimum ratio]
 const pairs = [
   ["text", "canvas", 4.5],
+  ["text", "chrome", 4.5],
+  ["border", "canvas", 3],
+  ["toolbarBorder", "toolbar", 3],
+  ["sidebarBorder", "sidebar", 3],
   ["textMuted", "canvas", 4.5],
   ["toolbarForeground", "toolbar", 4.5],
   ["toolbarControlForeground", "toolbarControl", 4.5],
@@ -46,11 +63,13 @@ const pairs = [
   ["accentSurfaceForeground", "accentSurface", 4.5],
   ["secondaryForeground", "secondary", 4.5],
   ["mutedForeground", "muted", 4.5],
-  ["placeholder", "input", 3],
+  ["placeholder", "input", 4.5],
   ["secondaryLabel", "canvas", 4.5],
   ["iconMuted", "canvas", 3],
   ["errorForeground", "errorSurface", 4.5],
+  ["warning", "canvas", 4.5],
   ["warningForeground", "warningSurface", 4.5],
+  ["update", "canvas", 4.5],
   ["updateForeground", "updateSurface", 4.5],
   ["messageForeground", "messageSurface", 4.5],
   ["messageActionForeground", "messageAction", 4.5],
@@ -65,7 +84,14 @@ const pairs = [
   ["terminalForeground", "terminalBackground", 4.5],
   ["terminalForeground", "terminalSelection", 4.5],
   ["terminalCursor", "terminalBackground", 3],
+  ["terminalScrollbar", "terminalBackground", 3],
+  ["terminalScrollbarHover", "terminalBackground", 3],
   ["focus", "canvas", 3],
+  ["textMuted", "messageSurface", 4.5],
+  ["sidebarMutedForeground", "sidebarRowSelected", 4.5],
+  ["searchMatchForeground", "searchMatchBackground", 4.5],
+  ["searchMatchActiveForeground", "searchMatchActiveBackground", 4.5],
+  ["searchMatchActiveBackground", "searchMatchBackground", 3],
   // T3 draws white glyphs on bg-destructive (stop button) and also uses the
   // same role as text-destructive, so it must work in both directions.
   ["white", "error", 3],
