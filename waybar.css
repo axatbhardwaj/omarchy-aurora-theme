@@ -1,38 +1,27 @@
-@define-color foreground #fdfffd;
-@define-color background #0a100d;
-@define-color accent #62e2a4;
-@define-color support #6fd48c;
-@define-color border alpha(@accent, 0.35);
+@define-color foreground #edf7ef;
+@define-color background #180e21;
+@define-color accent #85d9ac;
+@define-color secondary #b0c8bc;
 
-/* Translucent bar so the Hyprland layer blur has something to show through.
-   Higher specificity than the `*` rule in ~/.config/waybar/style.css, so the
-   @import order does not matter. The window carries the alpha; children stay
-   transparent so it does not stack into a darker double layer.
-   0.55 sits just above the `ignore_alpha 0.5` layerrule threshold — below that,
-   Hyprland skips blurring the surface entirely. */
+/* Two independent background layers keep module glyphs fully opaque. */
 window#waybar {
-  background-color: rgba(10, 16, 13, 0.55);
+  background-color: rgba(24, 14, 33, 0.02);
+  background-image: linear-gradient(rgba(11, 9, 16, 0.42), rgba(11, 9, 16, 0.42));
   color: @foreground;
 }
 
 window#waybar * {
   background-color: transparent;
+  color: @foreground;
+  text-shadow: 0 0 1.2px rgba(11, 9, 16, 0.55);
 }
 
-/* Grouped glass modules: green frame, faint green interior lift. */
-.modules-left,
-.modules-center,
-.modules-right {
-  margin: 6px 8px 0;
-  padding: 2px 6px;
-  border: 1px solid @border;
-  border-radius: 12px;
-  background-image: linear-gradient(to bottom, alpha(@support, 0.06), transparent);
+window#waybar #workspaces button label {
+  color: @secondary;
 }
 
-#workspaces button.active,
-#workspaces button.focused,
-#custom-launcher,
-#window {
+window#waybar #workspaces button.active label,
+window#waybar #workspaces button.focused label,
+window#waybar #custom-omarchy {
   color: @accent;
 }
