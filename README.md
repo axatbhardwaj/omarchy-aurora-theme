@@ -1,6 +1,6 @@
 # Omarchy Aurora Theme
 
-Aurora uses **#85D9AC** for focus, **#EDF7EF** for reading text and **#B0C8BC** for secondary labels. Nautilus and Waybar layer local dark backings over a 2% **#180E21** base. The desktop wallpaper is Aurora Lake.
+Aurora uses **#85D9AC** for focus, **#EDF7EF** for reading text and **#B0C8BC** for secondary labels. Nautilus and Waybar layer local dark backings over a 2% **#0E1613** base. The desktop wallpaper is Aurora Lake.
 
 ![Historical Aurora preview](preview.png)
 
@@ -44,7 +44,7 @@ install -m 644 backgrounds/0-aurora-lake.jpg "$themes/aurora.jpg"
 t3 theme set --id aurora ./t3code.json
 ```
 
-Select **Aurora** for dark appearance if the client has a separate theme selection. For Omarchy's automatically generated `omarchy.json` alias, install the same JPEG as `omarchy.jpg`. Run `node tests/check-t3code-theme.mjs` to check the palette and fallback contrast.
+Select **Aurora** for dark appearance if the client has a separate theme selection. For Omarchy's automatically generated `omarchy.json` alias, install the same JPEG as `omarchy.jpg`. Run `node tests/check-t3code-theme.mjs` to check the palette and fallback contrast, and `node tests/check-no-purple.mjs` to keep violet and magenta fills out of every shipped surface (ANSI magenta slots excepted).
 
 ## Desktop surfaces
 
@@ -52,7 +52,7 @@ Select **Aurora** for dark appearance if the client has a separate theme selecti
 | --- | --- |
 | Hyprland | Size 24, four Dual Kawase passes, neutral brightness/contrast and xray. Active borders are 2 px green; idle tiled borders are 1 px neutral. Hyprland's kernel differs from the design's Gaussian blur. |
 | Files (Nautilus 51/GTK 4) | Window tint at 2%, sidebar gradient 44% to 30%, header 40%, reading area 42% to 20%. A 20% green wash and 3 px rail mark the selected place. The icon theme supplies real green folder artwork. GTK reads user CSS when the process starts. |
-| Ghostty, kitty, Alacritty, foot | Native background-only opacity, with fully opaque glyphs at the compositor. These configs expose one background alpha. The profile uses the brighter-wallpaper endpoint of the reading scrim: `0.42 + 0.02 × 0.58 = 0.4316`, with the composite RGB rounded to `#0B0910`. Start a new window to pick up launch-only settings. |
+| Ghostty, kitty, Alacritty, foot | Native background-only opacity, with fully opaque glyphs at the compositor. These configs expose one background alpha. The profile uses the brighter-wallpaper endpoint of the reading scrim: `0.42 + 0.02 × 0.58 = 0.4316`, with the composite RGB rounded to `#0A100D`. Start a new window to pick up launch-only settings. |
 | Waybar / Omarchy 4 bar | Waybar draws the 42% backing over the 2% tint and adds a text halo. The native shell accepts a single bar color and alpha, so it receives the equivalent composite. Omarchy 4.5’s built-in bar caps `glassy` at 0.35 and clears `none`. Select `omarchy-bar background opaque` to use the supplied 0.4316 alpha. The Aurora layer rule still enables blur. Menus, notifications and security prompts retain stronger backings. |
 
 Other applications continue using their existing native or compositor opacity policies. The desktop integration targets Nautilus (Haoshoku's Super+E binding). Another file manager will use its own widgets.
