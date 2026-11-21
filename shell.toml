@@ -1,7 +1,7 @@
 # Aurora. The bar folds its 42% scrim over the 2% base into one RGBA.
 
 [bar]
-background       = "#0b0910"
+background       = "#0a100d"
 background-alpha = 0.4316
 text             = "#edf7ef"
 active           = "#85d9ac"
@@ -75,7 +75,7 @@ icon          = 14
 icon-large    = 19
 
 [popups]
-background       = "#180e21"
+background       = "#0e1613"
 background-alpha = 0.90
 text             = "#edf7ef"
 border           = "hyprland.active-border"
@@ -83,14 +83,14 @@ border-alpha     = 0.72
 border-width     = 2
 
 [tooltip]
-background       = "#180e21"
+background       = "#0e1613"
 background-alpha = 0.96
 text             = "#edf7ef"
 border           = "#6fd48c"
 border-alpha     = 0.68
 
 [notifications]
-background       = "#180e21"
+background       = "#0e1613"
 background-alpha = 0.92
 text             = "#edf7ef"
 border           = "hyprland.active-border"
@@ -99,13 +99,13 @@ border-width     = 2
 countdown        = "#85d9ac"
 
 [launcher]
-background                = "#180e21"
+background                = "#0e1613"
 background-alpha          = 0.91
 text                      = "#edf7ef"
 border                    = "hyprland.active-border"
 border-alpha              = 0.78
 border-width              = 2
-scrim                     = "#08070c"
+scrim                     = "#060a08"
 scrim-alpha               = 0.60
 selected-background       = "#85d9ac"
 selected-background-alpha = 0.20
@@ -115,13 +115,13 @@ selected-border-alpha     = 0.78
 selected-border-width     = 1
 
 [menu]
-background                = "#180e21"
+background                = "#0e1613"
 background-alpha          = 0.93
 text                      = "#edf7ef"
 border                    = "hyprland.active-border"
 border-alpha              = 0.76
 border-width              = 2
-scrim                     = "#08070c"
+scrim                     = "#060a08"
 scrim-alpha               = 0.56
 selected-background       = "#85d9ac"
 selected-background-alpha = 0.20
@@ -131,19 +131,19 @@ selected-border-alpha     = 0.74
 selected-border-width     = 1
 
 [polkit]
-background       = "#180e21"
+background       = "#0e1613"
 background-alpha = 0.96
 text             = "#edf7ef"
 text-error       = "#ff9bb3"
 border           = "hyprland.active-border"
 border-error     = "#ff9bb3"
 border-alpha     = 0.88
-scrim            = "#08070c"
+scrim            = "#060a08"
 scrim-alpha      = 0.66
 accent           = "#85d9ac"
 
 [lock]
-background       = "#180e21"
+background       = "#0e1613"
 background-alpha = 0.84
 text             = "#edf7ef"
 placeholder      = "#b0c8bc"
@@ -156,7 +156,7 @@ selection        = "#85d9ac"
 selection-alpha  = 0.40
 
 [image-picker]
-scrim                   = "#08070c"
+scrim                   = "#060a08"
 scrim-alpha             = 0.66
 text                    = "#edf7ef"
 selected-border         = "hyprland.active-border"
