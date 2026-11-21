@@ -18,12 +18,12 @@
       --control-background-primary-default: #29332e;
       --control-border-primary-default: #52645a;
       --neutral-1: hsl(0 0% 100%);
-      --hsl-main-color: #62e2a4;
+      --hsl-main-color: var(--main-color);
       --hsl-hover-color: #a8f0b3;
       --hsl-success-color: #6fd48c;
       --hsl-danger-color: #f0708e;
       --hsl-channel-selected: #0a100d;
-      --hsl-channel-selected-bg: #62e2a4;
+      --hsl-channel-selected-bg: var(--channel-selected-bg);
     }
     body { margin: 0; padding: 24px; background: #0a100d; color: var(--text-default); font: 16px sans-serif; }
     main { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 14px; }
@@ -123,6 +123,7 @@
   <link rel="stylesheet" href="../vencord/aurora.theme.css">
 </head>
 <body>
+  <div id="app-mount" aria-hidden="true"><div class="bg_fixture" hidden></div></div>
   <main>
     <section><h2>Legacy filled</h2>
       <button id="legacy-brand" class="lookFilled__201d5 colorBrand__201d5">Brand</button>
@@ -145,11 +146,14 @@
       <div class="custom-user-profile-theme"><button id="custom-active" class="button_a22cb0 active_a22cb0">Profile active</button></div>
       <div class="custom-user-profile-theme"><button id="custom-critical" class="button_a22cb0 critical-primary_a22cb0">Profile critical</button></div>
     </section>
-    <section><h2>Selected voice channel</h2>
+    <section class="sidebarList_fixture"><h2>Selected voice channel</h2>
       <div class="wrapper__2ea32 modeSelected__2ea32"><div id="voice-surface" class="link__2ea32 voice">
         <div id="voice-name" class="name__2ea32">straw-hat-grand-fleet</div>
         <div id="voice-secondary" class="channelInfo__2ea32">Set a channel status</div>
       </div></div>
+    </section>
+    <section class="chatContent_fixture"><h2>Conversation</h2>
+      <div class="channelTextArea_fixture"><input id="composer" placeholder="Message #general"></div>
     </section>
     <section><h2>Accent surfaces</h2>
       <span id="badge" class="numberBadge__463b7 badge">63</span>
