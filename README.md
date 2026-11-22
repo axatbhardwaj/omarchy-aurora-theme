@@ -46,6 +46,8 @@ t3 theme set --id aurora ./t3code.json
 
 Every T3 pane uses one flat 46% lake ink scrim over the 2% tint, centred like the desktop wallpaper. With T3 at 92% window opacity this matches Ghostty's 0.4316 background.
 
+T3 blurs its own copy of the wallpaper by only 24 px. A tiled or full-height window therefore centres the sharp aurora core behind the reading area. Ghostty instead sees the desktop under Hyprland's much wider blur. To stop those bright green bands, a `darken`-blended crest (`#365a58`) caps each wallpaper channel before the pane blur. It changes only the brightest ~30% of the lake, leaving darker detail, the green accent and the 45% black message bubbles unchanged. On a side-by-side capture at the same monitor, the brightest 0.5% of text-free T3 background fell from sRGB luma 98 to 51. Ghostty measured 55.
+
 Select **Aurora** for dark appearance if the client has a separate theme selection. For Omarchy's automatically generated `omarchy.json` alias, install the same JPEG as `omarchy.jpg`. Run `node tests/check-t3code-theme.mjs` to check the palette and fallback contrast, and `node tests/check-no-purple.mjs` to keep violet and magenta fills out of every shipped surface (ANSI magenta slots excepted).
 
 ## Desktop surfaces
