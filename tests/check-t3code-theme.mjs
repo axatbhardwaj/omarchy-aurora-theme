@@ -37,6 +37,13 @@ for (const selector of ["[data-changed-files-state]", "[data-changed-files-state
 if (!/backdrop-filter:\s*blur\(/.test(declarations("[data-changed-files-state] > [data-changed-files-header]"))) {
   failures.push("sticky changed-files header must blur rows scrolling beneath it");
 }
+// A new thread has no timeline rows, so T3 v0.1.11 fills the conversation pane
+// with an opaque bg-background [data-timeline-loading] placeholder. That covers
+// the pane's lake, crest and blur with solid canvas green-black.
+const placeholder = declarations('[data-workspace-area="conversation"] [data-timeline-loading]');
+if (!/background:\s*transparent\s*!important/.test(placeholder)) {
+  failures.push("empty-timeline placeholder must be transparent so the conversation lake shows");
+}
 // User message bubbles sit on the lake as translucent black. A light layer
 // (e.g. rgb(237 247 239 / 8%)) washed them out to grey-white on io.
 const bubble = declarations("[data-user-message-bubble]");
