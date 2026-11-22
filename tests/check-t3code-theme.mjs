@@ -73,6 +73,31 @@ if (extraPanes.length > 0 || !pane || new Set(pane).size !== 1) {
 if (!/var\(--aurora-backdrop\) center \/ cover fixed/.test(css)) {
   failures.push("T3 wallpaper must use the desktop's centred cover crop");
 }
+// T3 blurs its own cover copy of the wallpaper by only 24px. A tiled or
+// full-height window therefore puts the sharp aurora core behind the reading
+// area. Ghostty shows the desktop under Hyprland's much wider blur. A
+// darken-blended crest caps each wallpaper channel before the pane blur, which
+// limits the worst band in any layout and leaves darker lake detail unchanged.
+// Bounds come from a 2026-11-22 side-by-side capture. In it, Ghostty's
+// text-free p99.5 is sRGB luma 55 and its median is 25. The T3 window's 8% leak
+// adds about 5.
+const crest = css.match(/--aurora-crest:\s*linear-gradient\((#[0-9a-f]{6}),\s*\1\)/i)?.[1];
+const paneRule = declarations('[data-workspace-area="conversation"]');
+if (
+  !crest ||
+  !/background:\s*var\(--aurora-crest\),\s*var\(--app-theme-canvas\) var\(--aurora-backdrop\)/.test(paneRule) ||
+  !/background-blend-mode:\s*darken,\s*normal/.test(paneRule)
+) {
+  failures.push("T3 panes must cap the wallpaper with a darken-blended --aurora-crest layer");
+} else if (pane && tint?.length) {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(crest.slice(i, i + 2), 16));
+  const luma = (rgb) => 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+  const scrim = 1 - (1 - pane[0]) * (1 - tint[0]);
+  const peak = 0.92 * ((1 - scrim) * luma([r, g, b]) + scrim * luma([10, 16, 13]));
+  if (peak > 50) failures.push(`T3 crest peak ${peak.toFixed(1)} must not outshine Ghostty's brightest lake (50)`);
+  if (peak < 40) failures.push(`T3 crest peak ${peak.toFixed(1)} must keep the aurora visible above the lake (40)`);
+  if (!(g > r && g >= b)) failures.push("T3 crest must keep the aurora green, not grey or violet");
+}
 for (const [role, expected] of Object.entries({
   accent: "#85d9ac",
   focus: "#85d9ac",
