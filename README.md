@@ -50,6 +50,8 @@ T3 blurs its own copy of the wallpaper by only 24 px. A tiled or full-height win
 
 A new thread has no timeline rows yet, so T3 fills the conversation pane with an opaque empty-timeline placeholder (`[data-timeline-loading]`). Aurora makes it transparent so the new-thread pane shows the same lake, crest and blur as existing chats.
 
+T3 opens Usage and Settings in one app modal (`[data-app-modal]`) filled with the opaque canvas over a 64% canvas backdrop. Aurora scopes glass to that modal only. Its backdrop drops to 24% lake ink, and the modal uses 44% lake ink with a 24 px blur. The Settings nav and cards use 34% with the same blur, because the nav overlays content on narrow windows and diagnostics headers stick over rows. Alerts, ordinary dialogs, chart tooltips and Appearance previews keep their T3 fills, and no rule changes content opacity. `tests/check-t3code-theme.mjs` keeps body and muted text at 4.5:1 or better over the brightest fill behind the modal, the selected-thread accent on the crest peak.
+
 Select **Aurora** for dark appearance if the client has a separate theme selection. For Omarchy's automatically generated `omarchy.json` alias, install the same JPEG as `omarchy.jpg`. Run `node tests/check-t3code-theme.mjs` to check the palette and fallback contrast, and `node tests/check-no-purple.mjs` to keep violet and magenta fills out of every shipped surface (ANSI magenta slots excepted).
 
 ## Desktop surfaces
