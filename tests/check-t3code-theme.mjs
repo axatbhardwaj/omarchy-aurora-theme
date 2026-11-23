@@ -257,6 +257,78 @@ if (crest && pane && selected) {
   }
 }
 
+// T3 v0.1.11 fills the right panel ([data-workspace-area="panel"]) and the
+// pull request detail inside it with opaque bg-background. That detail root is
+// the only element whose direct child carries the @container/pr-header class.
+// Its sticky Summary section headers, Timeline cards, rail badges, reply
+// composer and Code toolbar repeat the same canvas fill. Aurora shares the
+// anchored pane lake with that panel and turns those named fills into glass.
+const prHeader = ".\\@container\\/pr-header";
+const prPanel = `[data-workspace-area="panel"]:has(${prHeader})`;
+const prRoot = `.bg-background:has(> ${prHeader})`;
+const lakeRule = declarations(prPanel);
+if (!/background:\s*var\(--aurora-crest\),\s*var\(--app-theme-canvas\) var\(--aurora-backdrop\) center \/ cover fixed/.test(lakeRule)) {
+  failures.push("PR panel must share the anchored, crest-capped pane lake");
+}
+if (!/backdrop-filter:\s*blur\(24px\)/.test(declarations(`${prPanel}::before`))) {
+  failures.push("PR panel must share the pane scrim and blur");
+}
+if (!/background:\s*transparent\s*!important/.test(declarations(prRoot))) {
+  failures.push("PR detail root must be transparent so the panel lake shows");
+}
+const sticky = `${prRoot} .sticky.bg-background`;
+const prCards = [`${prRoot} article.bg-background`, `${prRoot} .rounded-xl.bg-background`, `${prRoot} .\\@container.bg-background`];
+for (const s of [sticky, ...prCards]) {
+  const a = alphaOf(s);
+  if (!(a > 0 && a < 0.6)) failures.push(`${s} must use translucent lake ink !important`);
+}
+if (!/backdrop-filter:\s*blur\(/.test(declarations(sticky))) failures.push("sticky PR section headers must blur rows beneath");
+for (const s of [`${prRoot} .size-8.bg-background`, `${prRoot} .size-7.bg-background`]) {
+  const badge = declarations(s);
+  if (!/background:\s*transparent\s*!important/.test(badge) || !/backdrop-filter:\s*blur\(/.test(badge)) {
+    failures.push(`${s} must be a blurred clear badge that still hides the timeline rail`);
+  }
+}
+// T3's outline controls and label chips also carry bg-background, with dark
+// and hover fills that a blanket override would hide. Diff surfaces keep their
+// code background so additions and deletions keep their T3 tints.
+for (const s of rules) {
+  if (/(^|\s)\.bg-background$/.test(s) || (/\*$/.test(s) && /panel|pull-request|pr-header/.test(s))) {
+    failures.push(`${s} is too broad; scope glass to named PR fills`);
+  }
+  if (/diffs|diff-render-surface|\.shiki|chat-markdown-codeblock pre/.test(s)) {
+    failures.push(`${s} must leave diff and syntax rendering to T3`);
+  }
+}
+// Fenced chat code blocks get T3's opaque --code-background. Aurora uses a
+// black glass instead. Over the crest-capped pane peak, every pierre-dark token
+// (T3's dark syntax theme) must keep at least 95% of its contrast on the stock
+// Aurora code background, and at least a third of the lake must show through.
+const codeblock = declarations(".chat-markdown .chat-markdown-codeblock");
+const codeAlpha = Number(codeblock.match(/background-color:\s*rgb\(0 0 0 \/ (\d+)%\)\s*!important/)?.[1]) / 100;
+if (!(codeAlpha > 0 && codeAlpha <= 2 / 3)) failures.push("chat code blocks must use black glass that shows the lake");
+if (/(?:^|;)\s*(?:color|opacity)\s*:/.test(codeblock)) failures.push("chat code blocks must keep T3 text and syntax colors");
+if (crest && pane && codeAlpha > 0) {
+  const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const hexOf = (v) => `#${v.map((x) => Math.round(x).toString(16).padStart(2, "0")).join("")}`;
+  const over = (top, a, under) => top.map((v, i) => a * v + (1 - a) * under[i]);
+  const peak = hexOf(over([10, 16, 13], pane[0], rgb(crest)).map((v) => 0.92 * v));
+  const fill = hexOf(over([0, 0, 0], codeAlpha, rgb(peak)));
+  const pierreDark = ["#ff678d", "#636363", "#ff855e", "#ffab16", "#ffd452", "#08c0ef", "#9d6afb", "#5ecc71",
+    "#ffa359", "#d568ea", "#fafafa", "#737373", "#a3a3a3", "#69b1ff", "#68cdf2", "#60d199", "#64d1db", "#61d5c0"];
+  for (const token of [...pierreDark, c.codeForeground]) {
+    const stock = ratio(token, c.codeBackground);
+    if (ratio(token, fill) < 0.95 * stock) failures.push(`code token ${token} on glass ${fill} loses contrast`);
+  }
+  // PR text sits on the bare panel lake or on a 34% card over it.
+  for (const [name, bg] of [["panel", peak], ["card", hexOf(over([10, 16, 13], alphaOf(prCards[0]), rgb(peak)))]]) {
+    for (const role of ["text", "textMuted"]) {
+      const r = ratio(c[role], bg);
+      if (!(r >= 4.5)) failures.push(`${role} on PR ${name} ${bg}: ${r.toFixed(2)} < 4.5`);
+    }
+  }
+}
+
 if (failures.length > 0) {
   console.error(`t3code.json: ${failures.length} failure(s)`);
   for (const f of failures) console.error(`  ${f}`);
