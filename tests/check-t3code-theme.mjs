@@ -202,6 +202,61 @@ for (const [fg, bg, min] of pairs) {
   if (r < min) failures.push(`${fg} on ${bg}: ${r.toFixed(2)} < ${min}`);
 }
 
+// T3 v0.1.11 opens Usage and Settings in one AppRouteModal: [data-app-modal]
+// filled with opaque bg-background over a .dialog-backdrop of 64% canvas.
+// Aurora keeps that modal glass. Alerts and ordinary dialogs keep T3's own
+// fills, and Settings › Appearance previews keep their bg-background swatches.
+const rules = [...css.matchAll(/([^{}]+)\{[^{}]*\}/g)].flatMap(([, s]) => s.split(",").map((x) => x.trim()));
+const blanket = [
+  ".dialog-backdrop",
+  ".dialog-glass",
+  '[data-slot="dialog-popup"]',
+  '[data-slot="dialog-backdrop"]',
+  '[data-slot="alert"]',
+  '[role="alertdialog"]',
+  "[data-app-modal] .bg-background",
+  "[data-app-modal] .bg-sidebar",
+];
+for (const s of rules.filter((s) => blanket.includes(s))) failures.push(`${s} is too broad; scope glass to the app modal`);
+const modal = "[data-app-modal]";
+const modalBackdrop = ".dialog-backdrop:has(~ * [data-app-modal])";
+const settingsPanels = ["[data-app-modal] nav.bg-sidebar", "[data-app-modal] .bg-card"];
+const alphaOf = (selector) => Number(declarations(selector).match(ink)?.[1]) / 100;
+for (const s of [modal, modalBackdrop, ...settingsPanels]) {
+  const a = alphaOf(s);
+  if (!(a > 0 && a < 0.6)) failures.push(`${s} must use translucent lake ink !important`);
+  if (/(?:^|;)\s*opacity\s*:/.test(declarations(s))) failures.push(`${s} must not fade its content`);
+}
+for (const s of [modal, ...settingsPanels]) {
+  if (!/backdrop-filter:\s*blur\(/.test(declarations(s))) failures.push(`${s} must blur what passes beneath`);
+}
+const seeThrough = (1 - alphaOf(modalBackdrop)) * (1 - alphaOf(modal));
+if (!(seeThrough >= 1 / 3)) failures.push(`app modal must show at least a third of the app behind it`);
+// Worst large fill behind the modal: the selected thread row's accent wash over
+// the crest-capped pane peak. Blur averages away text, so labels and chart
+// ticks must stay readable over that fill seen through backdrop, modal and card.
+const selected = declarations('[data-thread-item] [aria-current="page"]').match(
+  /background:\s*rgb\((\d+) (\d+) (\d+) \/ (\d+)%\)/,
+);
+if (crest && pane && selected) {
+  const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const hexOf = (v) => `#${v.map((x) => Math.round(x).toString(16).padStart(2, "0")).join("")}`;
+  const over = (top, a, under) => top.map((v, i) => a * v + (1 - a) * under[i]);
+  const lake = [10, 16, 13];
+  // Leaving out the 2% glass tint keeps this pane peak slightly brighter (worse).
+  const peak = over(lake, pane[0], rgb(crest)).map((v) => 0.92 * v);
+  const behind = over(selected.slice(1, 4).map(Number), Number(selected[4]) / 100, peak);
+  const modalFill = over(lake, alphaOf(modal), over(lake, alphaOf(modalBackdrop), behind));
+  const fills = { modal: modalFill };
+  for (const s of settingsPanels) fills[s] = over(lake, alphaOf(s), modalFill);
+  for (const [name, fill] of Object.entries(fills)) {
+    for (const role of ["text", "textMuted"]) {
+      const r = ratio(c[role], hexOf(fill));
+      if (!(r >= 4.5)) failures.push(`${role} on ${name} glass ${hexOf(fill)}: ${r.toFixed(2)} < 4.5`);
+    }
+  }
+}
+
 if (failures.length > 0) {
   console.error(`t3code.json: ${failures.length} failure(s)`);
   for (const f of failures) console.error(`  ${f}`);
