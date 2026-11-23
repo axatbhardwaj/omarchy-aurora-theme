@@ -52,6 +52,10 @@ A new thread has no timeline rows yet, so T3 fills the conversation pane with an
 
 T3 opens Usage and Settings in one app modal (`[data-app-modal]`) filled with the opaque canvas over a 64% canvas backdrop. Aurora scopes glass to that modal only. Its backdrop drops to 24% lake ink, and the modal uses 44% lake ink with a 24 px blur. The Settings nav and cards use 34% with the same blur, because the nav overlays content on narrow windows and diagnostics headers stick over rows. Alerts, ordinary dialogs, chart tooltips and Appearance previews keep their T3 fills, and no rule changes content opacity. `tests/check-t3code-theme.mjs` keeps body and muted text at 4.5:1 or better over the brightest fill behind the modal, the selected-thread accent on the crest peak.
 
+T3 fills the right-hand pull request panel and its Summary, Timeline and Code views with the opaque canvas. When that panel shows a pull request, Aurora gives it the same fixed lake, crest and blur as the conversation, so the lake runs on across both panes. Sticky section headers use 30% lake ink with a 24 px blur. Timeline cards, the reply box and the Code toolbar use 34%. Timeline badges become a clear blur that still hides the rail. Outline buttons, label chips and the diff view keep their T3 fills, so diff colours are unchanged.
+
+Fenced code blocks in chat and pull request descriptions use 55% black glass instead of the opaque code background. Syntax colours, copy and wrap buttons are unchanged. The test keeps every pierre-dark syntax colour within 95% of its contrast on the stock code background, even over the brightest lake.
+
 Select **Aurora** for dark appearance if the client has a separate theme selection. For Omarchy's automatically generated `omarchy.json` alias, install the same JPEG as `omarchy.jpg`. Run `node tests/check-t3code-theme.mjs` to check the palette and fallback contrast, and `node tests/check-no-purple.mjs` to keep violet and magenta fills out of every shipped surface (ANSI magenta slots excepted).
 
 ## Desktop surfaces
