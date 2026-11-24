@@ -66,9 +66,9 @@ T3 draws Mermaid diagrams itself and takes every colour from `--pele-*` roles. A
 
 Subgraphs keep the accent surface, edges stay sage, accent stays `#85d9ac` and critical marks stay Aurora's error red. Mermaid `style` and `classDef` colours still win.
 
-**Expand** copies these roles into an image. It also stamps the page body's colour behind the diagram, and that colour is T3's navy chrome. Aurora clears the body's background; `html` paints the same chrome, so the app looks unchanged. The expanded diagram then sits on the lightbox's black-green canvas.
+**Expand** copies these roles into an image. It also stamps the page body's colour behind the diagram, and that colour is T3's navy chrome. Aurora clears the body's background; `html` paints the same chrome, so the app looks unchanged. The expanded diagram then shows the viewer surface through its transparent pixels.
 
-The lightbox, its Back button, album arrows, caption and raster previews keep T3's styling. Theme CSS cannot reach inside the expanded image. So it shows no blur or text halo, and it stays on the opaque canvas rather than glass. Run `node tests/check-t3code-mermaid.mjs` (needs Chromium; set `CHROMIUM` to its binary if it is not on `PATH`). It renders T3's diagram markup and its Expand serializer, then checks both views.
+In the English T3 client the expanded diagram's blob image is named `Mermaid diagram`. Aurora uses that name to tint the viewer and blur the underlying lake. Other localized names receive T3's default viewer styling. Back, gallery controls and ordinary photos retain their existing styling. Run `node tests/check-t3code-mermaid.mjs` (needs Chromium; set `CHROMIUM` to its binary if it is not on `PATH`). It renders T3's diagram markup and its Expand serializer, then checks both views.
 
 Select **Aurora** for dark appearance if the client has a separate theme selection. For Omarchy's automatically generated `omarchy.json` alias, install the same JPEG as `omarchy.jpg`. Run `node tests/check-t3code-theme.mjs` to check the palette and fallback contrast, and `node tests/check-no-purple.mjs` to keep violet and magenta fills out of every shipped surface (ANSI magenta slots excepted).
 
