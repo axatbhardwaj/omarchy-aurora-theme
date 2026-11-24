@@ -329,6 +329,58 @@ if (crest && pane && codeAlpha > 0) {
   }
 }
 
+// T3 v0.1.11 renders a Markdown file in the right panel's file preview. Its
+// root is the only bg-background whose direct [data-surface-subheader] child
+// holds the [data-file-breadcrumbs] path. That root, both surface subheaders
+// (breadcrumbs, explorer search), the file explorer aside and its file browser
+// repeat the opaque canvas inside the opaque panel shell, in inline, maximized
+// and narrow-window sheet modes alike. Aurora shares the anchored pane lake
+// there only while a rendered Markdown body (.chat-markdown) shows, so source,
+// image and other file views, tabs and pressed file controls keep T3's fills.
+const mdPanel = '[data-workspace-area="panel"]:has([data-file-breadcrumbs]):has(.chat-markdown)';
+const mdRoot = ".bg-background:has(> [data-surface-subheader] [data-file-breadcrumbs]):has(.chat-markdown)";
+const mdLake = declarations(mdPanel);
+if (
+  !/background:\s*var\(--aurora-crest\),\s*var\(--app-theme-canvas\) var\(--aurora-backdrop\) center \/ cover fixed/.test(mdLake) ||
+  !/background-blend-mode:\s*darken,\s*normal/.test(mdLake)
+) {
+  failures.push("Markdown file preview panel must share the anchored, crest-capped pane lake");
+}
+if (!/backdrop-filter:\s*blur\(24px\)/.test(declarations(`${mdPanel}::before`))) {
+  failures.push("Markdown file preview panel must share the pane scrim and blur");
+}
+for (const s of [mdRoot, `${mdRoot} [data-surface-subheader]`, `${mdRoot} aside`, `${mdRoot} [data-file-browser-panel]`]) {
+  if (!/background:\s*transparent\s*!important/.test(declarations(s))) failures.push(`${s} must be transparent so the panel lake shows`);
+}
+for (const s of rules) {
+  if (/data-file-(?:breadcrumbs|browser-panel)|data-right-panel|data-surface-subheader|data-active-tab/.test(s) && !s.includes(".chat-markdown")) {
+    failures.push(`${s} reaches file views without a rendered Markdown body; scope it to .chat-markdown`);
+  }
+  if (/aria-pressed|data-pressed|\.bg-accent\b/.test(s)) failures.push(`${s} must leave pressed file controls and tabs to T3`);
+}
+// The reading pane has no card: headings and body text (T3 draws it at 90%),
+// blockquotes (muted), external links (accent) and inline code sit on the bare
+// lake. Check them at the crest-capped peak, and T3's 50% focus ring at 3:1.
+if (crest && pane) {
+  const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const hexOf = (v) => `#${v.map((x) => Math.round(x).toString(16).padStart(2, "0")).join("")}`;
+  const over = (top, a, under) => top.map((v, i) => a * v + (1 - a) * under[i]);
+  const peak = over([10, 16, 13], pane[0], rgb(crest)).map((v) => 0.92 * v);
+  const inlineCode = Number(declarations(".chat-markdown :not(pre) > code").match(/background-color:\s*rgb\(0 0 0 \/ (\d+)%\)/)?.[1]) / 100;
+  const reading = [
+    ["heading", c.text, peak, 4.5],
+    ["body", hexOf(over(rgb(c.text), 0.9, peak)), peak, 4.5],
+    ["muted", c.textMuted, peak, 4.5],
+    ["link", c.accent, peak, 4.5],
+    ["inline code", c.text, over([0, 0, 0], inlineCode || 0, peak), 4.5],
+    ["focus ring", hexOf(over(rgb(c.focus), 0.5, peak)), peak, 3],
+  ];
+  for (const [name, fg, bg, min] of reading) {
+    const r = ratio(fg, hexOf(bg));
+    if (!(r >= min)) failures.push(`Markdown ${name} ${fg} on lake ${hexOf(bg)}: ${r.toFixed(2)} < ${min}`);
+  }
+}
+
 if (failures.length > 0) {
   console.error(`t3code.json: ${failures.length} failure(s)`);
   for (const f of failures) console.error(`  ${f}`);
