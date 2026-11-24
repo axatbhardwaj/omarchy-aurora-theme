@@ -56,13 +56,13 @@ const page = `<!doctype html><html data-theme-id="aurora" class="dark" style="${
 <head><style>${t3Css}</style><style id="aurora">${theme.css}</style></head>
 <body style="background-color:${c.chrome}">
 <div class="chat-markdown-mermaid overflow-x-auto" data-markdown-mermaid=""><button type="button" class="block w-full cursor-zoom-in rounded-md"><span class="flex w-full justify-center">${svg}</span></button></div>
-<div class="relative isolate z-10 flex max-h-full max-w-[var(--media-width)] flex-col items-center" id="lightbox">
+<div data-slot="dialog-backdrop" id="shade"></div><div data-slot="dialog-viewport"><div class="relative isolate z-10 flex max-h-full max-w-[var(--media-width)] flex-col items-center" id="lightbox">
 <div class="absolute left-0 top-0 z-20 max-[8rem]:left-1/2 max-[8rem]:-translate-x-1/2"><button type="button" id="back">Back</button></div>
 <button type="button" class="left-0 top-auto bottom-0 translate-y-0 sm:top-1/2 sm:bottom-auto sm:-translate-y-1/2" id="previous">Previous</button>
 <div role="region" tabindex="0" id="region" class="max-w-[var(--media-width)] overflow-auto overscroll-contain rounded-lg bg-background shadow-2xl ring-1 ring-border/70 outline-none"><img id="image" alt="Mermaid diagram" class="block max-w-none select-none"></div>
 <div class="mt-2 flex max-w-[var(--media-width)] items-center justify-center gap-1.5 text-xs text-white/80 max-sm:px-10" id="caption">Mermaid diagram</div>
 </div>
-<pre id="result">pending</pre>
+</div><pre id="result">pending</pre>
 <script>${t3Expand}
 const samples = ${JSON.stringify(samples)};
 const out = (value) => { document.getElementById("result").textContent = JSON.stringify(value); };
@@ -80,18 +80,18 @@ try {
     return [el.dataset.sample, [r, g, b, a * Number(style[paint + "Opacity"])]];
   }));
   inline.backdrop = [0, 0, 0, 0];
-  const lightbox = [...document.querySelectorAll("#lightbox, #lightbox *")];
-  const touched = [...document.getElementById("aurora").sheet.cssRules].flatMap((rule) =>
-    rule.selectorText ? lightbox.filter((el) => { try { return el.matches(rule.selectorText); } catch { return false; } })
-      .map((el) => el.id || el.className) : []);
   const image = document.getElementById("image");
+  const fill = (id) => parse(getComputedStyle(document.getElementById(id)).backgroundColor);
   image.onload = () => {
     const canvas = Object.assign(document.createElement("canvas"), { width: 400, height: 240 });
     const ctx = canvas.getContext("2d");
     ctx.drawImage(image, 0, 0);
     const pixels = Object.fromEntries(Object.entries(samples).map(([name, [x, y]]) => [name, [...ctx.getImageData(x, y, 1, 1).data]]));
-    out({ inline, pixels, region: parse(getComputedStyle(document.getElementById("region")).backgroundColor),
-      window: parse(getComputedStyle(document.documentElement).backgroundColor), touched });
+    const region = fill("region"), shade = fill("shade");
+    image.alt = "Photo";
+    const rasterRegion = fill("region"), rasterShade = fill("shade");
+    out({ inline, pixels, region, shade, rasterRegion, rasterShade,
+      window: parse(getComputedStyle(document.documentElement).backgroundColor) });
   };
   image.onerror = () => out({ error: "expanded diagram image failed to load" });
   image.src = aA(document.querySelector("[data-markdown-mermaid] svg"));
@@ -144,7 +144,10 @@ const peak = over([10, 16, 13, pane * 255], hex(crest ?? "#000000")).map((v) => 
 
 // Expand stamps body's background onto the image. It must not paint T3's
 // chrome behind the diagram; the lightbox's own Aurora canvas shows instead.
-const expandedBackdrop = over(result.pixels.backdrop, result.region);
+const expandedBackdrop = over(result.region, over(result.shade, peak));
+for (const fill of [result.shade, result.region]) {
+  if (!(fill[3] > 0 && fill[3] < 220)) failures.push("expanded Mermaid viewer must show the backdrop");
+}
 if (result.pixels.backdrop[3] !== 0) {
   failures.push(`expanded diagram paints ${hexOf(result.pixels.backdrop.slice(0, 3))} behind itself, not the lightbox canvas`);
 }
@@ -152,7 +155,7 @@ if (!blackGreen(expandedBackdrop)) failures.push(`expanded diagram backdrop ${he
 if (hexOf(result.window.slice(0, 3)) !== c.chrome.toLowerCase()) failures.push(`app window background changed to ${hexOf(result.window.slice(0, 3))}`);
 
 // Inline paint comes from the live SVG; expanded paint from the decoded image.
-for (const [where, p, back] of [["inline", result.inline, peak], ["expanded", result.pixels, result.region]]) {
+for (const [where, p, back] of [["inline", result.inline, peak], ["expanded", result.pixels, expandedBackdrop]]) {
   const text = over(p.text, back);
   const cluster = over(p.cluster, back);
   const node = over(p.node, back);
@@ -194,8 +197,9 @@ for (const [where, p, back] of [["inline", result.inline, peak], ["expanded", re
   });
 }
 
-// Raster previews, the album arrows, Back and the caption keep T3's own styling.
-for (const target of new Set(result.touched)) failures.push(`Aurora restyles lightbox element ${target}`);
+if (result.rasterRegion[3] !== 255 || result.rasterShade[3] !== 0) {
+  failures.push("Mermaid styles leaked onto the photo control");
+}
 
 if (failures.length > 0) {
   console.error(`t3code.json Mermaid: ${failures.length} failure(s)`);
