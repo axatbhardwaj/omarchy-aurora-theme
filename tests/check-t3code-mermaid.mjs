@@ -4,6 +4,7 @@
 // Aurora's roles reach both. Run with CHROMIUM=<binary> if `chromium` is not on PATH.
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
+import { inflateSync } from "node:zlib";
 import { readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -23,6 +24,16 @@ html[data-theme-id]:not([data-theme-id=""]){--background:var(--app-theme-canvas)
 .pele{--pele-accent:var(--primary);--pele-critical:var(--destructive)}
 .bg-background{background-color:var(--background)}
 `;
+// Tailwind v4 utilities T3 puts on the lightbox shade and viewport, as compiled.
+const t3Layout = String.raw`
+.fixed{position:fixed}.inset-0{inset:0}.z-\[60\]{z-index:60}.grid{display:grid}.place-items-center{place-items:center}.relative{position:relative}.overflow-auto{overflow:auto}.block{display:block}
+.bg-black\/75{background-color:rgb(0 0 0/75%)}
+.backdrop-blur-none{--tw-backdrop-blur: ;-webkit-backdrop-filter:var(--tw-backdrop-blur,);backdrop-filter:var(--tw-backdrop-blur,)}
+body{margin:0}#underlay{position:absolute;inset:0;overflow:hidden;font:14px/16px monospace;color:var(--foreground)}#underlay p{margin:0;white-space:nowrap}
+html.blank #underlay{visibility:hidden}
+`;
+// Conversation text that sits behind the lightbox; the inline diagram is drawn over it.
+const underlayText = Array.from({ length: 40 }, (_, i) => `<p>${i} The lightbox must not let this conversation line read through the expanded diagram ||||</p>`).join("");
 // pele (77XECAW3-Cek1N3Gv.js) root style and default series, verbatim.
 const peleStyle = "--_bg:var(--pele-bg,#fff);--_fg:var(--pele-fg,#1f1f1f);--_m:var(--pele-muted,#6e6e6e);--_l:var(--pele-line,#1f1f1f);--_s:var(--pele-surface,#f3f3f3);--_a:var(--pele-surface-alt,#e6e6e6);--_b:var(--pele-border,#8a8a8a);--_c:var(--pele-accent,#5b7bd5);color:var(--_fg)";
 const peleSeries = ["#4c78a8", "#f58518", "#54a24b", "#e45756", "#72b7b2", "#eeca3b", "#b279a2", "#9d755d"];
@@ -53,10 +64,13 @@ ${peleSeries.map((hex, i) => `<rect data-sample="series${i + 1}" x="${10 + i * 4
 </svg>`;
 
 const page = `<!doctype html><html data-theme-id="aurora" class="dark" style="${roleVars};background-color:${c.chrome}">
-<head><style>${t3Css}</style><style id="aurora">${theme.css}</style></head>
+<head><style>${t3Css}${t3Layout}</style><style id="aurora">${theme.css}</style></head>
 <body style="background-color:${c.chrome}">
-<div class="chat-markdown-mermaid overflow-x-auto" data-markdown-mermaid=""><button type="button" class="block w-full cursor-zoom-in rounded-md"><span class="flex w-full justify-center">${svg}</span></button></div>
-<div data-slot="dialog-backdrop" id="shade"></div><div data-slot="dialog-viewport"><div class="relative isolate z-10 flex max-h-full max-w-[var(--media-width)] flex-col items-center" id="lightbox">
+<main id="underlay">
+<div class="chat-markdown-mermaid overflow-x-auto" data-markdown-mermaid="" style="width:400px"><button type="button" class="block w-full cursor-zoom-in rounded-md" style="padding:0;border:0;background:none"><span class="flex w-full justify-center">${svg}</span></button></div>
+${underlayText}
+</main>
+<div data-slot="dialog-backdrop" id="shade" class="fixed inset-0 bg-black/75 backdrop-blur-none z-[60]"></div><div data-slot="dialog-viewport" class="fixed inset-0 grid place-items-center z-[60]"><div class="relative isolate z-10 flex max-h-full max-w-[var(--media-width)] flex-col items-center" id="lightbox">
 <div class="absolute left-0 top-0 z-20 max-[8rem]:left-1/2 max-[8rem]:-translate-x-1/2"><button type="button" id="back">Back</button></div>
 <button type="button" class="left-0 top-auto bottom-0 translate-y-0 sm:top-1/2 sm:bottom-auto sm:-translate-y-1/2" id="previous">Previous</button>
 <div role="region" tabindex="0" id="region" class="max-w-[var(--media-width)] overflow-auto overscroll-contain rounded-lg bg-background shadow-2xl ring-1 ring-border/70 outline-none"><img id="image" alt="Mermaid diagram" class="block max-w-none select-none"></div>
@@ -64,6 +78,7 @@ const page = `<!doctype html><html data-theme-id="aurora" class="dark" style="${
 </div>
 </div><pre id="result">pending</pre>
 <script>${t3Expand}
+if (location.search === "?blank") document.documentElement.classList.add("blank");
 const samples = ${JSON.stringify(samples)};
 const out = (value) => { document.getElementById("result").textContent = JSON.stringify(value); };
 try {
@@ -83,14 +98,18 @@ try {
   const image = document.getElementById("image");
   const fill = (id) => parse(getComputedStyle(document.getElementById(id)).backgroundColor);
   image.onload = () => {
+    if (location.search) return; // screenshot runs keep the Mermaid lightbox open
     const canvas = Object.assign(document.createElement("canvas"), { width: 400, height: 240 });
     const ctx = canvas.getContext("2d");
     ctx.drawImage(image, 0, 0);
     const pixels = Object.fromEntries(Object.entries(samples).map(([name, [x, y]]) => [name, [...ctx.getImageData(x, y, 1, 1).data]]));
     const region = fill("region"), shade = fill("shade");
+    const shown = () => getComputedStyle(document.querySelector("[data-markdown-mermaid] svg")).visibility;
+    const blur = () => getComputedStyle(document.getElementById("shade")).backdropFilter;
+    const inlineShown = shown();
     image.alt = "Photo";
-    const rasterRegion = fill("region"), rasterShade = fill("shade");
-    out({ inline, pixels, region, shade, rasterRegion, rasterShade,
+    const rasterRegion = fill("region"), rasterShade = fill("shade"), rasterBlur = blur(), rasterInline = shown();
+    out({ inline, pixels, region, shade, rasterRegion, rasterShade, rasterBlur, rasterInline, inlineShown,
       window: parse(getComputedStyle(document.documentElement).backgroundColor) });
   };
   image.onerror = () => out({ error: "expanded diagram image failed to load" });
@@ -98,16 +117,52 @@ try {
 } catch (error) { out({ error: String(error) }); }
 </script></body></html>`;
 
+// Minimal decoder for Chromium's 8-bit, non-interlaced RGB/RGBA screenshots.
+function decodePng(buf) {
+  let width, height, channels;
+  const idat = [];
+  for (let at = 8; at < buf.length;) {
+    const size = buf.readUInt32BE(at), type = buf.toString("ascii", at + 4, at + 8), body = buf.subarray(at + 8, at + 8 + size);
+    if (type === "IHDR") {
+      [width, height, channels] = [body.readUInt32BE(0), body.readUInt32BE(4), { 2: 3, 6: 4 }[body[9]]];
+      if (body[8] !== 8 || !channels || body[12] !== 0) throw new Error("unsupported screenshot PNG");
+    }
+    if (type === "IDAT") idat.push(body);
+    at += size + 12;
+  }
+  const raw = inflateSync(Buffer.concat(idat)), stride = width * channels, data = Buffer.alloc(stride * height);
+  for (let y = 0; y < height; y++) {
+    const filter = raw[y * (stride + 1)];
+    for (let x = 0; x < stride; x++) {
+      const v = raw[y * (stride + 1) + 1 + x];
+      const a = x >= channels ? data[y * stride + x - channels] : 0, b = y ? data[(y - 1) * stride + x] : 0;
+      const d = x >= channels && y ? data[(y - 1) * stride + x - channels] : 0;
+      const p = a + b - d, [pa, pb, pd] = [Math.abs(p - a), Math.abs(p - b), Math.abs(p - d)];
+      data[y * stride + x] = v + [0, a, b, (a + b) >> 1, pa <= pb && pa <= pd ? a : pb <= pd ? b : d][filter];
+    }
+  }
+  const luma = (x, y) => { const i = y * stride + x * channels; return 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]; };
+  return { width, height, luma };
+}
+
 const dir = await mkdtemp(join(tmpdir(), "aurora-mermaid-"));
-let result;
+let result, shot, blank;
 try {
   const fixture = join(dir, "fixture.html");
   await writeFile(fixture, page);
-  const dom = execFileSync(process.env.CHROMIUM ?? "chromium", [
-    "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-background-networking",
-    `--user-data-dir=${join(dir, "profile")}`, "--virtual-time-budget=5000", "--dump-dom", pathToFileURL(fixture).href,
+  const chromium = (...args) => execFileSync(process.env.CHROMIUM ?? "chromium", [
+    "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-background-networking", "--hide-scrollbars",
+    `--user-data-dir=${join(dir, "profile")}`, "--virtual-time-budget=5000", ...args,
   ], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 60_000 });
+  const dom = chromium("--dump-dom", pathToFileURL(fixture).href);
   result = JSON.parse(dom.match(/<pre id="result">([^<]*)<\/pre>/)?.[1].replace(/&amp;/g, "&") ?? "{}");
+  // The open lightbox, screenshotted over the conversation and over an empty page.
+  const capture = (query) => {
+    const png = join(dir, `${query}.png`);
+    chromium("--window-size=800,600", `--screenshot=${png}`, `${pathToFileURL(fixture).href}?${query}`);
+    return decodePng(readFileSync(png));
+  };
+  [shot, blank] = [capture("shot"), capture("blank")];
 } finally {
   await rm(dir, { recursive: true, force: true });
 }
@@ -197,10 +252,35 @@ for (const [where, p, back] of [["inline", result.inline, peak], ["expanded", re
   });
 }
 
-if (result.rasterRegion[3] !== 255 || result.rasterShade[3] !== 0) {
+if (result.rasterRegion[3] !== 255 || Math.round(result.rasterShade[3]) !== 191 || result.rasterBlur !== "none" || result.rasterInline !== "visible") {
   failures.push("Mermaid styles leaked onto the photo control");
 }
 
+// The glass shade lets the conversation through, so the open lightbox must not
+// carry its glyphs or the inline diagram's lines: what the underlay adds to the
+// screenshot has to be soft. A sharp step in that difference is a readable edge.
+// Edges the lightbox draws itself (region, buttons, diagram marks) also scale
+// the underlay, so steps within 2 px of an edge in the empty render are skipped.
+const { width: w, height: h } = blank;
+const own = new Uint8Array(w * h);
+for (let y = 0; y < h - 1; y++) {
+  for (let x = 0; x < w - 1; x++) {
+    if (Math.max(Math.abs(blank.luma(x + 1, y) - blank.luma(x, y)), Math.abs(blank.luma(x, y + 1) - blank.luma(x, y))) <= 0.5) continue;
+    for (let j = Math.max(0, y - 2); j <= Math.min(h - 1, y + 3); j++) own.fill(1, j * w + Math.max(0, x - 2), j * w + Math.min(w, x + 4));
+  }
+}
+const added = (x, y) => shot.luma(x, y) - blank.luma(x, y);
+let leak = 0, underlay = 0, checked = 0;
+for (let y = 0; y < h - 1; y++) {
+  for (let x = 0; x < w - 1; x++) {
+    underlay += Math.abs(added(x, y));
+    if (own[y * w + x]) continue;
+    checked++;
+    leak = Math.max(leak, Math.abs(added(x + 1, y) - added(x, y)), Math.abs(added(x, y + 1) - added(x, y)));
+  }
+}
+if (underlay / (w * h) < 1 || checked < (w * h) / 2) failures.push("readability fixture: the conversation underlay did not render");
+if (leak > 6) failures.push(`expanded Mermaid viewer shows the conversation's text and inline diagram (edge step ${leak.toFixed(1)} > 6)`);
 if (failures.length > 0) {
   console.error(`t3code.json Mermaid: ${failures.length} failure(s)`);
   for (const f of failures) console.error(`  ${f}`);
